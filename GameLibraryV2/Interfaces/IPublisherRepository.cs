@@ -17,5 +17,7 @@ namespace GameLibraryV2.Interfaces
         public string GetPublisherMiniPicturePath(int publisherId);
 
         public bool PublisherExists(int publisherId);
+
+        public bool CreatePublisher(Publisher publisher);
     }
 }

@@ -2,6 +2,7 @@
 using GameLibraryV2.Dto;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
+using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -76,6 +77,36 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             return Ok(Json(User));
+        }
+
+        [HttpPost]  
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateRole([FromBody] RoleDto roleCreate)
+        {
+            if (roleCreate == null)
+                return BadRequest(ModelState);
+
+            var role = roleRepository.GetRoleByName(roleCreate.RoleName);
+
+            if (role != null)
+            {
+                ModelState.AddModelError("", "Role already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var roleMap = mapper.Map<Role>(roleCreate);
+
+            if (!roleRepository.CreateRole(roleMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
         }
     }
 }

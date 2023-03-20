@@ -21,13 +21,4 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="uploads\userPicture\" />
-    <Folder Include="uploads\gamePicture\" />
-    <Folder Include="uploads\publisherPicture\" />
-    <Folder Include="uploads\publisherMiniPicture\" />
-    <Folder Include="uploads\developerPicture\" />
-    <Folder Include="uploads\developerMiniPicture\" />
-  </ItemGroup>
-
 </Project>

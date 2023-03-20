@@ -1,5 +1,6 @@
 ﻿using GameLibraryV2.Data;
 using GameLibraryV2.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace GameLibraryV2
 {
@@ -40,7 +41,7 @@ namespace GameLibraryV2
                     Nickname = "SunPatterns",
                     Age = 21,
                     Gender = "Male",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/userPicture/SunPatterns.jpg",
+                    PicturePath = $"images\\userPicture\\Def.jpg",
                     RegistrationdDate = DateTime.Now,
                     Library = rLibrary,
                     UserRoles = new List<Role>() { admin},
@@ -53,7 +54,7 @@ namespace GameLibraryV2
                     Nickname = "Ma6upa",
                     Age = 21,
                     Gender = "Male",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/userPicture/ma6upa.jpg",
+                    PicturePath = $"images\\userPicture\\Def.jpg",
                     RegistrationdDate = DateTime.Now,
                     Library = vLibrary,
                     UserRoles = new List<Role>() { userRole}
@@ -66,7 +67,7 @@ namespace GameLibraryV2
                     Nickname = "third",
                     Age = 21,
                     Gender = "Male",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/userPicture/ma6upa.jpg",
+                    PicturePath = $"images\\userPicture\\Def.jpg",
                     RegistrationdDate = DateTime.Now,
                     Library = tLibrary,
                     UserRoles = new List<Role>() { userRole},
@@ -109,43 +110,43 @@ namespace GameLibraryV2
                 {
                     Name = "Team Cherry",
                     Description = "Team Cherry is a small indie games team in Adelaide, South Australia. Our mission is to build crazy and exciting worlds for you to explore and conquer",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/developerPicture/TeamCherry.jpg",
-                    MiniPicturePath = $"{Directory.GetCurrentDirectory()}/uploads/developerMiniPicture/miniTeamCherry.jpg",
+                    PicturePath = $"images\\developerPicture\\Def.jpg",
+                    MiniPicturePath = $"images\\developerMiniPicture\\Def.jpg",
                 };
                 var braceYourSelfGamesDev = new Developer()
                 {
                     Name = "Brace Yourself Games",
                     Description = "indie Game company",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/developerPicture/BraceYourselfGames.jpg",
-                    MiniPicturePath = $"{Directory.GetCurrentDirectory()}/uploads/developerMiniPicture/miniBraceYourselfGames.jpg",
+                    PicturePath = $"images\\developerPicture\\Def.jpg",
+                    MiniPicturePath = $"images\\developerMiniPicture\\Def.jpg",
                 };
                 var kleiEntertaimentDev = new Developer()
                 {
                     Name = "Klei Entertaiment",
                     Description = "Cool dev",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/developerPicture/KleiEntertaiment.jpg",
-                    MiniPicturePath = $"{Directory.GetCurrentDirectory()}/uploads/developerMiniPicture/miniKleiEntertaiment.jpg",
+                    PicturePath = $"images\\developerPicture\\Def.jpg",
+                    MiniPicturePath = $"images\\developerMiniPicture\\Def.jpg",
                 };
                 var dodgeRollDev = new Developer()
                 {
                     Name = "Dodge Roll",
                     Description = "developers of gangeon series",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/developerPicture/DodgeRoll.jpg",
-                    MiniPicturePath = $"{Directory.GetCurrentDirectory()}/uploads/developerMiniPicture/miniDodgeRoll.jpg",
+                    PicturePath = $"images\\developerPicture\\Def.jpg",
+                    MiniPicturePath = $"images\\developerMiniPicture\\Def.jpg",
                 };
                 var massiveMonsterDev = new Developer()
                 {
                     Name = "Massive Monster",
                     Description = "Developers of cult of the lamb!",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/developerPicture/MassiveMonster.jpg",
-                    MiniPicturePath = $"{Directory.GetCurrentDirectory()}/uploads/developerMiniPicture/miniMassiveMonster.jpg",
+                    PicturePath = $"images\\developerPicture\\Def.jpg",
+                    MiniPicturePath = $"images\\developerMiniPicture\\Def.jpg",
                 };
                 var scsSoftwareDev = new Developer()
                 {
                     Name = "SCS Software",
                     Description = "Best simulator developer",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/developerPicture/SCSSoftware.jpg",
-                    MiniPicturePath = $"{Directory.GetCurrentDirectory()}/uploads/developerMiniPicture/miniSCSSoftware.jpg",
+                    PicturePath = $"images\\developerPicture\\Def.jpg",
+                    MiniPicturePath = $"images\\developerMiniPicture\\Def.jpg",
                 };
                 //-----------------------------------------------------
                 //Publishers min 5
@@ -153,36 +154,36 @@ namespace GameLibraryV2
                 {
                     Name = teamCherryDev.Name,
                     Description = teamCherryDev.Description,
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/publisherPicture/TeamCherry.jpg",
+                    PicturePath = $"images\\publisherPicture\\Def.jpg",
                     MiniPicturePath = $"{Directory.GetCurrentDirectory()}/uploads/publisherMiniPicture/miniTeamCherry.jpg",
                 };
                 var braceYourSelfGamesPub = new Publisher()
                 {
                     Name = braceYourSelfGamesDev.Name,
                     Description = braceYourSelfGamesDev.Description,
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/publisherPicture/BraceYourSelfGames.jpg",
-                    MiniPicturePath = $"{Directory.GetCurrentDirectory()}/uploads/publisherMiniPicture/miniBraceYourSelfGames.jpg",
+                    PicturePath = $"images\\publisherPicture\\Def.jpg",
+                    MiniPicturePath = $"images\\publisherMiniPicture\\Def.jpg",
                 };
                 var kleiEntertaimentPub = new Publisher()
                 {
                     Name = "Klei Entertaiment",
                     Description = "Cool publisher",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/publisherPicture/KleiEntertaiment.jpg",
-                    MiniPicturePath = $"{Directory.GetCurrentDirectory()}/uploads/publisherMiniPicture/miniKleiEntertaiment.jpg",
+                    PicturePath = $"images\\publisherPicture\\Def.jpg",
+                    MiniPicturePath = $"images\\publisherMiniPicture\\Def.jpg",
                 };
                 var devolverDigitalPub = new Publisher()
                 {
                     Name = "Devolver Digital",
                     Description = "BEST PUBLISHER",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/publisherPicture/DevolverDigital.jpg",
-                    MiniPicturePath = $"{Directory.GetCurrentDirectory()}/uploads/publisherMiniPicture/miniDevolverDigital.jpg",
+                    PicturePath = $"images\\publisherPicture\\Def.jpg",
+                    MiniPicturePath = $"images\\publisherMiniPicture\\Def.jpg",
                 };
                 var scsSoftwarePub = new Publisher()
                 {
                     Name = scsSoftwareDev.Name,
                     Description = scsSoftwareDev.Description,
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/publisherPicture/SCSSoftware.jpg",
-                    MiniPicturePath = $"{Directory.GetCurrentDirectory()}/uploads/publisherMiniPicture/miniSCSSoftware.jpg",
+                    PicturePath = $"images\\publisherPicture\\Def.jpg",
+                    MiniPicturePath = $"images\\publisherMiniPicture\\Def.jpg",
                 };
                 //------------------------------------------------------
                 //Genres
@@ -336,7 +337,7 @@ namespace GameLibraryV2
                 var euroTruck = new Game()
                 {
                     Name = "Euro Truck Simulator 2",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/gamePicture/EuroTruck.jpg",
+                    PicturePath = $"images\\gamePicture\\Def.jpg",
                     ReleaseDate = new DateTime(2012, 10, 18),
                     Description = "Станьте королем европейских дорог — водителем грузовика, который доставляет важные грузы на немалые расстояния! Вас ждут десятки городов Великобритании, Бельгии, Германии, Италии, Нидерландов, Польши и не только. Испытайте свои умения, выносливость и скорость.",
                     AgeRating = "Everyone",
@@ -377,7 +378,7 @@ namespace GameLibraryV2
                 var euroTruckGoingEast = new Game()
                 {
                     Name = "Euro Truck Simulator 2 - Going East",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/gamePicture/EuroTruckGoingEast!.jpg",
+                    PicturePath = $"images\\gamePicture\\Def.jpg",
                     ReleaseDate = new DateTime(2013, 09, 20),
                     Description = "Станьте королем европейских дорог — водителем грузовика, который доставляет важные грузы на немалые расстояния! Вас ждут десятки городов Великобритании, Бельгии, Германии, Италии, Нидерландов, Польши и не только. Испытайте свои умения, выносливость и скорость.",
                     AgeRating = "Everyone",
@@ -419,7 +420,7 @@ namespace GameLibraryV2
                 var euroTruckScandinavia = new Game()
                 {
                     Name = "Euro Truck Simulator 2 - Scandinavia",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/gamePicture/EuroTruckScandinavia!.jpg",
+                    PicturePath = $"images\\gamePicture\\Def.jpg",
                     ReleaseDate = new DateTime(2015, 05, 6),
                     Description = "Станьте королем европейских дорог — водителем грузовика, который доставляет важные грузы на немалые расстояния! Вас ждут десятки городов Великобритании, Бельгии, Германии, Италии, Нидерландов, Польши и не только. Испытайте свои умения, выносливость и скорость.",
                     AgeRating = "Everyone",
@@ -461,7 +462,7 @@ namespace GameLibraryV2
                 var euroTruckHighPowerCargoPack = new Game()
                 {
                     Name = "Euro Truck Simulator 2 - High Power Cargo Pack",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/gamePicture/HighPowerCargoPack.jpg",
+                    PicturePath = $"images\\gamePicture\\Def.jpg",
                     ReleaseDate = new DateTime(2014, 08, 14),
                     Description = "Станьте королем европейских дорог — водителем грузовика, который доставляет важные грузы на немалые расстояния! Вас ждут десятки городов Великобритании, Бельгии, Германии, Италии, Нидерландов, Польши и не только. Испытайте свои умения, выносливость и скорость.",
                     AgeRating = "Everyone",
@@ -542,7 +543,7 @@ namespace GameLibraryV2
                 var hollowKnight = new Game()
                 {
                     Name = "Hollow Knight",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/gamePicture/HollowKnight.jpg",
+                    PicturePath = $"images\\gamePicture\\Def.jpg",
                     ReleaseDate = new DateTime(2017, 02, 24),
                     Description = "Hollow Knight – это эпическое приключение в огромном разрушенном королевстве, полном насекомых и героев. Исследуйте извилистые пещеры, сражайтесь с порчеными тварями и заводите дружбу со странными жуками – все это в классической двухмерной ручной рисовке.",
                     AgeRating = "Everyone",
@@ -587,7 +588,7 @@ namespace GameLibraryV2
                 var hollowKnightHiddenDreams = new Game()
                 {
                     Name = "Hollow Knight: HiddenDreams",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/gamePicture/HollowKnightHiddenDreams.jpg",
+                    PicturePath = $"images\\gamePicture\\Def.jpg",
                     ReleaseDate = new DateTime(2017, 06, 03),
                     Description = "Hollow Knight – это эпическое приключение в огромном разрушенном королевстве, полном насекомых и героев. Исследуйте извилистые пещеры, сражайтесь с порчеными тварями и заводите дружбу со странными жуками – все это в классической двухмерной ручной рисовке.",
                     AgeRating = "Everyone",
@@ -633,7 +634,7 @@ namespace GameLibraryV2
                 var hollowKnightTheGrimmTroupe = new Game()
                 {
                     Name = "Hollow Knight: The Grimm Troupe",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/gamePicture/HollowKnightTheGrimmTroupe.jpg",
+                    PicturePath = $"images\\gamePicture\\Def.jpg",
                     ReleaseDate = new DateTime(2017, 10, 26),
                     Description = "Hollow Knight – это эпическое приключение в огромном разрушенном королевстве, полном насекомых и героев. Исследуйте извилистые пещеры, сражайтесь с порчеными тварями и заводите дружбу со странными жуками – все это в классической двухмерной ручной рисовке.",
                     AgeRating = "Everyone",
@@ -679,7 +680,7 @@ namespace GameLibraryV2
                 var hollowKnightGodmaster = new Game()
                 {
                     Name = "Hollow Knight: Godmaster",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/gamePicture/HollowKnightGodmaster.jpg",
+                    PicturePath = $"images\\gamePicture\\Def.jpg",
                     ReleaseDate = new DateTime(2018, 06, 23),
                     Description = "Hollow Knight – это эпическое приключение в огромном разрушенном королевстве, полном насекомых и героев. Исследуйте извилистые пещеры, сражайтесь с порчеными тварями и заводите дружбу со странными жуками – все это в классической двухмерной ручной рисовке.",
                     AgeRating = "Everyone",
@@ -771,7 +772,7 @@ namespace GameLibraryV2
                 var hungryKnight = new Game()
                 {
                     Name = "Hungry Knight",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/gamePicture/HungryKnight.jpg",
+                    PicturePath = $"images\\gamePicture\\Def.jpg",
                     ReleaseDate = new DateTime(2015, 02, 24),
                     Description = "A challenging action game. It's hard, but you can do it! Be brave.",
                     AgeRating = "Everyone",
@@ -806,7 +807,7 @@ namespace GameLibraryV2
                 var enterTheGungeon = new Game()
                 {
                     Name = "Enter the Gungeon",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/gamePicture/EntertheGungeon.jpg",
+                    PicturePath = $"images\\gamePicture\\Def.jpg",
                     ReleaseDate = new DateTime(2016, 04, 5),
                     Description = "Enter the Gungeon - игра жанра “пулевая завеса в подземелье”, в которой ищущие спасения неудачники стреляют, грабят, перекатываются и опрокидывают столы, чтобы добраться до легендарного сокровища Оружелья: оружия, которое может убить прошлое.",
                     AgeRating = "Teen",
@@ -849,7 +850,7 @@ namespace GameLibraryV2
                 var cultOfTheLamb = new Game()
                 {
                     Name = "Cult of the Lamb",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/gamePicture/CultOfTheLamb.jpg",
+                    PicturePath = $"images\\gamePicture\\Def.jpg",
                     ReleaseDate = new DateTime(2022, 08, 11),
                     Description = "Взращивайте собственный культ в землях лжепророков, совершайте походы по таинственным уголкам леса, объединяйте вокруг себя верных последователей и несите своё слово в массы, чтобы сделать свой культ единственным.",
                     AgeRating = "Teen",
@@ -892,7 +893,7 @@ namespace GameLibraryV2
                 var dontStarveTogether = new Game()
                 {
                     Name = "Don't Starve Together",
-                    PicturePath = $"{Directory.GetCurrentDirectory()}/uploads/gamePicture/DontStarveTogether.jpg",
+                    PicturePath = $"images\\gamePicture\\Def.jpg",
                     ReleaseDate = new DateTime(2016, 04, 21),
                     Description = "Fight, Farm, Build and Explore Together in the standalone multiplayer expansion to the uncompromising wilderness survival game, Don't Starve.",
                     AgeRating = "Teen",

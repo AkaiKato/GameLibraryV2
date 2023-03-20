@@ -13,5 +13,7 @@ namespace GameLibraryV2.Interfaces
         public IList<Game> GetGameByPlatform(int platformId);
 
         public bool PlatformExist(int platformId);
+
+        public bool CreatePlatform(Platform platform);
     }
 }

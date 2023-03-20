@@ -3,6 +3,7 @@ using GameLibraryV2.Dto;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
+using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -78,6 +79,36 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             return Ok(Json(Games));
+        }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreatePLatform([FromBody] PlatformDto platformCreate)
+        {
+            if (platformCreate == null)
+                return BadRequest(ModelState);
+
+            var platform = platformRepository.GetPlatformByName(platformCreate.Name);
+
+            if (platform != null)
+            {
+                ModelState.AddModelError("", "Platform already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var platformMap = mapper.Map<Platform>(platformCreate);
+
+            if (!platformRepository.CreatePlatform(platformMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
         }
     }
 }

@@ -3,6 +3,7 @@ using GameLibraryV2.Dto;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
+using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -78,5 +79,34 @@ namespace GameLibraryV2.Controllers
             return Ok(Json(Games));
         }
 
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateGenre([FromBody] GenreDto genreCreate)
+        {
+            if (genreCreate == null)
+                return BadRequest(ModelState);
+
+            var genre = genreRepository.GetGenreByName(genreCreate.Name);
+
+            if (genre != null)
+            {
+                ModelState.AddModelError("", "Genre already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var genreMap = mapper.Map<Genre>(genreCreate);
+
+            if (!genreRepository.CreateGenre(genreMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
+        }
     }
 }

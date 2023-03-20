@@ -119,5 +119,35 @@ namespace GameLibraryV2.Controllers
 
             return Ok(Json(DeveloperGames));
         }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateDeveloper([FromBody] DeveloperDto developerCreate)
+        {
+            if (developerCreate == null)
+                return BadRequest(ModelState);
+
+            var developer = developerRepository.GetDeveloperByName(developerCreate.Name);
+
+            if(developer != null)
+            {
+                ModelState.AddModelError("", "Developer already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if(!ModelState.IsValid) 
+                return BadRequest(ModelState);
+
+            var developerMap = mapper.Map<Developer>(developerCreate);
+
+            if (!developerRepository.CreateDeveloper(developerMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
+        }
     }
 }

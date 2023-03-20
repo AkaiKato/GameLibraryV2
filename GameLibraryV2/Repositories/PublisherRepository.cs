@@ -61,7 +61,7 @@ namespace GameLibraryV2.Repositories
 
         public Publisher GetPublisherByName(string publisherName)
         {
-            return dataContext.Publishers.Where(p => p.Name.ToLower() == publisherName.ToLower()).FirstOrDefault()!;
+            return dataContext.Publishers.Where(p => p.Name.Trim().ToLower() == publisherName.Trim().ToLower()).FirstOrDefault()!;
         }
 
         public string GetPublisherMiniPicturePath(int publisherId)
@@ -84,6 +84,21 @@ namespace GameLibraryV2.Repositories
         public bool PublisherExists(int publisherId)
         {
             return dataContext.Publishers.Any(p => p.Id == publisherId);
+        }
+
+        //--------------------------------------------
+
+        public bool CreatePublisher(Publisher publisher)
+        {
+            dataContext.Add(publisher);
+            return Save();
+        }
+
+        private bool Save()
+        {
+            var saved = dataContext.SaveChanges();
+            //var saved = 1;
+            return saved > 0 ? true : false;
         }
     }
 }

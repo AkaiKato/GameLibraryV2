@@ -16,6 +16,8 @@ namespace GameLibraryV2.Interfaces
 
         public string GetDeveloperMiniPicturePath(int developerId);
         
-        bool DeveloperExists(int developerId);
+        public bool DeveloperExists(int developerId);
+
+        public bool CreateDeveloper(Developer developer);
     }
 }

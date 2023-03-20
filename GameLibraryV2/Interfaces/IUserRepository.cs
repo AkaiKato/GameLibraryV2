@@ -17,5 +17,11 @@ namespace GameLibraryV2.Interfaces
         public string GetUserPicturePath(int userId);
 
         public bool UserExists(int userId);
+
+        public bool HasNickname(string nickname);
+
+        public bool HasEmail(string email);
+
+        public bool CreateUser(User user);
     }
 }

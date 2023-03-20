@@ -26,7 +26,7 @@ namespace GameLibraryV2.Repositories
 
         public Developer GetDeveloperByName(string developerName)
         {
-            return dataContext.Developers.FirstOrDefault(d => d.Name == developerName)!;
+            return dataContext.Developers.FirstOrDefault(d => d.Name.Trim().ToLower() == developerName.Trim().ToLower())!;
         }
 
         public string GetDeveloperMiniPicturePath(int developerId)
@@ -84,6 +84,21 @@ namespace GameLibraryV2.Repositories
                     Name = t.Name,
                 }).ToList(),
             }).ToList();
+        }
+
+        //------------------------------------------------------------------
+
+        public bool CreateDeveloper(Developer developer)
+        {
+            dataContext.Add(developer);
+            return Save();
+        }
+
+        private bool Save()
+        {
+            var saved = dataContext.SaveChanges();
+            //var saved = 1;
+            return saved > 0 ? true : false;
         }
     }
 }

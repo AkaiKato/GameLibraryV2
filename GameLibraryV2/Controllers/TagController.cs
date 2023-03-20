@@ -3,6 +3,7 @@ using GameLibraryV2.Dto;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
+using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -76,6 +77,37 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             return Ok(Json(Games));
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateTag([FromBody] TagDto tagCreate)
+        {
+            if (tagCreate == null)
+                return BadRequest(ModelState);
+
+            var tag = tagRepository.GetTagByName(tagCreate.Name);
+
+            if (tag != null)
+            {
+                ModelState.AddModelError("", "Tag already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var tagMap = mapper.Map<Tag>(tagCreate);
+
+            if (!tagRepository.CreateTag(tagMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
         }
     }
 }

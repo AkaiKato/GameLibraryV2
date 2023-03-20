@@ -20,7 +20,7 @@ namespace GameLibraryV2.Repositories
 
         public Role GetRoleByName(string roleName)
         {
-            return dataContext.Roles.Where(r => r.RoleName.ToLower() == roleName.ToLower()).FirstOrDefault()!;
+            return dataContext.Roles.Where(r => r.RoleName.Trim().ToLower() == roleName.Trim().ToLower()).FirstOrDefault()!;
         }
 
         public IList<Role> GetRoles()
@@ -36,6 +36,21 @@ namespace GameLibraryV2.Repositories
         public bool RoleExists(int roleId)
         {
             return dataContext.Roles.Any(r => r.Id == roleId);
+        }
+
+        //--------------------------------------------
+
+        public bool CreateRole(Role role)
+        {
+            dataContext.Add(role);
+            return Save();
+        }
+
+        private bool Save()
+        {
+            var saved = dataContext.SaveChanges();
+            //var saved = 1;
+            return saved > 0 ? true : false;
         }
     }
 }

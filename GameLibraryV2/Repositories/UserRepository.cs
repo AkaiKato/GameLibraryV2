@@ -21,7 +21,7 @@ namespace GameLibraryV2.Repositories
 
         public User GetUserByNickname(string nickname)
         {
-            return dataContext.Users.Include(l => l.Library).Include(ur => ur.UserRoles).Where(u => u.Nickname == nickname).FirstOrDefault()!;
+            return dataContext.Users.Include(l => l.Library).Include(ur => ur.UserRoles).Where(u => u.Nickname.Trim() == nickname.Trim()).FirstOrDefault()!;
         }
 
         public IList<Friend> GetUserFriends(int userId)
@@ -62,6 +62,29 @@ namespace GameLibraryV2.Repositories
         public bool UserExists(int userId)
         {
             return dataContext.Users.Any(u => u.Id == userId);
+        }
+
+        public bool HasNickname(string nickname)
+        {
+            return dataContext.Users.Any(u => u.Nickname.Trim().ToLower() == nickname.Trim().ToLower());
+        }
+
+        public bool HasEmail(string email)
+        {
+            return dataContext.Users.Any(u => u.Email.Trim().ToLower() == email.Trim().ToLower());
+        }
+
+        public bool CreateUser(User user)
+        {
+            dataContext.Add(user);
+            return Save();
+        }
+
+        private bool Save()
+        {
+            //var saved = dataContext.SaveChanges();
+            var saved = 1;
+            return saved > 0 ? true : false;
         }
     }
 }

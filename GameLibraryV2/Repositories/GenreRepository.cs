@@ -67,12 +67,28 @@ namespace GameLibraryV2.Repositories
 
         public Genre GetGenreByName(string genreName)
         {
-            return dataContext.Genres.Where(g => g.Name.ToLower() == genreName.ToLower()).FirstOrDefault()!;
+            return dataContext.Genres.Where(g => g.Name.Trim().ToLower() == genreName.Trim().ToLower()).FirstOrDefault()!;
         }
 
         public IList<Genre> GetGenres()
         {
             return dataContext.Genres.OrderBy(g => g.Id).ToList();
         }
+
+        //--------------------------------------------
+
+        public bool CreateGenre(Genre genre)
+        {
+            dataContext.Add(genre);
+            return Save();
+        }
+
+        private bool Save()
+        {
+            var saved = dataContext.SaveChanges();
+            //var saved = 1;
+            return saved > 0 ? true : false;
+        }
+
     }
 }

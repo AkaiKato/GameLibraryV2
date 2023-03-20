@@ -121,5 +121,35 @@ namespace GameLibraryV2.Controllers
 
             return Ok(Json(Games));
         }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreatePublisher([FromBody] PublisherDto publisherCreate)
+        {
+            if (publisherCreate == null)
+                return BadRequest(ModelState);
+
+            var publisher = publisherRepository.GetPublisherByName(publisherCreate.Name);
+
+            if (publisher != null)
+            {
+                ModelState.AddModelError("", "Publisher already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var publisherMap = mapper.Map<Publisher>(publisherCreate);
+
+            if (!publisherRepository.CreatePublisher(publisherMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
+        }
     }
 }

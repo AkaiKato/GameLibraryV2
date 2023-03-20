@@ -13,5 +13,7 @@ namespace GameLibraryV2.Interfaces
         public IList<User> GetUsersByRole(int roleId);
 
         public bool RoleExists(int roleId);
+
+        public bool CreateRole(Role role);
     }
 }

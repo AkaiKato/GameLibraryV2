@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
 using GameLibraryV2.Dto;
+using GameLibraryV2.Dto.registry;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
+using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
 
 namespace GameLibraryV2.Controllers
 {
@@ -11,11 +15,13 @@ namespace GameLibraryV2.Controllers
     public class UserController : Controller
     {
         private readonly IUserRepository userRepository;
+        private readonly IRoleRepository roleRepository;
         private readonly IMapper mapper;
 
-        public UserController(IUserRepository _userRepository, IMapper _mapper)
+        public UserController(IUserRepository _userRepository, IRoleRepository _roleRepository, IMapper _mapper)
         {
             userRepository = _userRepository;
+            roleRepository = _roleRepository;
             mapper = _mapper;
         }
 
@@ -118,6 +124,54 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             return Ok(Json(UserRole));
+        }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateUser([FromBody] UserCreateDto userCreate)
+        {
+            if (userCreate == null)
+                return BadRequest(ModelState);
+
+            if (userRepository.HasEmail(userCreate.Email))
+            {
+                ModelState.AddModelError("", "User with Email already registrated");
+                return StatusCode(422, ModelState);
+            }
+
+            if (userRepository.HasNickname(userCreate.Nickname))
+            {
+                ModelState.AddModelError("", "User with this Nickname already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (userCreate.Gender.Trim().ToLower() != "male" && userCreate.Gender.Trim().ToLower() != "woman")
+            {
+                ModelState.AddModelError("", "Unsupported Gender");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var userMap = mapper.Map<User>(userCreate);
+
+            if (userMap.PicturePath.Trim().ToLower() != "")
+                userMap.PicturePath = $"images\\userPicture\\{DateTimeOffset.Now.ToUnixTimeMilliseconds()}_{userMap.PicturePath}";
+            else
+                userMap.PicturePath = $"images\\userPicture\\Def";
+            userMap.Library = new Library();
+            userMap.UserRoles = new List<Role>() { roleRepository.GetRoleByName("user") };
+            userMap.UserFriends = new List<Friend>();
+
+            if (!userRepository.CreateUser(userMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok(userMap);
         }
     }
 }

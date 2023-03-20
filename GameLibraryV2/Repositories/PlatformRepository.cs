@@ -62,7 +62,7 @@ namespace GameLibraryV2.Repositories
 
         public Platform GetPlatformByName(string name)
         {
-            return dataContext.Platforms.Where(p => p.Name.ToLower() == name.ToLower()).FirstOrDefault()!;
+            return dataContext.Platforms.Where(p => p.Name.Trim().ToLower() == name.Trim().ToLower()).FirstOrDefault()!;
         }
 
         public IList<Platform> GetPlatforms()
@@ -73,6 +73,21 @@ namespace GameLibraryV2.Repositories
         public bool PlatformExist(int platformId)
         {
             return dataContext.Platforms.Any(p => p.Id == platformId);
+        }
+
+        //--------------------------------------------
+
+        public bool CreatePlatform(Platform platform)
+        {
+            dataContext.Add(platform);
+            return Save();
+        }
+
+        private bool Save()
+        {
+            var saved = dataContext.SaveChanges();
+            //var saved = 1;
+            return saved > 0 ? true : false;
         }
     }
 }
