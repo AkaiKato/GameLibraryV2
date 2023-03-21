@@ -15,13 +15,11 @@ namespace GameLibraryV2.Controllers
     public class UserController : Controller
     {
         private readonly IUserRepository userRepository;
-        private readonly IRoleRepository roleRepository;
         private readonly IMapper mapper;
 
-        public UserController(IUserRepository _userRepository, IRoleRepository _roleRepository, IMapper _mapper)
+        public UserController(IUserRepository _userRepository, IMapper _mapper)
         {
             userRepository = _userRepository;
-            roleRepository = _roleRepository;
             mapper = _mapper;
         }
 
@@ -126,6 +124,11 @@ namespace GameLibraryV2.Controllers
             return Ok(Json(UserRole));
         }
 
+        /// <summary>
+        /// Creates new User
+        /// </summary>
+        /// <param name="userCreate"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -157,12 +160,8 @@ namespace GameLibraryV2.Controllers
 
             var userMap = mapper.Map<User>(userCreate);
 
-            if (userMap.PicturePath.Trim().ToLower() != "")
-                userMap.PicturePath = $"images\\userPicture\\{DateTimeOffset.Now.ToUnixTimeMilliseconds()}_{userMap.PicturePath}";
-            else
-                userMap.PicturePath = $"images\\userPicture\\Def";
+            userMap.PicturePath = $"\\Images\\gamePicture\\Def";
             userMap.Library = new Library();
-            userMap.UserRoles = new List<Role>() { roleRepository.GetRoleByName("user") };
             userMap.UserFriends = new List<Friend>();
 
             if (!userRepository.CreateUser(userMap))
@@ -171,7 +170,57 @@ namespace GameLibraryV2.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok(userMap);
+            return Ok("Successfully created");
+        }
+
+        /// <summary>
+        /// Change User Picture
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="pic"></param>
+        /// <returns></returns>
+        [HttpPost("upload")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult UploadGamePicture([FromQuery] int userId, IFormFile pic)
+        {
+            string[] permittedExtensions = { ".jpg", ".jpeg", ".png" };
+
+            if (pic == null)
+                return BadRequest(ModelState);
+
+            var ext = Path.GetExtension(pic.FileName).ToLowerInvariant();
+            if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
+            {
+                ModelState.AddModelError("", "Unsupported extension");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!userRepository.UserExists(userId))
+                return NotFound();
+
+            var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            var game = userRepository.GetUserById(userId);
+            var newfilePath = $"\\Images\\userPicture\\{unique}{ext}";
+            var oldfilePath = game.PicturePath;
+
+            using var stream = new FileStream(newfilePath, FileMode.Create);
+            pic.CopyTo(stream);
+
+            if (!userRepository.SaveUserPicturePath(userId, newfilePath))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            if (oldfilePath.Trim() != $"\\Images\\userPicture\\Def.jpg")
+            {
+                FileInfo f = new(oldfilePath);
+                f.Delete();
+            }
+
+
+            return Ok("Successfully created");
         }
     }
 }

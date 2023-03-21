@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GameLibraryV2.Dto;
+using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
@@ -79,11 +80,15 @@ namespace GameLibraryV2.Controllers
             return Ok(Json(Games));
         }
 
-
+        /// <summary>
+        /// Creates new Tag
+        /// </summary>
+        /// <param name="tagCreate"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateTag([FromBody] TagDto tagCreate)
+        public IActionResult CreateTag([FromBody] TagCreateDto tagCreate)
         {
             if (tagCreate == null)
                 return BadRequest(ModelState);

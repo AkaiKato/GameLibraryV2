@@ -15,5 +15,9 @@ namespace GameLibraryV2.Interfaces
         public string GetGamePicturePath(int gameId);
 
         public bool GameExists(int gameId);
+
+        public bool CreateGame(int[] DeveloperIds, int[] PublisherIds, int[] PlatformIds, int[] GenreIds, int[] TagIds, Game game);
+
+        public bool SaveGamePicturePath(int gameId, string path);
     }
 }

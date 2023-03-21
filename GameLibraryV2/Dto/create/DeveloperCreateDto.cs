@@ -1,9 +1,7 @@
-﻿namespace GameLibraryV2.Dto
+﻿namespace GameLibraryV2.Dto.create
 {
-    public class DeveloperDto
+    public class DeveloperCreateDto
     {
-        public int Id { get; set; }
-
         public string Name { get; set; } = null!;
 
         public string? Description { get; set; }

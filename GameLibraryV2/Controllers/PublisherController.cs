@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GameLibraryV2.Dto;
+using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
@@ -122,10 +123,15 @@ namespace GameLibraryV2.Controllers
             return Ok(Json(Games));
         }
 
+        /// <summary>
+        /// Creates new Publisher
+        /// </summary>
+        /// <param name="publisherCreate"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreatePublisher([FromBody] PublisherDto publisherCreate)
+        public IActionResult CreatePublisher([FromBody] PublisherCreateDto publisherCreate)
         {
             if (publisherCreate == null)
                 return BadRequest(ModelState);

@@ -23,5 +23,7 @@ namespace GameLibraryV2.Interfaces
         public bool HasEmail(string email);
 
         public bool CreateUser(User user);
+
+        public bool SaveUserPicturePath(int userId, string path);
     }
 }

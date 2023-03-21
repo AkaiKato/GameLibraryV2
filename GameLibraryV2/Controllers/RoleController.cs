@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GameLibraryV2.Dto;
+using GameLibraryV2.Dto.create;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using GameLibraryV2.Repositories;
@@ -79,10 +80,15 @@ namespace GameLibraryV2.Controllers
             return Ok(Json(User));
         }
 
+        /// <summary>
+        /// Creates new Role
+        /// </summary>
+        /// <param name="roleCreate"></param>
+        /// <returns></returns>
         [HttpPost]  
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateRole([FromBody] RoleDto roleCreate)
+        public IActionResult CreateRole([FromBody] RoleCreateDto roleCreate)
         {
             if (roleCreate == null)
                 return BadRequest(ModelState);

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GameLibraryV2.Dto;
+using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
@@ -81,10 +82,15 @@ namespace GameLibraryV2.Controllers
             return Ok(Json(Games));
         }
 
+        /// <summary>
+        /// Creates new Platform
+        /// </summary>
+        /// <param name="platformCreate"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreatePLatform([FromBody] PlatformDto platformCreate)
+        public IActionResult CreatePLatform([FromBody] PlatformCreateDto platformCreate)
         {
             if (platformCreate == null)
                 return BadRequest(ModelState);

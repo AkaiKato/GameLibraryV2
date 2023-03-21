@@ -6,6 +6,6 @@
 
         public string Nickname { get; set; } = null!;
 
-        public string PicturePath { get; set; } = null!;
+        public string PicturePath { get; set; } = "Def";
     }
 }

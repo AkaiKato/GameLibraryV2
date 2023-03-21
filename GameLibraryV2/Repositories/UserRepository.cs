@@ -76,15 +76,26 @@ namespace GameLibraryV2.Repositories
 
         public bool CreateUser(User user)
         {
+            user.UserRoles = new List<Role>() { dataContext.Roles.FirstOrDefault(r => r.RoleName.Trim().ToLower() == "user")!};
             dataContext.Add(user);
+            return Save();
+        }
+
+        public bool SaveUserPicturePath(int userId, string path)
+        {
+            var user = dataContext.Users.Where(g => g.Id == userId).FirstOrDefault();
+            user!.PicturePath = path;
+            dataContext.Users.Update(user);
             return Save();
         }
 
         private bool Save()
         {
-            //var saved = dataContext.SaveChanges();
-            var saved = 1;
+            var saved = dataContext.SaveChanges();
+            //var saved = 1;
             return saved > 0 ? true : false;
         }
+
+
     }
 }

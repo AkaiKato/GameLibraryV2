@@ -9,7 +9,7 @@ namespace GameLibraryV2.Dto
 
         public string Name { get; set; } = null!;
 
-        public string PicturePath { get; set; } = null!;
+        public string PicturePath { get; set; } = "Def";
 
         public DateTime ReleaseDate { get; set; }
 

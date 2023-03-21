@@ -14,7 +14,7 @@ namespace GameLibraryV2.Dto
 
         public string Gender { get; set; } = null!;
 
-        public string PicturePath { get; set; } = null!;
+        public string PicturePath { get; set; } = "Def";
 
         public DateTime RegistrationdDate { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GameLibraryV2.Dto;
+using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
@@ -79,10 +80,15 @@ namespace GameLibraryV2.Controllers
             return Ok(Json(Games));
         }
 
+        /// <summary>
+        /// Creates new Genre
+        /// </summary>
+        /// <param name="genreCreate"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateGenre([FromBody] GenreDto genreCreate)
+        public IActionResult CreateGenre([FromBody] GenreCreateDto genreCreate)
         {
             if (genreCreate == null)
                 return BadRequest(ModelState);
