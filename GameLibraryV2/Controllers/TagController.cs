@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using GameLibraryV2.Dto;
+using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
-using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -14,11 +13,13 @@ namespace GameLibraryV2.Controllers
     public class TagController : Controller
     {
         private readonly ITagRepository tagRepository;
+        private readonly IGameRepository gameRepository;
         private readonly IMapper mapper;
 
-        public TagController(ITagRepository _tagRepository, IMapper _mapper)
+        public TagController(ITagRepository _tagRepository, IGameRepository _gameRepository,IMapper _mapper)
         {
             tagRepository = _tagRepository;
+            gameRepository = _gameRepository;
             mapper = _mapper;
         }
 
@@ -65,14 +66,14 @@ namespace GameLibraryV2.Controllers
         /// <param name="tagId"></param>
         /// <returns></returns>
         [HttpGet("{tagId}/games")]
-        [ProducesResponseType(200, Type = typeof(IList<GameListDto>))]
+        [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
         public IActionResult GetGenreGames(int tagId)
         {
             if (!tagRepository.TagExists(tagId))
                 return NotFound();
 
-            var Games = mapper.Map<List<GameListDto>>(tagRepository.GetGamesByTag(tagId));
+            var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByTag(tagId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

@@ -1,6 +1,6 @@
-﻿namespace GameLibraryV2.Dto
+﻿namespace GameLibraryV2.Dto.Common
 {
-    public class GenreDto
+    public class PlatformDto
     {
         public int Id { get; set; }
 

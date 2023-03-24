@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using GameLibraryV2.Dto;
+using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.registry;
+using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,14 +14,17 @@ namespace GameLibraryV2.Controllers
     {
         private readonly IUserRepository userRepository;
         private readonly IRoleRepository roleRepository;
+        private readonly IFriendRepository friendRepository;
         private readonly IMapper mapper;
 
         public UserController(IUserRepository _userRepository,
             IRoleRepository _roleRepository,
+            IFriendRepository _friendRepository,
             IMapper _mapper)
         {
             userRepository = _userRepository;
             roleRepository = _roleRepository;
+            friendRepository = _friendRepository;
             mapper = _mapper;
         }
 
@@ -60,69 +64,6 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             return Ok(Json(User));
-        }
-
-        /// <summary>
-        /// Return specified user friends
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        [HttpGet("{userId}/friends")]
-        [ProducesResponseType(200, Type = typeof(IList<FriendDto>))]
-        [ProducesResponseType(400)]
-        public IActionResult GetUserFriends(int userId)
-        {
-            if (!userRepository.UserExists(userId))
-                return NotFound();
-
-            var UserFriends = mapper.Map<List<FriendDto>>(userRepository.GetUserFriends(userId));
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(Json(UserFriends));
-        }
-
-        /// <summary>
-        /// Return specified user picture
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        /*[HttpGet("{userId}/picture")]
-        [ProducesResponseType(200, Type = typeof(string))]
-        [ProducesResponseType(400)]
-        public IActionResult GetUserPicture(int userId)
-        {
-            if (!userRepository.UserExists(userId))
-                return NotFound();
-
-            var PicturePath = userRepository.GetUserPicturePath(userId);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(Json(PicturePath));
-        }*/
-
-        /// <summary>
-        /// Return specified user role
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        [HttpGet("{userId}/role")]
-        [ProducesResponseType(200, Type = typeof(IList<RoleDto>))]
-        [ProducesResponseType(400)]
-        public IActionResult GetUserRole(int userId)
-        {
-            if (!userRepository.UserExists(userId))
-                return NotFound();
-
-            var UserRole = mapper.Map<List<RoleDto>>(userRepository.GetUserRole(userId));
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(Json(UserRole));
         }
 
         /// <summary>
@@ -176,37 +117,76 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Add friend
+        /// Return all users by specified role
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="frinedId"></param>
+        /// <param name="roleId"></param>
         /// <returns></returns>
-        [HttpPost("addFriend")]
-        [ProducesResponseType(204)]
+        [HttpGet("{roleId}/users")]
+        [ProducesResponseType(200, Type = typeof(IList<UserDto>))]
         [ProducesResponseType(400)]
-        public IActionResult AddFriend([FromQuery] int userId, [FromQuery] int frinedId) 
+        public IActionResult GetRoleUsers(int roleId)
         {
-            if(!userRepository.UserExists(userId))
-                return NotFound(ModelState);
+            if (!roleRepository.RoleExists(roleId))
+                return NotFound();
 
-            if(!userRepository.UserExists(frinedId))
-                return NotFound(ModelState);
+            var User = mapper.Map<List<UserDto>>(userRepository.GetUsersByRole(roleId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = userRepository.GetUserById(userId);
-            var fusers = userRepository.GetUserFriends(userId);
+            return Ok(Json(User));
+        }
 
-            if (fusers.Any(u => u.Friendu.Id == frinedId))
+        /// <summary>
+        /// Return specified user role
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet("{userId}/role")]
+        [ProducesResponseType(200, Type = typeof(IList<RoleDto>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetUserRole(int userId)
+        {
+            if (!userRepository.UserExists(userId))
+                return NotFound();
+
+            var UserRole = mapper.Map<List<RoleDto>>(roleRepository.GetUserRole(userId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(Json(UserRole));
+        }
+
+        /// <summary>
+        /// Update specified user
+        /// </summary>
+        /// <param name="userUpdate"></param>
+        /// <returns></returns>
+        [HttpPut("updateUser")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult UpdateUserInfo([FromBody] UserUpdate userUpdate)
+        {
+            if (userUpdate == null)
+                return BadRequest(ModelState);
+
+            if (!userRepository.UserExists(userUpdate.Id))
+                return NotFound();
+
+            if (userUpdate.Gender.Trim().ToLower() != "male" && userUpdate.Gender.Trim().ToLower() != "woman")
             {
-                ModelState.AddModelError("", "Already friends");
-                return StatusCode(500, ModelState);
+                ModelState.AddModelError("", "Unsupported Gender");
+                return StatusCode(422, ModelState);
             }
 
-            var friend = userRepository.GetUserById(frinedId);
+            var user = userRepository.GetUserById(userUpdate.Id);
 
-            user.UserFriends = new List<Friend>() { new Friend { Friendu = friend, User = user } };
+            user.Email = userUpdate.Email;
+            user.Password = userUpdate.Password;
+            user.Nickname = userUpdate.Nickname;
+            user.Age = userUpdate.Age;
+            user.Gender = userUpdate.Gender;
 
             if (!userRepository.UpdateUser(user))
             {
@@ -214,31 +194,30 @@ namespace GameLibraryV2.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully");
+            return Ok("Successfully updated");
         }
 
         /// <summary>
-        /// Add specified role
+        /// Add specified role to user
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="roleId"></param>
+        /// <param name="addRole"></param>
         /// <returns></returns>
         [HttpPut("addRole")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult AddRole([FromQuery] int userId, [FromQuery] int roleId)
+        public IActionResult AddRole([FromBody] RoleUpdate addRole)
         {
-            if (!userRepository.UserExists(userId))
+            if (!userRepository.UserExists(addRole.UserId))
                 return NotFound(ModelState);
 
-            if (!roleRepository.RoleExists(roleId))
+            if (!roleRepository.RoleExists(addRole.RoleId))
                 return NotFound(ModelState);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = userRepository.GetUserById(userId);
-            var role = roleRepository.GetRoleById(roleId);
+            var user = userRepository.GetUserById(addRole.UserId);
+            var role = roleRepository.GetRoleById(addRole.RoleId);
             user.UserRoles.Add(role);
 
             if (!userRepository.UpdateUser(user))
@@ -247,7 +226,7 @@ namespace GameLibraryV2.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully");
+            return Ok("Successfully added");
         }
 
         /// <summary>
@@ -302,7 +281,89 @@ namespace GameLibraryV2.Controllers
             }
 
 
-            return Ok("Successfully created");
+            return Ok("Successfully updated");
+        }
+
+        /// <summary>
+        /// Delete specified user
+        /// </summary>
+        /// <param name="deleteUser"></param>
+        /// <returns></returns>
+        [HttpDelete("deleteUser")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult DeleteUser([FromBody] JustIdDto deleteUser) 
+        {
+            if (!userRepository.UserExists(deleteUser.Id))
+                return NotFound();
+
+            var user = userRepository.GetUserById(deleteUser.Id);
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var fusers = friendRepository.GetUserFriends(deleteUser.Id).ToList();
+
+            if (fusers.Count > 0)
+            {
+                foreach (var item in fusers)
+                {
+                    if (!friendRepository.DeleteFriend(item))
+                    {
+                        ModelState.AddModelError("", "Something went wrong while saving");
+                        return StatusCode(500, ModelState);
+                    }
+                }
+            }
+
+            if (!userRepository.DeleteUser(user))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully deleted");
+        }
+
+        /// <summary>
+        /// Delete specified role of user 
+        /// </summary>
+        /// <param name="deleteRole"></param>
+        /// <returns></returns>
+        [HttpDelete("deleteRole")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult DeleteRole([FromBody] RoleUpdate deleteRole)
+        {
+            if (!userRepository.UserExists(deleteRole.UserId))
+                return NotFound(ModelState);
+
+            if (!roleRepository.RoleExists(deleteRole.RoleId))
+                return NotFound(ModelState);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = userRepository.GetUserById(deleteRole.UserId);
+            var fusers = roleRepository.GetUserRole(deleteRole.UserId).ToList();
+
+            if (fusers.Count <= 1)
+            {
+                ModelState.AddModelError("", "User can't have less then one role" +
+                    " Or user doesn't have this role");
+                return StatusCode(422, ModelState);
+            }
+
+            fusers.RemoveAll(x => x.Id == deleteRole.RoleId);
+            user.UserRoles = fusers;
+
+            if (!userRepository.UpdateUser(user))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully deleted");
         }
     }
 }

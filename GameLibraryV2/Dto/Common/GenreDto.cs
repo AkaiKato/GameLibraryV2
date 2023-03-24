@@ -1,6 +1,6 @@
-﻿namespace GameLibraryV2.Dto
+﻿namespace GameLibraryV2.Dto.Common
 {
-    public class TagDto
+    public class GenreDto
     {
         public int Id { get; set; }
 

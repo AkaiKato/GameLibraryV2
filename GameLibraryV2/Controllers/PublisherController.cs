@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using GameLibraryV2.Dto;
+using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
-using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -14,11 +13,13 @@ namespace GameLibraryV2.Controllers
     public class PublisherController : Controller
     {
         private readonly IPublisherRepository publisherRepository;
+        private readonly IGameRepository gameRepository;
         private readonly IMapper mapper;
 
-        public PublisherController(IPublisherRepository _publisherRepository, IMapper _mapper)
+        public PublisherController(IPublisherRepository _publisherRepository, IGameRepository _gameRepository,IMapper _mapper)
         {
             publisherRepository = _publisherRepository;
+            gameRepository = _gameRepository;
             mapper = _mapper;
         }
 
@@ -61,61 +62,19 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Get specified publisher picture
-        /// </summary>
-        /// <param name="publisherId"></param>
-        /// <returns></returns>
-        [HttpGet("{publisherId}/picture")]
-        [ProducesResponseType(200, Type = typeof(string))]
-        [ProducesResponseType(400)]
-        public IActionResult GetPublisherPicturePath(int publisherId)
-        {
-            if (!publisherRepository.PublisherExists(publisherId))
-                return NotFound();
-
-            var PicturePath = publisherRepository.GetPublisherPicturePath(publisherId);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(Json(PicturePath));
-        }
-
-        /// <summary>
-        /// Get specified publisher mini picture
-        /// </summary>
-        /// <param name="publisherId"></param>
-        /// <returns></returns>
-        [HttpGet("{publisherId}/minipicture")]
-        [ProducesResponseType(200, Type = typeof(string))]
-        [ProducesResponseType(400)]
-        public IActionResult GetPublisherMiniPicturePath(int publisherId)
-        {
-            if (!publisherRepository.PublisherExists(publisherId))
-                return NotFound();
-
-            var MiniPicturePath = publisherRepository.GetPublisherMiniPicturePath(publisherId);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(Json(MiniPicturePath));
-        }
-
-        /// <summary>
         /// Get all publisher Games
         /// </summary>
         /// <param name="publisherId"></param>
         /// <returns></returns>
         [HttpGet("{publisherId}/games")]
-        [ProducesResponseType(200, Type = typeof(IList<GameListDto>))]
+        [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
         public IActionResult GetPublisherGames(int publisherId)
         {
             if (!publisherRepository.PublisherExists(publisherId))
                 return NotFound();
 
-            var Games = mapper.Map<List<GameListDto>>(publisherRepository.GetGamesByPublisher(publisherId));
+            var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByPublisher(publisherId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

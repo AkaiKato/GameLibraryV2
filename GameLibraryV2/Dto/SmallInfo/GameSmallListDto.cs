@@ -2,7 +2,7 @@
 
 namespace GameLibraryV2.Dto.smallInfo
 {
-    public class GameListDto
+    public class GameSmallListDto
     {
         public int Id { get; set; }
 

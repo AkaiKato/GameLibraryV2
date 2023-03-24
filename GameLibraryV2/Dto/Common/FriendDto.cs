@@ -1,6 +1,6 @@
 ﻿using GameLibraryV2.Dto.smallInfo;
 
-namespace GameLibraryV2.Dto
+namespace GameLibraryV2.Dto.Common
 {
     public class FriendDto
     {

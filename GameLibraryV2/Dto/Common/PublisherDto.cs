@@ -1,6 +1,6 @@
-﻿namespace GameLibraryV2.Dto
+﻿namespace GameLibraryV2.Dto.Common
 {
-    public class DeveloperDto
+    public class PublisherDto
     {
         public int Id { get; set; }
 

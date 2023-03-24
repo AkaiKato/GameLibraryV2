@@ -10,9 +10,21 @@ namespace GameLibraryV2.Interfaces
 
         public Game GetGameByName(string gameName);
 
-        public Game GetDLCById(int gameId);
+        public Game GetDLCById(int dlcId);
 
-        public IList<Review> GetGameReviews(int gameId);
+        public Game GetDLCByName(string dlcName);
+
+        public IList<Game> GetDLCs();
+
+        public IList<Game> GetGamesByDeveloper(int developerId);
+
+        public IList<Game> GetGamesByGenre(int genreId);
+
+        public IList<Game> GetGameByPlatform(int platformId);
+
+        public IList<Game> GetGamesByPublisher(int publisherId);
+
+        public IList<Game> GetGamesByTag(int tagId);
 
         public string GetGamePicturePath(int gameId);
 

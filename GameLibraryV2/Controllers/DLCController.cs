@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using GameLibraryV2.Dto;
+using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Interfaces;
-using GameLibraryV2.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -12,11 +11,13 @@ namespace GameLibraryV2.Controllers
     public class DLCController : Controller
     {
         private readonly IDLCRepository dlcRepository;
+        private readonly IGameRepository gameRepository;
         private readonly IMapper mapper;
 
-        public DLCController(IDLCRepository _dlcRepository, IMapper _mapper)
+        public DLCController(IDLCRepository _dlcRepository, IGameRepository _gameRepository,IMapper _mapper)
         {
             dlcRepository = _dlcRepository;
+            gameRepository = _gameRepository;
             mapper = _mapper;
         }
 
@@ -25,10 +26,10 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(List<GameListDto>))]
+        [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
         public IActionResult GetDLCs()
         {
-            var DLC = mapper.Map<List<GameListDto>>(dlcRepository.GetDLCs());
+            var DLC = mapper.Map<List<GameSmallListDto>>(gameRepository.GetDLCs());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -49,7 +50,7 @@ namespace GameLibraryV2.Controllers
             if(!dlcRepository.DLCExists(dlcId))
                 return NotFound();
 
-            var DLC = mapper.Map<GameDto>(dlcRepository.GetDLCById(dlcId));
+            var DLC = mapper.Map<GameDto>(gameRepository.GetDLCById(dlcId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

@@ -10,8 +10,6 @@ namespace GameLibraryV2.Interfaces
 
         public IList<Genre> GetGenres();
 
-        public IList<Game> GetGamesByGenre(int genreId);
-
         public bool GenreExists(int genreId);
 
         public bool CreateGenre(Genre genre);

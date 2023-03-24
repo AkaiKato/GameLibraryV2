@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
-using GameLibraryV2.Dto;
+using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.smallInfo;
+using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
-using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace GameLibraryV2.Controllers
 {
@@ -20,6 +19,7 @@ namespace GameLibraryV2.Controllers
         private readonly IGenreRepository genreRepository;
         private readonly ITagRepository tagRepository;
         private readonly IPlatformRepository platformRepository;
+        private readonly IReviewRepository reviewRepository;
         private readonly IDLCRepository dlcRepository;
         private readonly IMapper mapper;
 
@@ -29,6 +29,7 @@ namespace GameLibraryV2.Controllers
             IGenreRepository _genreRepository,
             ITagRepository _tagRepository,
             IPlatformRepository _platformRepository,
+            IReviewRepository _reviewRepository,
             IDLCRepository _dlcRepository,
             IMapper _mapper)
         {
@@ -38,6 +39,7 @@ namespace GameLibraryV2.Controllers
             platformRepository = _platformRepository;
             genreRepository = _genreRepository;
             tagRepository = _tagRepository;
+            reviewRepository = _reviewRepository;
             dlcRepository = _dlcRepository;
             mapper = _mapper;
         }
@@ -47,10 +49,10 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IList<GameListDto>))]
+        [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         public IActionResult GetGames()
         {
-            var Games = mapper.Map<List<GameListDto>>(gameRepository.GetGames());
+            var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGames());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -92,34 +94,13 @@ namespace GameLibraryV2.Controllers
             if (!gameRepository.GameExists(gameId))
                 return NotFound();
 
-            var Review = mapper.Map<List<ReviewDto>>(gameRepository.GetGameReviews(gameId));
+            var Review = mapper.Map<List<ReviewDto>>(reviewRepository.GetGameReviews(gameId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             return Ok(Json(Review));
         }
-
-        /// <summary>
-        /// Return specified game picture
-        /// </summary>
-        /// <param name="gameId"></param>
-        /// <returns></returns>
-        /*[HttpGet("{gameId}/picture")]
-        [ProducesResponseType(200, Type = typeof(string))]
-        [ProducesResponseType(400)]
-        public IActionResult GetGamePicture(int gameId)
-        {
-            if (!gameRepository.GameExists(gameId))
-                return NotFound();
-
-            var PicturePath = gameRepository.GetGamePicturePath(gameId);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(Json(PicturePath));
-        }*/
 
         /// <summary>
         /// Create new Game
@@ -440,6 +421,11 @@ namespace GameLibraryV2.Controllers
             return Ok("Successfully updated");
         }
 
+        /// <summary>
+        /// Delete specified game
+        /// </summary>
+        /// <param name="gameDelete"></param>
+        /// <returns></returns>
         [HttpDelete("deleteGame")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]

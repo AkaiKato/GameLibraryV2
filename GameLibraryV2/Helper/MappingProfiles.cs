@@ -1,9 +1,10 @@
-﻿using GameLibraryV2.Dto;
-using GameLibraryV2.Models;
+﻿using GameLibraryV2.Models;
 using AutoMapper;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Dto.registry;
 using GameLibraryV2.Dto.create;
+using GameLibraryV2.Dto.Update;
+using GameLibraryV2.Dto.Common;
 
 namespace GameLibraryV2.Helper
 {
@@ -28,7 +29,7 @@ namespace GameLibraryV2.Helper
             CreateMap<User, UserDto>();
 
             //Small info DTO
-            CreateMap<Game, GameListDto>();
+            CreateMap<Game, GameSmallListDto>();
             CreateMap<Game, GameSmallDto>();
             CreateMap<Developer, DeveloperSmallDto>();
             CreateMap<Genre, GenreSmallDto>();
@@ -59,6 +60,7 @@ namespace GameLibraryV2.Helper
 
 
             CreateMap<GameUpdate, Game>();
+            CreateMap<UserUpdate, User>();
             CreateMap<DeveloperSmallDto, Developer>();
             CreateMap<GenreSmallDto, Genre>();
             CreateMap<PlatformSmallDto, Platform>();

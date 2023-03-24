@@ -1,4 +1,6 @@
-﻿namespace GameLibraryV2.Dto.create
+﻿using GameLibraryV2.Dto.Common;
+
+namespace GameLibraryV2.Dto.create
 {
     public class GameCreateDto
     {

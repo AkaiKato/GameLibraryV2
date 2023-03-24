@@ -1,6 +1,5 @@
 ﻿using GameLibraryV2.Data;
 using GameLibraryV2.Models;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace GameLibraryV2
 {

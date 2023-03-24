@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GameLibraryV2.Dto.registry
+namespace GameLibraryV2.Dto.Update
 {
-    public class UserCreateDto
+    public class UserUpdate
     {
+        public int Id { get; set; }
+
         [RegularExpression(@"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")]
         public string Email { get; set; } = null!;
 
@@ -17,10 +19,5 @@ namespace GameLibraryV2.Dto.registry
         public int Age { get; set; }
 
         public string Gender { get; set; } = null!;
-
-        public string PictureName { get; set; } = "Def.jpg";
-
-        public DateTime RegistrationdDate { get; set; }
-
     }
 }

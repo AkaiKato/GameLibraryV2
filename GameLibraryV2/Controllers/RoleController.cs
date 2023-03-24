@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
-using GameLibraryV2.Dto;
+using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.create;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
-using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -13,11 +12,13 @@ namespace GameLibraryV2.Controllers
     public class RoleController : Controller
     {
         private readonly IRoleRepository roleRepository;
+        private readonly IUserRepository userRepository;
         private readonly IMapper mapper;
 
-        public RoleController(IRoleRepository _roleRepository, IMapper _mapper)
+        public RoleController(IRoleRepository _roleRepository, IUserRepository _userRepository,IMapper _mapper)
         {
             roleRepository = _roleRepository;
+            userRepository = _userRepository;
             mapper = _mapper;
         }
 
@@ -59,26 +60,6 @@ namespace GameLibraryV2.Controllers
             return Ok(Json(Role));
         }
 
-        /// <summary>
-        /// Return all users by specified role
-        /// </summary>
-        /// <param name="roleId"></param>
-        /// <returns></returns>
-        [HttpGet("{roleId}/users")]
-        [ProducesResponseType(200, Type = typeof(IList<UserDto>))]
-        [ProducesResponseType(400)]
-        public IActionResult GetRoleUsers(int roleId)
-        {
-            if (!roleRepository.RoleExists(roleId))
-                return NotFound();
-
-            var User = mapper.Map<List<UserDto>>(roleRepository.GetUsersByRole(roleId));
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(Json(User));
-        }
 
         /// <summary>
         /// Creates new Role
@@ -114,5 +95,7 @@ namespace GameLibraryV2.Controllers
 
             return Ok("Successfully created");
         }
+
+
     }
 }

@@ -87,9 +87,262 @@ namespace GameLibraryV2.Repositories
                 Where(x => x.Id == gameId && x.Type.Trim().ToLower() == "dlc".Trim().ToLower()).FirstOrDefault()!;
         }
 
-        public IList<Review> GetGameReviews(int gameId)
+        public Game GetDLCByName(string dlcName)
         {
-            return dataContext.Reviews.Include(u => u.User).Where(d => d.Game.Id == gameId).ToList();
+            return dataContext.Games.Include(d => d.Developers).Include(p => p.Publishers).
+                Include(p => p.Platforms).Include(g => g.Genres).Include(t => t.Tags).Include(p => p.ParentGame).
+                Include(s => s.SystemRequirementsMin).Include(s => s.SystemRequirementsMax).
+                Where(g => g.Name == dlcName && g.Type.ToLower() == "dlc").FirstOrDefault()!;
+        }
+
+        public IList<Game> GetDLCs()
+        {
+            return dataContext.Games.Where(d => d.Type == "DLC").Select(g => new Game
+            {
+                Id = g.Id,
+                Name = g.Name,
+                ReleaseDate = g.ReleaseDate,
+                Description = g.Description,
+                AgeRating = g.AgeRating,
+                NSFW = g.NSFW,
+                Type = g.Type,
+                Rating = g.Rating,
+                Developers = g.Developers.Select(t => new Developer
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Publishers = g.Publishers.Select(t => new Publisher
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Platforms = g.Platforms.Select(t => new Platform
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Genres = g.Genres.Select(t => new Genre
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Tags = g.Tags.Select(t => new Tag
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+            }).ToList();
+        }
+
+        public IList<Game> GetGamesByDeveloper(int developerId)
+        {
+            return dataContext.Games.Where(g => g.Developers.Any(d => d.Id == developerId)).Select(g => new Game
+            {
+                Id = g.Id,
+                Name = g.Name,
+                PicturePath = g.PicturePath,
+                ReleaseDate = g.ReleaseDate,
+                Description = g.Description,
+                AgeRating = g.AgeRating,
+                NSFW = g.NSFW,
+                Type = g.Type,
+                AveragePlayTime = g.AveragePlayTime,
+                Rating = g.Rating,
+                Developers = g.Developers.Select(t => new Developer
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Publishers = g.Publishers.Select(t => new Publisher
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Platforms = g.Platforms.Select(t => new Platform
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Genres = g.Genres.Select(t => new Genre
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Tags = g.Tags.Select(t => new Tag
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+            }).ToList();
+        }
+
+        public IList<Game> GetGamesByGenre(int genreId)
+        {
+            return dataContext.Games.Where(g => g.Genres.Any(g => g.Id == genreId)).Select(g => new Game
+            {
+                Id = g.Id,
+                Name = g.Name,
+                PicturePath = g.PicturePath,
+                ReleaseDate = g.ReleaseDate,
+                Description = g.Description,
+                AgeRating = g.AgeRating,
+                NSFW = g.NSFW,
+                Type = g.Type,
+                AveragePlayTime = g.AveragePlayTime,
+                Rating = g.Rating,
+                Developers = g.Developers.Select(t => new Developer
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Publishers = g.Publishers.Select(t => new Publisher
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Platforms = g.Platforms.Select(t => new Platform
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Genres = g.Genres.Select(t => new Genre
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Tags = g.Tags.Select(t => new Tag
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+            }).ToList();
+        }
+
+        public IList<Game> GetGameByPlatform(int platformId)
+        {
+            return dataContext.Games.Where(p => p.Platforms.Any(p => p.Id == platformId)).Select(g => new Game
+            {
+                Id = g.Id,
+                Name = g.Name,
+                PicturePath = g.PicturePath,
+                ReleaseDate = g.ReleaseDate,
+                Description = g.Description,
+                AgeRating = g.AgeRating,
+                NSFW = g.NSFW,
+                Type = g.Type,
+                AveragePlayTime = g.AveragePlayTime,
+                Rating = g.Rating,
+                Developers = g.Developers.Select(t => new Developer
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Publishers = g.Publishers.Select(t => new Publisher
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Platforms = g.Platforms.Select(t => new Platform
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Genres = g.Genres.Select(t => new Genre
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Tags = g.Tags.Select(t => new Tag
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+            }).ToList();
+        }
+
+        public IList<Game> GetGamesByPublisher(int publisherId)
+        {
+            return dataContext.Games.Where(g => g.Publishers.Any(p => p.Id == publisherId)).Select(g => new Game
+            {
+                Id = g.Id,
+                Name = g.Name,
+                PicturePath = g.PicturePath,
+                ReleaseDate = g.ReleaseDate,
+                Description = g.Description,
+                AgeRating = g.AgeRating,
+                NSFW = g.NSFW,
+                Type = g.Type,
+                AveragePlayTime = g.AveragePlayTime,
+                Rating = g.Rating,
+                Developers = g.Developers.Select(t => new Developer
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Publishers = g.Publishers.Select(t => new Publisher
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Platforms = g.Platforms.Select(t => new Platform
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Genres = g.Genres.Select(t => new Genre
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Tags = g.Tags.Select(t => new Tag
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+            }).ToList();
+        }
+
+        public IList<Game> GetGamesByTag(int tagId)
+        {
+            return dataContext.Games.Where(g => g.Tags.Any(g => g.Id == tagId)).Select(g => new Game
+            {
+                Id = g.Id,
+                Name = g.Name,
+                PicturePath = g.PicturePath,
+                ReleaseDate = g.ReleaseDate,
+                Description = g.Description,
+                AgeRating = g.AgeRating,
+                NSFW = g.NSFW,
+                Type = g.Type,
+                AveragePlayTime = g.AveragePlayTime,
+                Rating = g.Rating,
+                Developers = g.Developers.Select(t => new Developer
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Publishers = g.Publishers.Select(t => new Publisher
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Platforms = g.Platforms.Select(t => new Platform
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Genres = g.Genres.Select(t => new Genre
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+                Tags = g.Tags.Select(t => new Tag
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList(),
+            }).ToList();
         }
 
         public string GetGamePicturePath(int gameId)

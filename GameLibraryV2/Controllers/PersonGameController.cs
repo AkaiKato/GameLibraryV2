@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using GameLibraryV2.Dto;
+using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Interfaces;
-using GameLibraryV2.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers

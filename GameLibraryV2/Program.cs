@@ -19,6 +19,7 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 builder.Services.AddTransient<Seed>();
 builder.Services.AddScoped<IDeveloperRepository, DeveloperRepository>();
 builder.Services.AddScoped<IDLCRepository, DLCRepository>();
+builder.Services.AddScoped<IFriendRepository, FriendRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<IPersonGamesRepository, PersonGamesRepository>();
@@ -56,10 +57,10 @@ void SeedData(IHost app)
 {
     var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
 
-    using (var scope = scopedFactory.CreateScope())
+    using (var scope = scopedFactory!.CreateScope())
     {
         var service = scope.ServiceProvider.GetService<Seed>();
-        service.SeedDataContext();
+        service!.SeedDataContext();
     }
 }
 

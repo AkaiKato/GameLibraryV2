@@ -1,4 +1,4 @@
-﻿namespace GameLibraryV2.Dto
+﻿namespace GameLibraryV2.Dto.Common
 {
     public class LibraryDto
     {

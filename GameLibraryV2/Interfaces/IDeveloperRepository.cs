@@ -9,12 +9,6 @@ namespace GameLibraryV2.Interfaces
         public Developer GetDeveloperByName(string developerName);
 
         public IList<Developer> GetDevelopers();
-
-        public IList<Game> GetGamesByDeveloper(int developerId);
-
-        public string GetDeveloperPicturePath(int developerId);
-
-        public string GetDeveloperMiniPicturePath(int developerId);
         
         public bool DeveloperExists(int developerId);
 

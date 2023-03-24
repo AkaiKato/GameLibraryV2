@@ -10,9 +10,7 @@ namespace GameLibraryV2.Interfaces
 
         public IList<User> GetUsers();
 
-        public IList<Friend> GetUserFriends(int userId);
-
-        public IList<Role> GetUserRole(int userId);
+        public IList<User> GetUsersByRole(int roleId);
 
         public string GetUserPicturePath(int userId);
 
@@ -25,5 +23,7 @@ namespace GameLibraryV2.Interfaces
         public bool CreateUser(User user);
 
         public bool UpdateUser(User user);
+
+        public bool DeleteUser(User user);
     }
 }

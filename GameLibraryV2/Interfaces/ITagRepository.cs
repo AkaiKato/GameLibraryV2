@@ -10,8 +10,6 @@ namespace GameLibraryV2.Interfaces
 
         public IList<Tag> GetTags();
 
-        public IList<Game> GetGamesByTag(int tagId);
-
         public bool TagExists(int tagId);
 
         public bool CreateTag(Tag tag);

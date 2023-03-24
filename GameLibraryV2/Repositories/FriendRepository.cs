@@ -5,23 +5,28 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GameLibraryV2.Repositories
 {
-    public class ReviewRepository : IReviewRepository
+    public class FriendRepository : IFriendRepository
     {
         private readonly DataContext dataContext;
 
-        public ReviewRepository(DataContext context)
+        public FriendRepository(DataContext context)
         {
             dataContext = context;
         }
-
-        public IList<Review> GetGameReviews(int gameId)
+        public IList<Friend> GetUserFriends(int userId)
         {
-            return dataContext.Reviews.Include(u => u.User).Where(d => d.Game.Id == gameId).ToList();
+            return dataContext.Friends.Include(u => u.Friendu).Where(f => f.User.Id == userId).ToList();
         }
 
-        public bool CreateReview(Review review)
+        public bool CreateFriend(Friend friend)
         {
-            dataContext.Add(review);
+            dataContext.Add(friend);
+            return Save();
+        }
+
+        public bool DeleteFriend(Friend friend)
+        {
+            dataContext.Remove(friend);
             return Save();
         }
 

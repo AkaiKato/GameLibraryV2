@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using GameLibraryV2.Dto;
+using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
-using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -14,11 +13,13 @@ namespace GameLibraryV2.Controllers
     public class GenreController : Controller
     {
         private readonly IGenreRepository genreRepository;
+        private readonly IGameRepository gameRepository;
         private readonly IMapper mapper;
 
-        public GenreController(IGenreRepository _genreRepository, IMapper _mapper)
+        public GenreController(IGenreRepository _genreRepository, IGameRepository _gameRepository,IMapper _mapper)
         {
             genreRepository = _genreRepository;
+            gameRepository = _gameRepository;
             mapper = _mapper;
         }
 
@@ -65,14 +66,14 @@ namespace GameLibraryV2.Controllers
         /// <param name="genreId"></param>
         /// <returns></returns>
         [HttpGet("{genreId}/games")]
-        [ProducesResponseType(200, Type = typeof(IList<GameListDto>))]
+        [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
         public IActionResult GetGenreGames(int genreId)
         {
             if (!genreRepository.GenreExists(genreId))
                 return NotFound();
 
-            var Games = mapper.Map<List<GameListDto>>(genreRepository.GetGamesByGenre(genreId));
+            var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByGenre(genreId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

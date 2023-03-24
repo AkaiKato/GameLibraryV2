@@ -27,10 +27,9 @@ namespace GameLibraryV2.Repositories
         {
             return dataContext.Roles.OrderBy(r => r.Id).ToList();
         }
-
-        public IList<User> GetUsersByRole(int roleId)
+        public IList<Role> GetUserRole(int userId)
         {
-            return dataContext.Users.Where(u => u.UserRoles.Any(u => u.Id == roleId)).ToList();
+            return dataContext.Roles.Where(u => u.RoleUsers!.Any(u => u.Id == userId)).ToList();
         }
 
         public bool RoleExists(int roleId)

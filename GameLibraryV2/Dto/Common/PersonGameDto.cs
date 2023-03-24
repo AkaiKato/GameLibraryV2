@@ -1,13 +1,13 @@
 ﻿using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Models;
 
-namespace GameLibraryV2.Dto
+namespace GameLibraryV2.Dto.Common
 {
     public class PersonGameDto
     {
         public int Id { get; set; }
 
-        public GameListDto Game { get; set; } = null!;
+        public GameSmallListDto Game { get; set; } = null!;
 
         public int Score { get; set; } = -1;
 

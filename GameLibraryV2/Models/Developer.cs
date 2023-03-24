@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace GameLibraryV2.Models
+﻿namespace GameLibraryV2.Models
 {
     public class Developer
     {

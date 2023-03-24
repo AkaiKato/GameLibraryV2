@@ -24,20 +24,15 @@ namespace GameLibraryV2.Repositories
             return dataContext.Users.Include(l => l.Library).Include(ur => ur.UserRoles).Where(u => u.Nickname.Trim() == nickname.Trim()).FirstOrDefault()!;
         }
 
-        public IList<Friend> GetUserFriends(int userId)
-        {
-            return dataContext.Friends.Include(u => u.Friendu).Where(f => f.User.Id == userId).ToList();
-        }
-
         public string GetUserPicturePath(int userId)
         {
             return dataContext.Users.Where(u => u.Id == userId).Select(u => u.PicturePath).
                 FirstOrDefault()!;
         }
 
-        public IList<Role> GetUserRole(int userId)
+        public IList<User> GetUsersByRole(int roleId)
         {
-            return dataContext.Roles.Where(u => u.RoleUsers!.Any(u => u.Id == userId)).ToList();
+            return dataContext.Users.Where(u => u.UserRoles.Any(u => u.Id == roleId)).ToList();
         }
 
         public IList<User> GetUsers()
@@ -83,7 +78,13 @@ namespace GameLibraryV2.Repositories
 
         public bool UpdateUser(User user)
         {
-            dataContext.Users.Update(user);
+            dataContext.Update(user);
+            return Save();
+        }
+
+        public bool DeleteUser(User user)
+        {
+            dataContext.Remove(user);
             return Save();
         }
 

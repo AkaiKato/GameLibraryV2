@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using GameLibraryV2.Dto;
+using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Interfaces;
@@ -13,11 +13,13 @@ namespace GameLibraryV2.Controllers
     public class DeveloperController : Controller
     {
         private readonly IDeveloperRepository developerRepository;
+        private readonly IGameRepository gameRepository;
         private readonly IMapper mapper;
 
-        public DeveloperController(IDeveloperRepository _developerRepository, IMapper _mapper)
+        public DeveloperController(IDeveloperRepository _developerRepository, IGameRepository _gameRepository ,IMapper _mapper)
         {
             developerRepository = _developerRepository;
+            gameRepository = _gameRepository;
             mapper = _mapper;
         }
 
@@ -59,61 +61,19 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Return specified developer picture
-        /// </summary>
-        /// <param name="developerId"></param>
-        /// <returns></returns>
-        [HttpGet("{developerId}/picturePath")]
-        [ProducesResponseType(200, Type = typeof(string))]
-        [ProducesResponseType(400)]
-        public IActionResult GetDeveloperPicture(int developerId)
-        {
-            if (!developerRepository.DeveloperExists(developerId))
-                return NotFound();
-
-            var PicturePath = developerRepository.GetDeveloperPicturePath(developerId);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(Json(PicturePath));
-        }
-
-        /// <summary>
-        /// Return specified developer mini picture
-        /// </summary>
-        /// <param name="developerId"></param>
-        /// <returns></returns>
-        [HttpGet("{developerId}/miniPicturePath")]
-        [ProducesResponseType(200, Type = typeof(string))]
-        [ProducesResponseType(400)]
-        public IActionResult GetDeveloperMiniPicture(int developerId)
-        {
-            if (!developerRepository.DeveloperExists(developerId))
-                return NotFound();
-
-            var PicturePath = developerRepository.GetDeveloperMiniPicturePath(developerId);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(Json(PicturePath));
-        }
-
-        /// <summary>
         /// Return all developer games
         /// </summary>
         /// <param name="developerId"></param>
         /// <returns></returns>
         [HttpGet("{developerId}/Games")]
-        [ProducesResponseType(200, Type = typeof(List<GameListDto>))]
+        [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
         [ProducesResponseType(400)]
         public IActionResult GetDeveloperGemes(int developerId)
         {
             if (!developerRepository.DeveloperExists(developerId))
                 return NotFound();
 
-            var DeveloperGames = mapper.Map<List<GameListDto>>(developerRepository.GetGamesByDeveloper(developerId));
+            var DeveloperGames = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByDeveloper(developerId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -122,7 +82,7 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Creates new Developer
+        /// Create new Developer
         /// </summary>
         /// <param name="developerCreate"></param>
         /// <returns></returns>
