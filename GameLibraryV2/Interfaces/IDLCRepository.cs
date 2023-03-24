@@ -11,5 +11,7 @@ namespace GameLibraryV2.Interfaces
         public IList<Game> GetDLCs();
 
         public bool DLCExists(int dlcId);
+
+        public bool DLCDelete(DLC dlc);
     }
 }

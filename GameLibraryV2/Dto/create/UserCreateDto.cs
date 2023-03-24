@@ -17,7 +17,7 @@ namespace GameLibraryV2.Dto.registry
         
         public string Gender { get; set; } = null!;
 
-        public string PictureName { get; set; } = "Def";
+        public string PictureName { get; set; } = "Def.jpg";
 
         public DateTime RegistrationdDate { get; set; }
 

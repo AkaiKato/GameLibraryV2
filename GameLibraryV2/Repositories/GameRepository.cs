@@ -78,6 +78,15 @@ namespace GameLibraryV2.Repositories
                 Include(s => s.SystemRequirementsMax).Include(r => r.Rating).Where(x => x.Name.Trim().ToLower() == gameName.Trim().ToLower()).FirstOrDefault()!;
         }
 
+        public Game GetDLCById(int gameId)
+        {
+            return dataContext.Games.Include(d => d.DLCs)!.ThenInclude(dg => dg.DLCGame).Include(d => d.Developers).
+                Include(p => p.Publishers).Include(p => p.Platforms).Include(g => g.Genres).
+                Include(t => t.Tags).Include(p => p.ParentGame).Include(s => s.SystemRequirementsMin).
+                Include(s => s.SystemRequirementsMax).Include(r => r.Rating).
+                Where(x => x.Id == gameId && x.Type.Trim().ToLower() == "dlc".Trim().ToLower()).FirstOrDefault()!;
+        }
+
         public IList<Review> GetGameReviews(int gameId)
         {
             return dataContext.Reviews.Include(u => u.User).Where(d => d.Game.Id == gameId).ToList();
@@ -88,43 +97,21 @@ namespace GameLibraryV2.Repositories
             return dataContext.Games.Where(g => g.Id == gameId).Select(pp => pp.PicturePath).FirstOrDefault()!;
         }
 
-        public bool CreateGame(int[] DeveloperIds, int[] PublisherIds, int[] PlatformIds, int[] GenreIds, int[] TagIds, Game game)
+        public bool CreateGame(Game game)
         {
-            var devS = new List<Developer>();
-            foreach (var item in DeveloperIds)
-                devS.Add(dataContext.Developers.Where(d => d.Id == item).FirstOrDefault()!);
-
-            var pubS = new List<Publisher>();
-            foreach (var item in PublisherIds)
-                pubS.Add(dataContext.Publishers.Where(d => d.Id == item).FirstOrDefault()!);
-
-            var platS = new List<Platform>();
-            foreach (var item in PlatformIds)
-                platS.Add(dataContext.Platforms.Where(d => d.Id == item).FirstOrDefault()!);
-
-            var genrS = new List<Genre>();
-            foreach (var item in GenreIds)
-                genrS.Add(dataContext.Genres.Where(d => d.Id == item).FirstOrDefault()!);
-
-            var tagS = new List<Tag>();
-            foreach (var item in TagIds)
-                tagS.Add(dataContext.Tags.Where(d => d.Id == item).FirstOrDefault()!);
-
-            game.Developers = devS;
-            game.Publishers = pubS;
-            game.Platforms = platS;
-            game.Genres = genrS;
-            game.Tags = tagS;
-
             dataContext.Add(game);
             return Save();
         }
 
-        public bool SaveGamePicturePath(int gameId, string path)
+        public bool UpdateGame(Game game)
         {
-            var game = dataContext.Games.Where(g => g.Id == gameId).FirstOrDefault();
-            game!.PicturePath = path;
-            dataContext.Games.Update(game);
+            dataContext.Update(game);
+            return Save();
+        }
+
+        public bool DeleteGame(Game game)
+        {
+            dataContext.Remove(game);
             return Save();
         }
 
@@ -134,5 +121,7 @@ namespace GameLibraryV2.Repositories
             //var saved = 1;
             return saved > 0 ? true : false;
         }
+
+
     }
 }

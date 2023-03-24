@@ -10,14 +10,18 @@ namespace GameLibraryV2.Interfaces
 
         public Game GetGameByName(string gameName);
 
+        public Game GetDLCById(int gameId);
+
         public IList<Review> GetGameReviews(int gameId);
 
         public string GetGamePicturePath(int gameId);
 
         public bool GameExists(int gameId);
 
-        public bool CreateGame(int[] DeveloperIds, int[] PublisherIds, int[] PlatformIds, int[] GenreIds, int[] TagIds, Game game);
+        public bool CreateGame(Game game);
 
-        public bool SaveGamePicturePath(int gameId, string path);
+        public bool UpdateGame(Game game);
+
+        public bool DeleteGame(Game game);
     }
 }

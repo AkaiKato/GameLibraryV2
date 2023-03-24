@@ -16,6 +16,7 @@ namespace GameLibraryV2.Helper
             CreateMap<DLC, DLCDto>();
             CreateMap<Friend, FriendDto>();
             CreateMap<Game, GameDto>();
+            CreateMap<GameDto, Game>();
             CreateMap<Genre, GenreDto>();
             CreateMap<Library, LibraryDto>();
             CreateMap<PersonGame, PersonGameDto>();
@@ -36,17 +37,33 @@ namespace GameLibraryV2.Helper
             CreateMap<Tag, TagSmallDto>();
             CreateMap<User, UserSmallDto>();
 
+            //JustId
+            CreateMap<JustIdDto, Developer>();
+            CreateMap<JustIdDto, Publisher>();
+            CreateMap<JustIdDto, Genre>();
+            CreateMap<JustIdDto, Platform>();
+            CreateMap<JustIdDto, Tag>();
+
             //Create DTO
             CreateMap<DeveloperCreateDto, Developer>();
             CreateMap<GameCreateDto, Game>();
             CreateMap<GenreCreateDto, Genre>();
             CreateMap<PlatformCreateDto, Platform>();
             CreateMap<PublisherCreateDto, Publisher>();
+            CreateMap<ReviewCreateDto, Review>();
             CreateMap<RoleCreateDto, Role>();
             CreateMap<SystemRequirementsMaxCreateDto, SystemRequirementsMax>();
             CreateMap<SystemRequirementsMinCreateDto, SystemRequirementsMin>();
             CreateMap<TagCreateDto, Tag>();
             CreateMap<UserCreateDto, User>();
+
+
+            CreateMap<GameUpdate, Game>();
+            CreateMap<DeveloperSmallDto, Developer>();
+            CreateMap<GenreSmallDto, Genre>();
+            CreateMap<PlatformSmallDto, Platform>();
+            CreateMap<PublisherSmallDto, Publisher>();
+            CreateMap<TagSmallDto, Tag>();
         }
 
     }

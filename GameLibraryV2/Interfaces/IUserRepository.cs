@@ -24,6 +24,6 @@ namespace GameLibraryV2.Interfaces
 
         public bool CreateUser(User user);
 
-        public bool SaveUserPicturePath(int userId, string path);
+        public bool UpdateUser(User user);
     }
 }

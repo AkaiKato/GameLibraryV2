@@ -1,14 +1,8 @@
-﻿using GameLibraryV2.Dto.smallInfo;
-using GameLibraryV2.Models;
-
-namespace GameLibraryV2.Dto.create
+﻿namespace GameLibraryV2.Dto.create
 {
     public class GameCreateDto
     {
-
         public string Name { get; set; } = null!;
-
-        public string PicturePath { get; set; } = "Def";
 
         public DateTime ReleaseDate { get; set; }
 
@@ -25,6 +19,16 @@ namespace GameLibraryV2.Dto.create
         public SystemRequirementsMinCreateDto SystemRequirementsMin { get; set; } = null!;
 
         public SystemRequirementsMaxCreateDto SystemRequirementsMax { get; set; } = null!;
+
+        public virtual IList<JustIdDto> Developers { get; set; } = null!;
+
+        public virtual IList<JustIdDto> Publishers { get; set; } = null!;
+
+        public virtual IList<JustIdDto> Platforms { get; set; } = null!;
+
+        public virtual IList<JustIdDto> Genres { get; set; } = null!;
+
+        public virtual IList<JustIdDto> Tags { get; set; } = null!;
 
     }
 }

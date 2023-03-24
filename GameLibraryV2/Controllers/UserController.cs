@@ -3,10 +3,7 @@ using GameLibraryV2.Dto;
 using GameLibraryV2.Dto.registry;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
-using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mail;
-using System.Text.RegularExpressions;
 
 namespace GameLibraryV2.Controllers
 {
@@ -15,11 +12,15 @@ namespace GameLibraryV2.Controllers
     public class UserController : Controller
     {
         private readonly IUserRepository userRepository;
+        private readonly IRoleRepository roleRepository;
         private readonly IMapper mapper;
 
-        public UserController(IUserRepository _userRepository, IMapper _mapper)
+        public UserController(IUserRepository _userRepository,
+            IRoleRepository _roleRepository,
+            IMapper _mapper)
         {
             userRepository = _userRepository;
+            roleRepository = _roleRepository;
             mapper = _mapper;
         }
 
@@ -87,7 +88,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        [HttpGet("{userId}/picture")]
+        /*[HttpGet("{userId}/picture")]
         [ProducesResponseType(200, Type = typeof(string))]
         [ProducesResponseType(400)]
         public IActionResult GetUserPicture(int userId)
@@ -101,7 +102,7 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             return Ok(Json(PicturePath));
-        }
+        }*/
 
         /// <summary>
         /// Return specified user role
@@ -162,7 +163,8 @@ namespace GameLibraryV2.Controllers
 
             userMap.PicturePath = $"\\Images\\gamePicture\\Def";
             userMap.Library = new Library();
-            userMap.UserFriends = new List<Friend>();
+            userMap.UserRoles = new List<Role>() { roleRepository.GetRoleByName("user")};
+            userMap.UserFriends = new List<Friend>() { };
 
             if (!userRepository.CreateUser(userMap))
             {
@@ -174,12 +176,87 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Change User Picture
+        /// Add friend
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="frinedId"></param>
+        /// <returns></returns>
+        [HttpPost("addFriend")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult AddFriend([FromQuery] int userId, [FromQuery] int frinedId) 
+        {
+            if(!userRepository.UserExists(userId))
+                return NotFound(ModelState);
+
+            if(!userRepository.UserExists(frinedId))
+                return NotFound(ModelState);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = userRepository.GetUserById(userId);
+            var fusers = userRepository.GetUserFriends(userId);
+
+            if (fusers.Any(u => u.Friendu.Id == frinedId))
+            {
+                ModelState.AddModelError("", "Already friends");
+                return StatusCode(500, ModelState);
+            }
+
+            var friend = userRepository.GetUserById(frinedId);
+
+            user.UserFriends = new List<Friend>() { new Friend { Friendu = friend, User = user } };
+
+            if (!userRepository.UpdateUser(user))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully");
+        }
+
+        /// <summary>
+        /// Add specified role
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
+        [HttpPut("addRole")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult AddRole([FromQuery] int userId, [FromQuery] int roleId)
+        {
+            if (!userRepository.UserExists(userId))
+                return NotFound(ModelState);
+
+            if (!roleRepository.RoleExists(roleId))
+                return NotFound(ModelState);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = userRepository.GetUserById(userId);
+            var role = roleRepository.GetRoleById(roleId);
+            user.UserRoles.Add(role);
+
+            if (!userRepository.UpdateUser(user))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully");
+        }
+
+        /// <summary>
+        /// Update User Picture
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="pic"></param>
         /// <returns></returns>
-        [HttpPost("upload")]
+        [HttpPut("upload")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult UploadGamePicture([FromQuery] int userId, IFormFile pic)
@@ -199,15 +276,20 @@ namespace GameLibraryV2.Controllers
             if (!userRepository.UserExists(userId))
                 return NotFound();
 
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            var game = userRepository.GetUserById(userId);
+            var user = userRepository.GetUserById(userId);
             var newfilePath = $"\\Images\\userPicture\\{unique}{ext}";
-            var oldfilePath = game.PicturePath;
+            var oldfilePath = user.PicturePath;
 
             using var stream = new FileStream(newfilePath, FileMode.Create);
             pic.CopyTo(stream);
 
-            if (!userRepository.SaveUserPicturePath(userId, newfilePath))
+            user!.PicturePath = newfilePath;
+
+            if (!userRepository.UpdateUser(user))
             {
                 ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);

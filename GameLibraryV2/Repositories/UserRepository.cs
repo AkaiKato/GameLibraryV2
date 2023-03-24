@@ -81,10 +81,8 @@ namespace GameLibraryV2.Repositories
             return Save();
         }
 
-        public bool SaveUserPicturePath(int userId, string path)
+        public bool UpdateUser(User user)
         {
-            var user = dataContext.Users.Where(g => g.Id == userId).FirstOrDefault();
-            user!.PicturePath = path;
             dataContext.Users.Update(user);
             return Save();
         }

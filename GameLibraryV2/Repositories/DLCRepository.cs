@@ -74,5 +74,18 @@ namespace GameLibraryV2.Repositories
                 }).ToList(),
             }).ToList();
         }
+
+        public bool DLCDelete(DLC dlc)
+        {
+            dataContext.Remove(dlc);
+            return Save();
+        }
+
+        private bool Save()
+        {
+            var saved = dataContext.SaveChanges();
+            //var saved = 1;
+            return saved > 0 ? true : false;
+        }
     }
 }
