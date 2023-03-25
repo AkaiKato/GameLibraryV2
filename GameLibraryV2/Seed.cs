@@ -26,11 +26,6 @@ namespace GameLibraryV2
                     RoleName = "user",
                 };
                 //-----------------------------------------------------
-                //Library
-                var rLibrary = new Library() { };
-                var vLibrary = new Library() { };
-                var tLibrary = new Library() { };
-                //-----------------------------------------------------
                 //users
                 //Rail
                 var userRail = new User()
@@ -42,7 +37,6 @@ namespace GameLibraryV2
                     Gender = "Male",
                     PicturePath = $"\\Images\\userPicture\\Def.jpg",
                     RegistrationdDate = DateTime.Now,
-                    Library = rLibrary,
                     UserRoles = new List<Role>() { admin},
                 };
                 //Valera
@@ -55,7 +49,6 @@ namespace GameLibraryV2
                     Gender = "Male",
                     PicturePath = $"\\Images\\userPicture\\Def.jpg",
                     RegistrationdDate = DateTime.Now,
-                    Library = vLibrary,
                     UserRoles = new List<Role>() { userRole}
                 };
                 //ThirdMan
@@ -68,7 +61,6 @@ namespace GameLibraryV2
                     Gender = "Male",
                     PicturePath = $"\\Images\\userPicture\\Def.jpg",
                     RegistrationdDate = DateTime.Now,
-                    Library = tLibrary,
                     UserRoles = new List<Role>() { userRole},
                 };
                 //-----------------------------------------------------
@@ -938,15 +930,15 @@ namespace GameLibraryV2
                 };
                 //---------
                 //PersonGames
-                rLibrary.PersonGames = new List<PersonGame>()
+                userRail.UserGames = new List<PersonGame>()
                 {
-                    new PersonGame
+                     new PersonGame
                     {
                         Game = hollowKnight,
                         Score = 10,
                         Comment = "BEST!",
                         List = "Completed",
-                        PlayedPlatform = "PC",
+                        PlayedPlatform = windows,
                         Favourite = true,
                     },
                     new PersonGame
@@ -955,31 +947,31 @@ namespace GameLibraryV2
                         Score = 10,
                         Comment = "BEST!",
                         List = "Completed",
-                        PlayedPlatform = "PC",
+                        PlayedPlatform = windows,
                         Favourite = false,
                     },
                 };
-                vLibrary.PersonGames = new List<PersonGame>()
+                uservalera.UserGames = new List<PersonGame>()
                 {
-                    new PersonGame
+                     new PersonGame
                     {
                         Game = hollowKnight,
                         Score = 10,
                         Comment = "BEST!",
                         List = "Completed",
-                        PlayedPlatform = "PC",
+                        PlayedPlatform = windows,
                         Favourite = true,
                     },
                 };
-                tLibrary.PersonGames = new List<PersonGame>()
+                userThird.UserGames = new List<PersonGame>()
                 {
-                    new PersonGame
+                     new PersonGame
                     {
                         Game = euroTruck,
                         Score = 1,
                         Comment = "WORST!",
                         List = "Completed",
-                        PlayedPlatform = "PC",
+                        PlayedPlatform = windows,
                         Favourite = false,
                     },
                 };
@@ -1000,8 +992,6 @@ namespace GameLibraryV2
                 dataContext.DLCs.AddRange(dlcEuro1, dlcEuro2, dlcEuro3, dlcHollow1, dlcHollow2, dlcHollow3);
 
                 dataContext.Roles.AddRange(admin, userRole);
-
-                dataContext.Libraries.AddRange(rLibrary, vLibrary, tLibrary);
 
                 dataContext.Users.AddRange(userRail, uservalera, userThird);
 

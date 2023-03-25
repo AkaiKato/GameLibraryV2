@@ -1,12 +1,10 @@
-﻿namespace GameLibraryV2.Models
+﻿using GameLibraryV2.Dto.Common;
+
+namespace GameLibraryV2.Dto.Update
 {
-    public class PersonGame
+    public class PersonGameUpdate
     {
         public Guid Id { get; set; }
-
-        public User User { get; set; } = null!; 
-
-        public Game Game { get; set; } = null!;
 
         public int Score { get; set; } = -1;
 
@@ -14,7 +12,7 @@
 
         public string List { get; set; } = null!;
 
-        public Platform? PlayedPlatform { get; set; }
+        public JustIdDto? PlayedPlatform { get; set; }
 
         public bool Favourite { get; set; }
     }

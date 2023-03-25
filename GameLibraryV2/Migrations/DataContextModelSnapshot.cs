@@ -206,31 +206,11 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("Genres");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Library", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("GameId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("Libraries");
-                });
-
             modelBuilder.Entity("GameLibraryV2.Models.PersonGame", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
@@ -241,24 +221,26 @@ namespace GameLibraryV2.Migrations
                     b.Property<int>("GameId")
                         .HasColumnType("int");
 
-                    b.Property<int>("LibraryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("List")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PlayedPlatform")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("PlayedPlatformId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GameId");
 
-                    b.HasIndex("LibraryId");
+                    b.HasIndex("PlayedPlatformId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("PersonGames");
                 });
@@ -523,9 +505,6 @@ namespace GameLibraryV2.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("LibraryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Nickname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -542,8 +521,6 @@ namespace GameLibraryV2.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LibraryId");
 
                     b.ToTable("Users");
                 });
@@ -709,13 +686,6 @@ namespace GameLibraryV2.Migrations
                     b.Navigation("SystemRequirementsMin");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Library", b =>
-                {
-                    b.HasOne("GameLibraryV2.Models.Game", null)
-                        .WithMany("Librarys")
-                        .HasForeignKey("GameId");
-                });
-
             modelBuilder.Entity("GameLibraryV2.Models.PersonGame", b =>
                 {
                     b.HasOne("GameLibraryV2.Models.Game", "Game")
@@ -724,15 +694,21 @@ namespace GameLibraryV2.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameLibraryV2.Models.Library", "Library")
-                        .WithMany("PersonGames")
-                        .HasForeignKey("LibraryId")
+                    b.HasOne("GameLibraryV2.Models.Platform", "PlayedPlatform")
+                        .WithMany()
+                        .HasForeignKey("PlayedPlatformId");
+
+                    b.HasOne("GameLibraryV2.Models.User", "User")
+                        .WithMany("UserGames")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Game");
 
-                    b.Navigation("Library");
+                    b.Navigation("PlayedPlatform");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GameLibraryV2.Models.Review", b =>
@@ -752,17 +728,6 @@ namespace GameLibraryV2.Migrations
                     b.Navigation("Game");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("GameLibraryV2.Models.User", b =>
-                {
-                    b.HasOne("GameLibraryV2.Models.Library", "Library")
-                        .WithMany()
-                        .HasForeignKey("LibraryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Library");
                 });
 
             modelBuilder.Entity("GamePlatform", b =>
@@ -829,19 +794,14 @@ namespace GameLibraryV2.Migrations
                 {
                     b.Navigation("DLCs");
 
-                    b.Navigation("Librarys");
-
                     b.Navigation("Reviews");
-                });
-
-            modelBuilder.Entity("GameLibraryV2.Models.Library", b =>
-                {
-                    b.Navigation("PersonGames");
                 });
 
             modelBuilder.Entity("GameLibraryV2.Models.User", b =>
                 {
                     b.Navigation("UserFriends");
+
+                    b.Navigation("UserGames");
                 });
 #pragma warning restore 612, 618
         }

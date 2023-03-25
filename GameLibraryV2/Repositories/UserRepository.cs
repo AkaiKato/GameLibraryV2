@@ -16,12 +16,12 @@ namespace GameLibraryV2.Repositories
 
         public User GetUserById(int userId)
         {
-            return dataContext.Users.Include(l => l.Library).Include(ur => ur.UserRoles).Where(u => u.Id == userId).FirstOrDefault()!;
+            return dataContext.Users.Include(l => l.UserGames).Include(ur => ur.UserRoles).Where(u => u.Id == userId).FirstOrDefault()!;
         }
 
         public User GetUserByNickname(string nickname)
         {
-            return dataContext.Users.Include(l => l.Library).Include(ur => ur.UserRoles).Where(u => u.Nickname.Trim() == nickname.Trim()).FirstOrDefault()!;
+            return dataContext.Users.Include(l => l.UserGames).Include(ur => ur.UserRoles).Where(u => u.Nickname.Trim() == nickname.Trim()).FirstOrDefault()!;
         }
 
         public string GetUserPicturePath(int userId)
@@ -46,9 +46,10 @@ namespace GameLibraryV2.Repositories
                 Gender = u.Gender,
                 PicturePath= u.PicturePath,
                 RegistrationdDate = u.RegistrationdDate,
-                Library = u.Library,
+                UserGames = u.UserGames,
                 UserRoles = u.UserRoles.Select(t => new Role
                 {
+                    Id = t.Id,
                     RoleName = t.RoleName,
                 }).ToList(),
             }).ToList();

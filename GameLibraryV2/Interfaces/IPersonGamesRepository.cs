@@ -4,10 +4,18 @@ namespace GameLibraryV2.Interfaces
 {
     public interface IPersonGamesRepository
     {
-        public IList<PersonGame> PersonGames(int libraryId);
+        public IList<PersonGame> PersonGames(int userId);
 
-        public IList<PersonGame> PersonGamesByList(int libraryId, string list);
+        public IList<PersonGame> PersonGamesByList(int userId, string list);
 
-        public bool PersonLibraryExists(int libraryId);
+        public PersonGame GetPersonGameById(Guid personGameId);
+
+        public bool CreatePersonGame(PersonGame game);
+
+        public bool UpdatePersonGame(PersonGame game);
+
+        public bool DeletePersonGame(PersonGame game);
+
+        public bool PersonGameExists(Guid personGameId);
     }
 }

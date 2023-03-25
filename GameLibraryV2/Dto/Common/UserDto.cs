@@ -18,8 +18,6 @@ namespace GameLibraryV2.Dto.Common
 
         public DateTime RegistrationdDate { get; set; }
 
-        public LibraryDto Library { get; set; } = null!;
-
         public virtual IList<RoleDto> UserRoles { get; set; } = null!;
     }
 }

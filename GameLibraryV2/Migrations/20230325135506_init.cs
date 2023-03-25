@@ -162,6 +162,25 @@ namespace GameLibraryV2.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nickname = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PicturePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RegistrationdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Games",
                 columns: table => new
                 {
@@ -204,6 +223,55 @@ namespace GameLibraryV2.Migrations
                         name: "FK_Games_SystemRequirementsMin_SystemRequirementsMinId",
                         column: x => x.SystemRequirementsMinId,
                         principalTable: "SystemRequirementsMin",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Friends",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    FrienduId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Friends", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Friends_Users_FrienduId",
+                        column: x => x.FrienduId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Friends_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RoleUser",
+                columns: table => new
+                {
+                    RoleUsersId = table.Column<int>(type: "int", nullable: false),
+                    UserRolesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoleUser", x => new { x.RoleUsersId, x.UserRolesId });
+                    table.ForeignKey(
+                        name: "FK_RoleUser_Roles_UserRolesId",
+                        column: x => x.UserRolesId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RoleUser_Users_RoleUsersId",
+                        column: x => x.RoleUsersId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -354,35 +422,16 @@ namespace GameLibraryV2.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Libraries",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    GameId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Libraries", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Libraries_Games_GameId",
-                        column: x => x.GameId,
-                        principalTable: "Games",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PersonGames",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    LibraryId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     GameId = table.Column<int>(type: "int", nullable: false),
                     Score = table.Column<int>(type: "int", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     List = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PlayedPlatform = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PlayedPlatformId = table.Column<int>(type: "int", nullable: true),
                     Favourite = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -395,62 +444,16 @@ namespace GameLibraryV2.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PersonGames_Libraries_LibraryId",
-                        column: x => x.LibraryId,
-                        principalTable: "Libraries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Nickname = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Age = table.Column<int>(type: "int", nullable: false),
-                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PicturePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RegistrationdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LibraryId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                        name: "FK_PersonGames_Platforms_PlayedPlatformId",
+                        column: x => x.PlayedPlatformId,
+                        principalTable: "Platforms",
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Users_Libraries_LibraryId",
-                        column: x => x.LibraryId,
-                        principalTable: "Libraries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Friends",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    FrienduId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Friends", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Friends_Users_FrienduId",
-                        column: x => x.FrienduId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Friends_Users_UserId",
+                        name: "FK_PersonGames_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -478,30 +481,6 @@ namespace GameLibraryV2.Migrations
                     table.ForeignKey(
                         name: "FK_Reviews_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RoleUser",
-                columns: table => new
-                {
-                    RoleUsersId = table.Column<int>(type: "int", nullable: false),
-                    UserRolesId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RoleUser", x => new { x.RoleUsersId, x.UserRolesId });
-                    table.ForeignKey(
-                        name: "FK_RoleUser_Roles_UserRolesId",
-                        column: x => x.UserRolesId,
-                        principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RoleUser_Users_RoleUsersId",
-                        column: x => x.RoleUsersId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -573,19 +552,19 @@ namespace GameLibraryV2.Migrations
                 column: "TagsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Libraries_GameId",
-                table: "Libraries",
-                column: "GameId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PersonGames_GameId",
                 table: "PersonGames",
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PersonGames_LibraryId",
+                name: "IX_PersonGames_PlayedPlatformId",
                 table: "PersonGames",
-                column: "LibraryId");
+                column: "PlayedPlatformId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonGames_UserId",
+                table: "PersonGames",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_GameId",
@@ -601,11 +580,6 @@ namespace GameLibraryV2.Migrations
                 name: "IX_RoleUser_UserRolesId",
                 table: "RoleUser",
                 column: "UserRolesId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_LibraryId",
-                table: "Users",
-                column: "LibraryId");
         }
 
         /// <inheritdoc />
@@ -648,25 +622,22 @@ namespace GameLibraryV2.Migrations
                 name: "Genres");
 
             migrationBuilder.DropTable(
-                name: "Platforms");
-
-            migrationBuilder.DropTable(
                 name: "Publishers");
 
             migrationBuilder.DropTable(
                 name: "Tags");
 
             migrationBuilder.DropTable(
+                name: "Platforms");
+
+            migrationBuilder.DropTable(
+                name: "Games");
+
+            migrationBuilder.DropTable(
                 name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Libraries");
-
-            migrationBuilder.DropTable(
-                name: "Games");
 
             migrationBuilder.DropTable(
                 name: "Ratings");

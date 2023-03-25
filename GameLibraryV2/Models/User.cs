@@ -18,7 +18,9 @@
 
         public DateTime RegistrationdDate { get; set; }
 
-        public Library Library { get; set; } = null!;
+        //public Library Library { get; set; } = null!;
+
+        public virtual IList<PersonGame>? UserGames { get; set; }
 
         public virtual IList<Role> UserRoles { get; set; } = null!;
 

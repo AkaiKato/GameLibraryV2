@@ -3,6 +3,7 @@ using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Dto.Update;
+using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -121,7 +122,8 @@ namespace GameLibraryV2.Controllers
                 return StatusCode(422, ModelState);
             }
 
-            if (gameCreate.Type.Trim().ToLower() != "game" && gameCreate.Type.Trim().ToLower() != "dlc")
+            if (gameCreate.Type.Trim().ToLower() != Enums.Types.game.ToString() 
+                && gameCreate.Type.Trim().ToLower() != Enums.Types.dlc.ToString())
             {
                 ModelState.AddModelError("", "Unsupported type");
                 return StatusCode(422, ModelState);
@@ -333,7 +335,7 @@ namespace GameLibraryV2.Controllers
 
 
             var dlcS = new List<DLC>();
-            if (game.Type.Trim().ToLower() == "game" && gameUpdate.DLCs != null)
+            if (game.Type.Trim().ToLower() == Enums.Types.game.ToString() && gameUpdate.DLCs != null)
             {
                 foreach (var item in gameUpdate.DLCs)
                 {
@@ -439,7 +441,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            if(game.DLCs != null)
+            if (game.DLCs != null)
             {
                 foreach (var item in game.DLCs.ToList())
                 {
@@ -452,11 +454,19 @@ namespace GameLibraryV2.Controllers
                 }
             }
 
+            if (game.PicturePath != $"\\Images\\gamePicture\\Def.jpg")
+            {
+                FileInfo f = new(game.PicturePath);
+                f.Delete();
+            }
+
             if (!gameRepository.DeleteGame(game))
             {
                 ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
             }
+
+            //Добавить удаление картинки игры
 
             return Ok("Successfully Deleted");
         }

@@ -19,7 +19,6 @@ namespace GameLibraryV2.Helper
             CreateMap<Game, GameDto>();
             CreateMap<GameDto, Game>();
             CreateMap<Genre, GenreDto>();
-            CreateMap<Library, LibraryDto>();
             CreateMap<PersonGame, PersonGameDto>();
             CreateMap<Platform, PlatformDto>();
             CreateMap<Publisher, PublisherDto>();

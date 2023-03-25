@@ -2,6 +2,7 @@
 using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.registry;
 using GameLibraryV2.Dto.Update;
+using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -91,7 +92,8 @@ namespace GameLibraryV2.Controllers
                 return StatusCode(422, ModelState);
             }
 
-            if (userCreate.Gender.Trim().ToLower() != "male" && userCreate.Gender.Trim().ToLower() != "woman")
+            if (userCreate.Gender.Trim().ToLower() != Enums.Genders.male.ToString() && 
+                userCreate.Gender.Trim().ToLower() != Enums.Genders.female.ToString())
             {
                 ModelState.AddModelError("", "Unsupported Gender");
                 return StatusCode(422, ModelState);
@@ -103,8 +105,8 @@ namespace GameLibraryV2.Controllers
             var userMap = mapper.Map<User>(userCreate);
 
             userMap.PicturePath = $"\\Images\\gamePicture\\Def";
-            userMap.Library = new Library();
-            userMap.UserRoles = new List<Role>() { roleRepository.GetRoleByName("user")};
+            userMap.UserGames = new List<PersonGame>() { };
+            userMap.UserRoles = new List<Role>() { roleRepository.GetRoleByName(Enums.Roles.user.ToString())};
             userMap.UserFriends = new List<Friend>() { };
 
             if (!userRepository.CreateUser(userMap))
@@ -174,7 +176,8 @@ namespace GameLibraryV2.Controllers
             if (!userRepository.UserExists(userUpdate.Id))
                 return NotFound();
 
-            if (userUpdate.Gender.Trim().ToLower() != "male" && userUpdate.Gender.Trim().ToLower() != "woman")
+            if (userUpdate.Gender.Trim().ToLower() != Enums.Genders.male.ToString() && 
+                userUpdate.Gender.Trim().ToLower() != Enums.Genders.female.ToString())
             {
                 ModelState.AddModelError("", "Unsupported Gender");
                 return StatusCode(422, ModelState);
@@ -314,6 +317,12 @@ namespace GameLibraryV2.Controllers
                         return StatusCode(500, ModelState);
                     }
                 }
+            }
+
+            if (user.PicturePath != $"\\Images\\userPicture\\Def.jpg")
+            {
+                FileInfo f = new(user.PicturePath);
+                f.Delete();
             }
 
             if (!userRepository.DeleteUser(user))

@@ -41,7 +41,5 @@
         public virtual IList<Genre> Genres { get; set; } = null!;
 
         public virtual IList<Tag> Tags { get; set; } = null!;
-
-        public virtual IList<Library>? Librarys { get; set; }
     }
 }

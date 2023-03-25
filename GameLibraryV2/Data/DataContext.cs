@@ -21,8 +21,6 @@ namespace GameLibraryV2.Data
 
         public DbSet<Genre> Genres { get; set; }
 
-        public DbSet<Library> Libraries { get; set; }
-
         public DbSet<PersonGame> PersonGames { get; set; }
 
         public DbSet<Platform> Platforms { get; set; }
