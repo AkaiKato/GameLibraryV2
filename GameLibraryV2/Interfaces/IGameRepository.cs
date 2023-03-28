@@ -26,9 +26,11 @@ namespace GameLibraryV2.Interfaces
 
         public IList<Game> GetGamesByTag(int tagId);
 
-        public string GetGamePicturePath(int gameId);
-
         public bool GameExists(int gameId);
+
+        public bool GameNameAlreadyInUse(int gameId, string gameName);
+
+        public bool DLCExists(int dlcId);
 
         public bool CreateGame(Game game);
 

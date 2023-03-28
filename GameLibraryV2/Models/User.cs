@@ -7,7 +7,7 @@
         public string Email { get; set; } = null!;
 
         public string Password { get; set; } = null!;
-
+        
         public string Nickname { get; set; } = null!;
 
         public int Age { get; set; }
@@ -17,8 +17,6 @@
         public string PicturePath { get; set; } = null!; 
 
         public DateTime RegistrationdDate { get; set; }
-
-        //public Library Library { get; set; } = null!;
 
         public virtual IList<PersonGame>? UserGames { get; set; }
 

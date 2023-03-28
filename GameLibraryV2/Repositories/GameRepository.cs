@@ -62,6 +62,16 @@ namespace GameLibraryV2.Repositories
             return dataContext.Games.Any(x => x.Id == gameId);
         }
 
+        public bool GameNameAlreadyInUse(int gameId, string gameName)
+        {
+            return dataContext.Games.Any(g => g.Name.Trim().ToLower() == gameName.Trim().ToLower() && g.Id != gameId );
+        }
+
+        public bool DLCExists(int dlcId)
+        {
+            return dataContext.Games.Any(g => g.Id == dlcId && g.Type.ToLower() == "dlc");
+        }
+
         public Game GetGameById(int gameId)
         {
             return dataContext.Games.Include(d => d.DLCs)!.ThenInclude(dg => dg.DLCGame).Include(d => d.Developers).
@@ -343,11 +353,6 @@ namespace GameLibraryV2.Repositories
                     Name = t.Name,
                 }).ToList(),
             }).ToList();
-        }
-
-        public string GetGamePicturePath(int gameId)
-        {
-            return dataContext.Games.Where(g => g.Id == gameId).Select(pp => pp.PicturePath).FirstOrDefault()!;
         }
 
         public bool CreateGame(Game game)

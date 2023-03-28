@@ -62,12 +62,22 @@ namespace GameLibraryV2.Repositories
 
         public bool HasNickname(string nickname)
         {
-            return dataContext.Users.Any(u => u.Nickname.Trim().ToLower() == nickname.Trim().ToLower());
+            return dataContext.Users.Any(u => u.Nickname.Trim() == nickname.Trim());
         }
 
         public bool HasEmail(string email)
         {
             return dataContext.Users.Any(u => u.Email.Trim().ToLower() == email.Trim().ToLower());
+        }
+
+        public bool UserNicknameAlreadyInUser(int userId, string nickname)
+        {
+            return dataContext.Users.Any(u => u.Nickname.Trim() == nickname.Trim() && u.Id != userId);
+        }
+
+        public bool UserEmailAlreadyInUse(int userId, string email)
+        {
+            return dataContext.Users.Any(u => u.Email.Trim().ToLower() == email.Trim().ToLower() && u.Id != userId);
         }
 
         public bool CreateUser(User user)

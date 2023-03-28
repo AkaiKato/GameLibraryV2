@@ -20,6 +20,10 @@ namespace GameLibraryV2.Interfaces
 
         public bool HasEmail(string email);
 
+        public bool UserNicknameAlreadyInUser(int userId, string nickname);
+
+        public bool UserEmailAlreadyInUse(int userId, string email);
+
         public bool CreateUser(User user);
 
         public bool UpdateUser(User user);

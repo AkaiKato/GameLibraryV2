@@ -1,5 +1,6 @@
-﻿using GameLibraryV2.Dto.smallInfo;
-using GameLibraryV2.Models;
+﻿using GameLibraryV2.Dto.Common;
+using GameLibraryV2.Dto.create;
+using GameLibraryV2.Dto.smallInfo;
 
 namespace GameLibraryV2.Dto.Update
 {
@@ -19,20 +20,18 @@ namespace GameLibraryV2.Dto.Update
 
         public string? AveragePlayTime { get; set; }
 
-        public SystemRequirementsMin SystemRequirementsMin { get; set; } = null!;
+        public SystemRequirementsMinCreateDto SystemRequirementsMin { get; set; } = null!;
 
-        public SystemRequirementsMax SystemRequirementsMax { get; set; } = null!;
+        public SystemRequirementsMaxCreateDto SystemRequirementsMax { get; set; } = null!;
 
-        public IList<GameSmallDto>? DLCs { get; set; }
+        public virtual IList<JustIdDto> Developers { get; set; } = null!;
 
-        public virtual IList<DeveloperSmallDto> Developers { get; set; } = null!;
+        public virtual IList<JustIdDto> Publishers { get; set; } = null!;
 
-        public virtual IList<PublisherSmallDto> Publishers { get; set; } = null!;
+        public virtual IList<JustIdDto> Platforms { get; set; } = null!;
 
-        public virtual IList<PlatformSmallDto> Platforms { get; set; } = null!;
+        public virtual IList<JustIdDto> Genres { get; set; } = null!;
 
-        public virtual IList<GenreSmallDto> Genres { get; set; } = null!;
-
-        public virtual IList<TagSmallDto> Tags { get; set; } = null!;
+        public virtual IList<JustIdDto> Tags { get; set; } = null!;
     }
 }

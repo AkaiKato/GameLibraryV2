@@ -199,7 +199,7 @@ namespace GameLibraryV2.Controllers
 
             var gameMap = mapper.Map<Game>(gameCreate);
 
-            gameMap.PicturePath = $"\\Images\\gamePicture\\Def";
+            gameMap.PicturePath = $"\\Images\\gamePicture\\Def.jpg";
             gameMap.Reviews = new List<Review>();
             gameMap.DLCs = new List<DLC>();
             gameMap.Rating = new Rating();
@@ -233,6 +233,12 @@ namespace GameLibraryV2.Controllers
 
             if (!gameRepository.GameExists(gameUpdate.Id))
                 return NotFound();
+
+            if(gameRepository.GameNameAlreadyInUse(gameUpdate.Id, gameUpdate.Name))
+            {
+                ModelState.AddModelError("", $"Name already in use");
+                return StatusCode(422, ModelState);
+            }
 
             var devS = new List<Developer>();
             foreach (var item in gameUpdate.Developers)
@@ -296,12 +302,6 @@ namespace GameLibraryV2.Controllers
 
             var game = gameRepository.GetGameById(gameUpdate.Id);
 
-            if (game.Type.Trim().ToLower() == "dlc".Trim().ToLower() && gameUpdate.DLCs != null) 
-            {
-                ModelState.AddModelError("", $"DLC can't have DLC");
-                return StatusCode(422, ModelState);
-            }
-
             game.Name = gameUpdate.Name;
             game.Description = gameUpdate.Description;
             game.ReleaseDate = gameUpdate.ReleaseDate;
@@ -333,40 +333,10 @@ namespace GameLibraryV2.Controllers
             game.Genres = genrS;
             game.Tags = tagS;
 
-
-            var dlcS = new List<DLC>();
-            if (game.Type.Trim().ToLower() == Enums.Types.game.ToString() && gameUpdate.DLCs != null)
-            {
-                foreach (var item in gameUpdate.DLCs)
-                {
-                    var gameDlc = gameRepository.GetDLCById(item.Id);
-                    if (gameDlc == null || gameDlc.ParentGame != null)
-                    {
-                        ModelState.AddModelError("", $"Not found DLC with such id {item.Id} or DLC already have Parent Game");
-                        return StatusCode(422, ModelState);
-                    }
-                    dlcS.Add(new DLC() { ParentGame = game, DLCGame = gameDlc, });
-                }
-            }
-
-            game.DLCs = dlcS;
-
             if (!gameRepository.UpdateGame(game))
             {
                 ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
-            }
-
-            if (dlcS != null)
-            {
-                foreach (var item in dlcS)
-                {
-                    if (!gameRepository.UpdateGame(item.DLCGame.ParentGame = game))
-                    {
-                        ModelState.AddModelError("", "Something went wrong while saving");
-                        return StatusCode(500, ModelState);
-                    }
-                }
             }
 
             return Ok("Successfully updated");
@@ -465,8 +435,6 @@ namespace GameLibraryV2.Controllers
                 ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
             }
-
-            //Добавить удаление картинки игры
 
             return Ok("Successfully Deleted");
         }

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.smallInfo;
+using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
+using GameLibraryV2.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -47,7 +49,7 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetDLCById(int dlcId)
         {
-            if(!dlcRepository.DLCExists(dlcId))
+            if(!gameRepository.DLCExists(dlcId))
                 return NotFound();
 
             var DLC = mapper.Map<GameDto>(gameRepository.GetDLCById(dlcId));
@@ -56,6 +58,78 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             return Ok(Json(DLC));
+        }
+
+        /// <summary>
+        /// Creates specified dlc connection
+        /// </summary>
+        /// <param name="addDlc"></param>
+        /// <returns></returns>
+        [HttpPost("createDlc")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateGameDlc([FromBody] DlcUpdate addDlc)
+        {
+            if (addDlc == null)
+                return BadRequest();
+
+            if (!gameRepository.GameExists(addDlc.ParentGameId))
+                return NotFound();
+
+            if (!gameRepository.DLCExists(addDlc.DLCGameId))
+                return NotFound();
+
+            if (dlcRepository.DLCExists(addDlc.ParentGameId, addDlc.DLCGameId))
+            {
+                ModelState.AddModelError("", "DLC already have parent Game");
+                return StatusCode(500, ModelState);
+            }
+
+            var dlcGame = gameRepository.GetDLCById(addDlc.DLCGameId);
+            var parGame = gameRepository.GetGameById(addDlc.ParentGameId);
+            var dlc = new DLC() { ParentGame = parGame, DLCGame = dlcGame };
+
+            dlcGame.ParentGame = parGame;
+
+            if (!dlcRepository.DLCCreate(dlc))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
+        }
+
+        /// <summary>
+        /// Deletes specified dlc connection
+        /// </summary>
+        /// <param name="deleteDlc"></param>
+        /// <returns></returns>
+        [HttpDelete("deleteDlc")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult DeleteGameDlc([FromBody] DlcUpdate deleteDlc)
+        {
+            if (deleteDlc == null)
+                return BadRequest();
+
+            if (!gameRepository.GameExists(deleteDlc.ParentGameId))
+                return NotFound();
+
+            if (!gameRepository.DLCExists(deleteDlc.DLCGameId))
+                return NotFound();
+
+            var dlc = dlcRepository.GetDLCConnById(deleteDlc.ParentGameId, deleteDlc.DLCGameId);
+
+            dlc.DLCGame.ParentGame = null;
+
+            if (!dlcRepository.DLCDelete(dlc))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully deleted");
         }
 
     }

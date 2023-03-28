@@ -176,6 +176,18 @@ namespace GameLibraryV2.Controllers
             if (!userRepository.UserExists(userUpdate.Id))
                 return NotFound();
 
+            if(userRepository.UserEmailAlreadyInUse(userUpdate.Id, userUpdate.Email))
+            {
+                ModelState.AddModelError("", $"Email already in use");
+                return StatusCode(422, ModelState);
+            }
+
+            if(userRepository.UserNicknameAlreadyInUser(userUpdate.Id, userUpdate.Nickname))
+            {
+                ModelState.AddModelError("", $"Nickname already in use");
+                return StatusCode(422, ModelState);
+            }
+
             if (userUpdate.Gender.Trim().ToLower() != Enums.Genders.male.ToString() && 
                 userUpdate.Gender.Trim().ToLower() != Enums.Genders.female.ToString())
             {
@@ -364,6 +376,7 @@ namespace GameLibraryV2.Controllers
             }
 
             fusers.RemoveAll(x => x.Id == deleteRole.RoleId);
+
             user.UserRoles = fusers;
 
             if (!userRepository.UpdateUser(user))
