@@ -18,6 +18,11 @@ namespace GameLibraryV2.Repositories
             return dataContext.Developers.Any(d => d.Id == developerId);
         }
 
+        public bool DeveloperNameAlreadyExists(int developerId, string developerName)
+        {
+            return dataContext.Developers.Any(d => d.Name.Trim().ToLower() == developerName.Trim().ToLower() && d.Id != developerId);
+        }
+
         public Developer GetDeveloperById(int developerId)
         {
             return dataContext.Developers.FirstOrDefault(d => d.Id == developerId)!;    
@@ -38,6 +43,18 @@ namespace GameLibraryV2.Repositories
         public bool CreateDeveloper(Developer developer)
         {
             dataContext.Add(developer);
+            return Save();
+        }
+
+        public bool UpdateDeveloper(Developer developer)
+        {
+            dataContext.Update(developer);
+            return Save();
+        }
+
+        public bool DeleteDeveloper(Developer developer)
+        {
+            dataContext.Remove(developer);
             return Save();
         }
 

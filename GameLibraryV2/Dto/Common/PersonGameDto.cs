@@ -5,7 +5,7 @@ namespace GameLibraryV2.Dto.Common
 {
     public class PersonGameDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public GameSmallListDto Game { get; set; } = null!;
 
@@ -15,7 +15,7 @@ namespace GameLibraryV2.Dto.Common
 
         public string List { get; set; } = null!;
 
-        public string? PlayedPlatform { get; set; }
+        public PlatformDto? PlayedPlatform { get; set; }
 
         public bool Favourite { get; set; }
     }

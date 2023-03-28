@@ -250,10 +250,10 @@ namespace GameLibraryV2.Controllers
         /// <param name="userId"></param>
         /// <param name="pic"></param>
         /// <returns></returns>
-        [HttpPut("upload")]
+        [HttpPut("uploadUserPicture")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult UploadGamePicture([FromQuery] int userId, IFormFile pic)
+        public IActionResult UploadUserPicture([FromQuery] int userId, IFormFile pic)
         {
             string[] permittedExtensions = { ".jpg", ".jpeg", ".png" };
 
@@ -302,22 +302,22 @@ namespace GameLibraryV2.Controllers
         /// <summary>
         /// Delete specified user
         /// </summary>
-        /// <param name="deleteUser"></param>
+        /// <param name="userDelete"></param>
         /// <returns></returns>
         [HttpDelete("deleteUser")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult DeleteUser([FromBody] JustIdDto deleteUser) 
+        public IActionResult DeleteUser([FromBody] JustIdDto userDelete) 
         {
-            if (!userRepository.UserExists(deleteUser.Id))
+            if (!userRepository.UserExists(userDelete.Id))
                 return NotFound();
 
-            var user = userRepository.GetUserById(deleteUser.Id);
+            var user = userRepository.GetUserById(userDelete.Id);
 
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var fusers = friendRepository.GetUserFriends(deleteUser.Id).ToList();
+            var fusers = friendRepository.GetUserFriends(userDelete.Id).ToList();
 
             if (fusers.Count > 0)
             {

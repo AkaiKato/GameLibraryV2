@@ -18,6 +18,11 @@ namespace GameLibraryV2.Repositories
             return dataContext.Genres.Any(g => g.Id == genreId);
         }
 
+        public bool GenreNameAlredyInUse(int genreId, string genreName)
+        {
+            return dataContext.Genres.Any(g => g.Name.Trim().ToLower() == genreName.Trim().ToLower() && g.Id != genreId);
+        }
+
         public Genre GetGenreById(int genreId)
         {
             return dataContext.Genres.Where(g => g.Id == genreId).FirstOrDefault()!;
@@ -38,6 +43,18 @@ namespace GameLibraryV2.Repositories
         public bool CreateGenre(Genre genre)
         {
             dataContext.Add(genre);
+            return Save();
+        }
+
+        public bool UpdateGenre(Genre genre)
+        {
+            dataContext.Update(genre);
+            return Save();
+        }
+
+        public bool DeleteGenre(Genre genre)
+        {
+            dataContext.Remove(genre);
             return Save();
         }
 

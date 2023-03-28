@@ -12,6 +12,12 @@ namespace GameLibraryV2.Interfaces
 
         public bool PublisherExists(int publisherId);
 
+        public bool PublisherNameAlreadyExists(int publisherId, string publisherName);
+
         public bool CreatePublisher(Publisher publisher);
+
+        public bool UpdatePublisher(Publisher publisher);
+
+        public bool DeletePublisher(Publisher publisher);
     }
 }

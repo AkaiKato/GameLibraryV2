@@ -2,8 +2,10 @@
 using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.smallInfo;
+using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
+using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -114,6 +116,69 @@ namespace GameLibraryV2.Controllers
             }
 
             return Ok("Successfully created");
+        }
+
+        /// <summary>
+        /// Update specified genre
+        /// </summary>
+        /// <param name="genreUpdate"></param>
+        /// <returns></returns>
+        [HttpPut("updateGenre")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult UpdateGenreInfo([FromBody] CommonUpdate genreUpdate)
+        {
+            if (genreUpdate == null)
+                return BadRequest(ModelState);
+
+            if (!genreRepository.GenreExists(genreUpdate.Id))
+                return NotFound();
+
+            if (genreRepository.GenreNameAlredyInUse(genreUpdate.Id, genreUpdate.Name))
+            {
+                ModelState.AddModelError("", $"Name already in use");
+                return StatusCode(422, ModelState);
+            }
+
+            var genre = genreRepository.GetGenreById(genreUpdate.Id);
+
+            genre.Name = genreUpdate.Name;
+            genre.Description = genreUpdate.Description;
+
+            if (!genreRepository.UpdateGenre(genre))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully updated");
+        }
+
+        /// <summary>
+        /// Delete specified genre
+        /// </summary>
+        /// <param name="genreDelete"></param>
+        /// <returns></returns>
+        [HttpDelete("deleteGenre")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult DeleteGenre([FromBody] JustIdDto genreDelete)
+        {
+            if (!genreRepository.GenreExists(genreDelete.Id))
+                return NotFound();
+
+            var genre = genreRepository.GetGenreById(genreDelete.Id);
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            if (!genreRepository.DeleteGenre(genre))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully deleted");
         }
     }
 }

@@ -12,6 +12,12 @@ namespace GameLibraryV2.Interfaces
         
         public bool DeveloperExists(int developerId);
 
+        public bool DeveloperNameAlreadyExists(int developerId, string developerName);
+
         public bool CreateDeveloper(Developer developer);
+
+        public bool UpdateDeveloper(Developer developer);
+
+        public bool DeleteDeveloper(Developer developer);
     }
 }

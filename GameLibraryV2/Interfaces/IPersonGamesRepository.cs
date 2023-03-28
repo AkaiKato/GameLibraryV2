@@ -4,6 +4,8 @@ namespace GameLibraryV2.Interfaces
 {
     public interface IPersonGamesRepository
     {
+        public IList<PersonGame> GetAllPersonGames();
+
         public IList<PersonGame> PersonGames(int userId);
 
         public IList<PersonGame> PersonGamesByList(int userId, string list);

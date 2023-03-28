@@ -33,11 +33,28 @@ namespace GameLibraryV2.Repositories
             return dataContext.Publishers.Any(p => p.Id == publisherId);
         }
 
+        public bool PublisherNameAlreadyExists(int publisherId, string publisherName)
+        {
+            return dataContext.Publishers.Any(d => d.Name.Trim().ToLower() == publisherName.Trim().ToLower() && d.Id != publisherId);
+        }
+
         //--------------------------------------------
 
         public bool CreatePublisher(Publisher publisher)
         {
             dataContext.Add(publisher);
+            return Save();
+        }
+
+        public bool UpdatePublisher(Publisher publisher)
+        {
+            dataContext.Update(publisher);
+            return Save();
+        }
+
+        public bool DeletePublisher(Publisher publisher) 
+        {
+            dataContext.Remove(publisher);
             return Save();
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace GameLibraryV2.Dto.Update
 {
-    public class DeveloperUpdate
+    public class CommonUpdate
     {
         public int Id { get; set; }
 

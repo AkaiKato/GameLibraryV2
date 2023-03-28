@@ -175,7 +175,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="personGameDelete"></param>
         /// <returns></returns>
-        [HttpPut("deletePersonGame")]
+        [HttpDelete("deletePersonGame")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         public IActionResult DeletePersonGame([FromBody] JustGuIdDto personGameDelete)

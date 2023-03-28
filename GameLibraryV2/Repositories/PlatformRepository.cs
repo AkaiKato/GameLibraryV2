@@ -33,11 +33,28 @@ namespace GameLibraryV2.Repositories
             return dataContext.Platforms.Any(p => p.Id == platformId);
         }
 
+        public bool PlatformNameAlredyInUse(int platformId, string platformName)
+        {
+            return dataContext.Platforms.Any(p => p.Name.Trim().ToLower() == platformName.Trim().ToLower() && p.Id == platformId);
+        }
+
         //--------------------------------------------
 
         public bool CreatePlatform(Platform platform)
         {
             dataContext.Add(platform);
+            return Save();
+        }
+
+        public bool UpdatePlatfrom(Platform platform)
+        {
+            dataContext.Update(platform);
+            return Save();
+        }
+
+        public bool DeletePlatform(Platform platform)
+        {
+            dataContext.Remove(platform);
             return Save();
         }
 

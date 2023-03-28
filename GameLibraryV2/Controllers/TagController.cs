@@ -2,8 +2,10 @@
 using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.smallInfo;
+using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
+using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -114,6 +116,69 @@ namespace GameLibraryV2.Controllers
             }
 
             return Ok("Successfully created");
+        }
+
+        /// <summary>
+        /// Update specified tag
+        /// </summary>
+        /// <param name="tagUpdate"></param>
+        /// <returns></returns>
+        [HttpPut("updateTag")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult UpdateTagInfo([FromBody] CommonUpdate tagUpdate)
+        {
+            if (tagUpdate == null)
+                return BadRequest(ModelState);
+
+            if (!tagRepository.TagExists(tagUpdate.Id))
+                return NotFound();
+
+            if (tagRepository.TagNameAlreadyInUse(tagUpdate.Id, tagUpdate.Name))
+            {
+                ModelState.AddModelError("", $"Name already in use");
+                return StatusCode(422, ModelState);
+            }
+
+            var tag = tagRepository.GetTagById(tagUpdate.Id);
+
+            tag.Name = tagUpdate.Name;
+            tag.Description = tagUpdate.Description;
+
+            if (!tagRepository.UpdateTag(tag))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully updated");
+        }
+
+        /// <summary>
+        /// Delete specified tag
+        /// </summary>
+        /// <param name="tagDelete"></param>
+        /// <returns></returns>
+        [HttpDelete("deleteTag")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult DeleteTag([FromBody] JustIdDto tagDelete)
+        {
+            if (!tagRepository.TagExists(tagDelete.Id))
+                return NotFound();
+
+            var platform = tagRepository.GetTagById(tagDelete.Id);
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            if (!tagRepository.DeleteTag(platform))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully deleted");
         }
     }
 }

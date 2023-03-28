@@ -14,12 +14,20 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
+        public IList<PersonGame> GetAllPersonGames()
+        {
+            return dataContext.PersonGames.Include(g => g.Game).ThenInclude(r => r.Rating).Include(g => g.Game).
+                ThenInclude(r => r.Developers).Include(g => g.Game).ThenInclude(r => r.Publishers).Include(g => g.Game).
+                ThenInclude(r => r.Platforms).Include(g => g.Game).ThenInclude(r => r.Genres).Include(g => g.Game).
+                ThenInclude(r => r.Tags).Include(pl => pl.PlayedPlatform).ToList();
+        }
+
         public IList<PersonGame> PersonGames(int userId)
         {
             return dataContext.PersonGames.Include(g => g.Game).ThenInclude(r => r.Rating).Include(g => g.Game).
                 ThenInclude(r => r.Developers).Include(g => g.Game).ThenInclude(r => r.Publishers).Include(g => g.Game).
                 ThenInclude(r => r.Platforms).Include(g => g.Game).ThenInclude(r => r.Genres).Include(g => g.Game).
-                ThenInclude(r => r.Tags).Where(pg => pg.User.Id == userId).ToList();
+                ThenInclude(r => r.Tags).Include(pl => pl.PlayedPlatform).Where(pg => pg.User.Id == userId).ToList();
         }
 
         public IList<PersonGame> PersonGamesByList(int userId, string list)

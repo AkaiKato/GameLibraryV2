@@ -12,6 +12,12 @@ namespace GameLibraryV2.Interfaces
 
         public bool TagExists(int tagId);
 
+        public bool TagNameAlreadyInUse(int tagId, string tagName);
+
         public bool CreateTag(Tag tag);
+
+        public bool UpdateTag(Tag tag);
+
+        public bool DeleteTag(Tag tag);
     }
 }
