@@ -5,6 +5,7 @@ using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -34,6 +35,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(200, Type = typeof(IList<UserDto>))]
         [ProducesResponseType(400)]
         public IActionResult GetUsers()
@@ -56,7 +58,7 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetUserById(int userId)
         {
-            if (!userRepository.UserExists(userId))
+            if (!userRepository.UserExistsById(userId))
                 return NotFound();
 
             var User = mapper.Map<UserDto>(userRepository.GetUserById(userId));
@@ -102,9 +104,20 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var userMap = mapper.Map<User>(userCreate);
+            var userMap = new User();
 
-            userMap.PicturePath = $"\\Images\\gamePicture\\Def";
+            userMap.Email = userCreate.Email;
+
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(userCreate.Password);
+            userMap.Password = passwordHash;
+
+
+            userMap.Nickname = userCreate.Nickname;
+            userMap.Age = userCreate.Age;
+            userMap.Gender = userCreate.Gender;
+
+            userMap.PicturePath = $"\\Images\\userPicture\\Def.jpg";
+            userMap.RegistrationdDate = DateTime.Now;
             userMap.UserGames = new List<PersonGame>() { };
             userMap.UserRoles = new List<Role>() { roleRepository.GetRoleByName(Enums.Roles.user.ToString())};
             userMap.UserFriends = new List<Friend>() { };
@@ -149,7 +162,7 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetUserRole(int userId)
         {
-            if (!userRepository.UserExists(userId))
+            if (!userRepository.UserExistsById(userId))
                 return NotFound();
 
             var UserRole = mapper.Map<List<RoleDto>>(roleRepository.GetUserRole(userId));
@@ -173,7 +186,7 @@ namespace GameLibraryV2.Controllers
             if (userUpdate == null)
                 return BadRequest(ModelState);
 
-            if (!userRepository.UserExists(userUpdate.Id))
+            if (!userRepository.UserExistsById(userUpdate.Id))
                 return NotFound();
 
             if(userRepository.UserEmailAlreadyInUse(userUpdate.Id, userUpdate.Email))
@@ -222,7 +235,7 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(400)]
         public IActionResult AddRole([FromBody] RoleUpdate addRole)
         {
-            if (!userRepository.UserExists(addRole.UserId))
+            if (!userRepository.UserExistsById(addRole.UserId))
                 return NotFound(ModelState);
 
             if (!roleRepository.RoleExists(addRole.RoleId))
@@ -267,7 +280,7 @@ namespace GameLibraryV2.Controllers
                 return StatusCode(422, ModelState);
             }
 
-            if (!userRepository.UserExists(userId))
+            if (!userRepository.UserExistsById(userId))
                 return NotFound();
 
             if (!ModelState.IsValid)
@@ -309,7 +322,7 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(400)]
         public IActionResult DeleteUser([FromBody] JustIdDto userDelete) 
         {
-            if (!userRepository.UserExists(userDelete.Id))
+            if (!userRepository.UserExistsById(userDelete.Id))
                 return NotFound();
 
             var user = userRepository.GetUserById(userDelete.Id);
@@ -356,7 +369,7 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(400)]
         public IActionResult DeleteRole([FromBody] RoleUpdate deleteRole)
         {
-            if (!userRepository.UserExists(deleteRole.UserId))
+            if (!userRepository.UserExistsById(deleteRole.UserId))
                 return NotFound(ModelState);
 
             if (!roleRepository.RoleExists(deleteRole.RoleId))

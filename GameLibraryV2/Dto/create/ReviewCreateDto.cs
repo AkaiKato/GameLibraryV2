@@ -2,12 +2,12 @@
 {
     public class ReviewCreateDto
     {
-        public int Rating { get; set; }
+        public int UserId { get; set; }
+
+        public int GameId { get; set; }
 
         public string Text { get; set; } = null!;
 
         public DateTime PublishDate { get; set; }
-
-        public int ReviewRating { get; set; }
     }
 }

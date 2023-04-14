@@ -14,14 +14,46 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
+        public Review GetReviewById(int reviewId) 
+        {
+            return dataContext.Reviews.Where(r => r.Id == reviewId).FirstOrDefault()!;
+        }
+
+        public Review GetReviewByUserIdAndGameId(int userId, int gameId)
+        {
+            return dataContext.Reviews.Where(r => r.User.Id == userId && r.Game.Id == gameId).FirstOrDefault()!;
+        }
+
         public IList<Review> GetGameReviews(int gameId)
         {
             return dataContext.Reviews.Include(u => u.User).Where(d => d.Game.Id == gameId).ToList();
         }
 
+        public bool ReviewExists(int reviewId)
+        {
+            return dataContext.Reviews.Any(r => r.Id == reviewId);
+        }
+
+        public bool ReviewExists(int userId, int gameId)
+        {
+            return dataContext.Reviews.Any(r => r.User.Id == userId && r.Game.Id == gameId);
+        }
+
         public bool CreateReview(Review review)
         {
             dataContext.Add(review);
+            return Save();
+        }
+
+        public bool UpdateReview(Review review)
+        {
+            dataContext.Update(review);
+            return Save();
+        }
+
+        public bool DeleteReview(Review review)
+        {
+            dataContext.Remove(review);
             return Save();
         }
 

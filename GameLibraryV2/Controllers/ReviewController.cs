@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.create;
+using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,37 +15,41 @@ namespace GameLibraryV2.Controllers
         public readonly IReviewRepository reviewRepository;
         public readonly IGameRepository gameRepository;
         public readonly IUserRepository userRepository;
+        public readonly IPersonGamesRepository personGamesRepository;
         public readonly IMapper mapper;
         public ReviewController(IReviewRepository _reviewRepository, 
             IGameRepository _gameRepository, 
             IUserRepository _userRepository,
+            IPersonGamesRepository _personGamesRepository,
             IMapper _mapper)
         {
             reviewRepository = _reviewRepository;
             gameRepository = _gameRepository;
             userRepository = _userRepository;
+            personGamesRepository = _personGamesRepository;
             mapper = _mapper;
         }
 
         /// <summary>
         /// Creates review
         /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="GameId"></param>
         /// <param name="reviewCreate"></param>
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateGameReview([FromQuery] int UserId, [FromQuery] int GameId, [FromBody] ReviewCreateDto reviewCreate)
+        public IActionResult CreateGameReview([FromBody] ReviewCreateDto reviewCreate)
         {
             if (reviewCreate == null)
                 return BadRequest();
 
-            if (!gameRepository.GameExists(GameId))
+            if (!gameRepository.GameExists(reviewCreate.GameId))
                 return NotFound(ModelState);
 
-            if (!userRepository.UserExists(UserId))
+            if (!userRepository.UserExistsById(reviewCreate.UserId))
+                return NotFound(ModelState);
+
+            if (!personGamesRepository.PersonGameExists(reviewCreate.UserId, reviewCreate.GameId))
                 return NotFound(ModelState);
 
             if (!ModelState.IsValid)
@@ -51,8 +57,9 @@ namespace GameLibraryV2.Controllers
 
             var reviewMap = mapper.Map<Review>(reviewCreate);
 
-            reviewMap.User = userRepository.GetUserById(UserId);
-            reviewMap.Game = gameRepository.GetGameById(GameId);
+            reviewMap.Rating = personGamesRepository.GetPersonGameByUserIdAndGameId(reviewCreate.UserId, reviewCreate.GameId).Score;
+            reviewMap.User = userRepository.GetUserById(reviewCreate.UserId);
+            reviewMap.Game = gameRepository.GetGameById(reviewCreate.GameId);
 
             if (!reviewRepository.CreateReview(reviewMap))
             {
@@ -61,6 +68,91 @@ namespace GameLibraryV2.Controllers
             }
 
             return Ok("Successfully created");
+        }
+
+        /// <summary>
+        /// Update specified review
+        /// </summary>
+        /// <param name="reviewUpdate"></param>
+        /// <returns></returns>
+        [HttpPut("updateReview")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult UpdateGameReview([FromBody] ReviewUpdate reviewUpdate)
+        {
+            if(reviewUpdate == null)
+                return BadRequest(ModelState);
+
+            if (!reviewRepository.ReviewExists(reviewUpdate.Id))
+                return NotFound();
+
+            var review = reviewRepository.GetReviewById(reviewUpdate.Id);
+
+            review.Text = reviewUpdate.Text;
+
+            if (!reviewRepository.UpdateReview(review))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully updated");
+        }
+
+        /// <summary>
+        /// Update ReviewRating specified review
+        /// </summary>
+        /// <param name="reviewRatingUpdate"></param>
+        /// <returns></returns>
+        [HttpPut("updateReviewRating")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult UpdateRaviewRatingGameReview([FromBody] ReviewRatingUpdate reviewRatingUpdate)
+        {
+            if (reviewRatingUpdate == null)
+                return BadRequest(ModelState);
+
+            if (!reviewRepository.ReviewExists(reviewRatingUpdate.Id))
+                return NotFound();
+
+            var review = reviewRepository.GetReviewById(reviewRatingUpdate.Id);
+
+            review.ReviewRating += reviewRatingUpdate.ReviewRating;
+
+            if (!reviewRepository.UpdateReview(review))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully updated");
+        }
+
+        /// <summary>
+        /// Delete specified review
+        /// </summary>
+        /// <param name="reviewDelete"></param>
+        /// <returns></returns>
+        [HttpDelete("deleteReview")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult DeleteGameReview([FromBody] JustIdDto reviewDelete)
+        {
+            if (reviewDelete == null)
+                return BadRequest(ModelState);
+
+            if (!reviewRepository.ReviewExists(reviewDelete.Id))
+                return NotFound();
+
+            var review = reviewRepository.GetReviewById(reviewDelete.Id);
+
+            if (!reviewRepository.DeleteReview(review))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully deleted");
         }
     }
 }

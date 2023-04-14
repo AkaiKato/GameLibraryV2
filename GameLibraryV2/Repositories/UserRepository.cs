@@ -55,9 +55,14 @@ namespace GameLibraryV2.Repositories
             }).ToList();
         }
 
-        public bool UserExists(int userId)
+        public bool UserExistsById(int userId)
         {
             return dataContext.Users.Any(u => u.Id == userId);
+        }
+
+        public bool UserExistsByNickname(string nickname)
+        {
+            return dataContext.Users.Any(u => u.Nickname.Trim() == nickname.Trim());
         }
 
         public bool HasNickname(string nickname)

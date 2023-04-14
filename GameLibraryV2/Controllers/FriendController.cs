@@ -32,7 +32,7 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetUserFriends(int userId)
         {
-            if (!userRepository.UserExists(userId))
+            if (!userRepository.UserExistsById(userId))
                 return NotFound();
 
             var UserFriends = mapper.Map<List<FriendDto>>(friendRepository.GetUserFriends(userId));
@@ -53,10 +53,10 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(400)]
         public IActionResult AddFriend([FromBody] FriendUpdate addFriend)
         {
-            if (!userRepository.UserExists(addFriend.UserId))
+            if (!userRepository.UserExistsById(addFriend.UserId))
                 return NotFound(ModelState);
 
-            if (!userRepository.UserExists(addFriend.FriendId))
+            if (!userRepository.UserExistsById(addFriend.FriendId))
                 return NotFound(ModelState);
 
             if (!ModelState.IsValid)
@@ -92,10 +92,10 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(400)]
         public IActionResult DeleteFriend([FromBody] FriendUpdate deleteFriend)
         {
-            if (!userRepository.UserExists(deleteFriend.UserId))
+            if (!userRepository.UserExistsById(deleteFriend.UserId))
                 return NotFound(ModelState);
 
-            if (!userRepository.UserExists(deleteFriend.FriendId))
+            if (!userRepository.UserExistsById(deleteFriend.FriendId))
                 return NotFound(ModelState);
 
             if (!ModelState.IsValid)

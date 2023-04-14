@@ -14,7 +14,9 @@ namespace GameLibraryV2.Interfaces
 
         public string GetUserPicturePath(int userId);
 
-        public bool UserExists(int userId);
+        public bool UserExistsById(int userId);
+
+        public bool UserExistsByNickname(string Nickname);
 
         public bool HasNickname(string nickname);
 

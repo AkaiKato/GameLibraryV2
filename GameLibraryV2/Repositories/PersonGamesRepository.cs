@@ -41,12 +41,22 @@ namespace GameLibraryV2.Repositories
 
         public PersonGame GetPersonGameById(Guid personGameId)
         {
-            return dataContext.PersonGames.Where(pg => pg.Id == personGameId).FirstOrDefault()!;
+            return dataContext.PersonGames.Include(u => u.User).Include(g => g.Game).ThenInclude(r => r.Rating).Where(pg => pg.Id == personGameId).FirstOrDefault()!;
+        }
+
+        public PersonGame GetPersonGameByUserIdAndGameId(int userId, int gameId)
+        {
+            return dataContext.PersonGames.Where(u => u.User.Id == userId && u.Game.Id == gameId).FirstOrDefault()!;
         }
 
         public bool PersonGameExists(Guid personGameId)
         {
             return dataContext.PersonGames.Any(pg => pg.Id == personGameId);
+        }
+
+        public bool PersonGameExists(int userId, int gameId)
+        {
+            return dataContext.PersonGames.Any(u => u.User.Id == userId && u.Game.Id == gameId);
         }
 
         public bool CreatePersonGame(PersonGame personGame)

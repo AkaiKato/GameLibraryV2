@@ -12,12 +12,16 @@ namespace GameLibraryV2.Interfaces
 
         public PersonGame GetPersonGameById(Guid personGameId);
 
+        public PersonGame GetPersonGameByUserIdAndGameId(int userId, int gameId);
+
+        public bool PersonGameExists(Guid personGameId);
+
+        public bool PersonGameExists(int userId, int gameId);
+
         public bool CreatePersonGame(PersonGame game);
 
         public bool UpdatePersonGame(PersonGame game);
 
         public bool DeletePersonGame(PersonGame game);
-
-        public bool PersonGameExists(Guid personGameId);
     }
 }
