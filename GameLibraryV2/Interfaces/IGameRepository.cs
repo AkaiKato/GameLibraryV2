@@ -1,10 +1,11 @@
-﻿using GameLibraryV2.Models;
+﻿using GameLibraryV2.Helper;
+using GameLibraryV2.Models;
 
 namespace GameLibraryV2.Interfaces
 {
     public interface IGameRepository
     {
-        public ICollection<Game> GetGames();
+        public PagedList<Game> GetGames(SearchParameters searchParameters);
 
         public Game GetGameById(int gameId);
 
@@ -15,6 +16,8 @@ namespace GameLibraryV2.Interfaces
         public Game GetDLCByName(string dlcName);
 
         public IList<Game> GetDLCs();
+
+        public IList<Game> GetGamesByAgeRating(int ageratingId);
 
         public IList<Game> GetGamesByDeveloper(int developerId);
 

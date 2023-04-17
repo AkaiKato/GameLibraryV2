@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameLibraryV2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230414125546_init")]
+    [Migration("20230417133651_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -54,6 +54,26 @@ namespace GameLibraryV2.Migrations
                     b.HasIndex("GenresId");
 
                     b.ToTable("GameGenre");
+                });
+
+            modelBuilder.Entity("GameLibraryV2.Models.AgeRating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AgeRating");
                 });
 
             modelBuilder.Entity("GameLibraryV2.Models.DLC", b =>
@@ -138,11 +158,11 @@ namespace GameLibraryV2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AgeRating")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("AgeRatingId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("AveragePlayTime")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("AveragePlayTime")
+                        .HasColumnType("float");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -167,6 +187,10 @@ namespace GameLibraryV2.Migrations
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("SystemRequirementsMaxId")
                         .HasColumnType("int");
 
@@ -178,6 +202,8 @@ namespace GameLibraryV2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AgeRatingId");
 
                     b.HasIndex("ParentGameId");
 
@@ -669,6 +695,12 @@ namespace GameLibraryV2.Migrations
 
             modelBuilder.Entity("GameLibraryV2.Models.Game", b =>
                 {
+                    b.HasOne("GameLibraryV2.Models.AgeRating", "AgeRating")
+                        .WithMany()
+                        .HasForeignKey("AgeRatingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("GameLibraryV2.Models.Game", "ParentGame")
                         .WithMany()
                         .HasForeignKey("ParentGameId");
@@ -690,6 +722,8 @@ namespace GameLibraryV2.Migrations
                         .HasForeignKey("SystemRequirementsMinId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AgeRating");
 
                     b.Navigation("ParentGame");
 

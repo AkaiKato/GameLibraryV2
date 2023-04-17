@@ -6,7 +6,9 @@ using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace GameLibraryV2.Controllers
 {
@@ -22,6 +24,7 @@ namespace GameLibraryV2.Controllers
         private readonly IPlatformRepository platformRepository;
         private readonly IReviewRepository reviewRepository;
         private readonly IDLCRepository dlcRepository;
+        private readonly IAgeRatingRepository ageRatingRepository;
         private readonly IMapper mapper;
 
         public GameController(IGameRepository _gameRepository,
@@ -32,6 +35,7 @@ namespace GameLibraryV2.Controllers
             IPlatformRepository _platformRepository,
             IReviewRepository _reviewRepository,
             IDLCRepository _dlcRepository,
+            IAgeRatingRepository _ageRatingRepository,
             IMapper _mapper)
         {
             gameRepository = _gameRepository;
@@ -42,6 +46,7 @@ namespace GameLibraryV2.Controllers
             tagRepository = _tagRepository;
             reviewRepository = _reviewRepository;
             dlcRepository = _dlcRepository;
+            ageRatingRepository = _ageRatingRepository;
             mapper = _mapper;
         }
 
@@ -50,13 +55,42 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
-        public IActionResult GetGames()
+        [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
+        public IActionResult GetGames([FromQuery] SearchParameters searchParameters)
         {
-            var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGames());
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if(!searchParameters.ValidYearRange)
+                return BadRequest("Max release year cannot be less than min year");
+
+            if (!searchParameters.ValidPlayTime)
+                return BadRequest("Max playtime cannot be less than min playtime");
+
+            if (!searchParameters.ValidRating)
+                return BadRequest("Rating cannot be less than 0");
+
+            if(!searchParameters.ValidStatus)
+                return BadRequest("Not Valid Status");
+
+            if (!searchParameters.ValidType)
+                return BadRequest("Not Valid Type");
+
+            var games = gameRepository.GetGames(searchParameters);
+
+            var metadata = new
+            {
+                games.TotalCount,
+                games.PageSize,
+                games.CurrentPage,
+                games.TotalPages,
+                games.HasNext,
+                games.HasPrevious,
+            };
+
+            var Games = mapper.Map<List<GameSmallListDto>>(games);
+
+            Response.Headers.Add("X-pagination", JsonSerializer.Serialize(metadata));
 
             return Ok(Json(Games));
         }
@@ -119,14 +153,19 @@ namespace GameLibraryV2.Controllers
             if (gameRepository.GetGameByName(gameCreate.Name) != null)
             {
                 ModelState.AddModelError("", "Game with this name already exists");
-                return StatusCode(422, ModelState);
+                return BadRequest("Game with this name already exists");
             }
 
             if (gameCreate.Type.Trim().ToLower() != Enums.Types.game.ToString() 
                 && gameCreate.Type.Trim().ToLower() != Enums.Types.dlc.ToString())
             {
-                ModelState.AddModelError("", "Unsupported type");
-                return StatusCode(422, ModelState);
+                return BadRequest("Unsupported type");
+            }
+
+            if(gameCreate.Status.Trim().ToLower() != Enums.Status.released.ToString()
+                && gameCreate.Status.Trim().ToLower() != Enums.Status.announsed.ToString()) 
+            {
+                return BadRequest("Unsupported status");
             }
 
             if (!ModelState.IsValid)
@@ -136,69 +175,50 @@ namespace GameLibraryV2.Controllers
             foreach (var item in gameCreate.Developers) 
             {
                 var dev = developerRepository.GetDeveloperById(item.Id);
-                if (dev != null)
-                    devS.Add(dev);
-                else
-                {
-                    ModelState.AddModelError("", $"Not found developer with such id {item.Id}");
-                    return StatusCode(422, ModelState);
-                }
+                if (dev == null)
+                    return BadRequest($"Not found developer with such id {item.Id}");
+                devS.Add(dev);
             }
 
             var pubS = new List<Publisher>();
             foreach (var item in gameCreate.Publishers)
             {
                 var pub = publisherRepository.GetPublisherById(item.Id);
-                if (pub != null)
-                    pubS.Add(pub);
-                else
-                {
-                    ModelState.AddModelError("", $"Not found publisher with such id {item}");
-                    return StatusCode(422, ModelState);
-                }
+                if (pub == null)
+                    return BadRequest($"Not found publisher with such id {item}");
+                pubS.Add(pub);
             }
 
             var platS = new List<Platform>();
             foreach (var item in gameCreate.Platforms)
             {
                 var plat = platformRepository.GetPlatformById(item.Id);
-                if (plat != null)
-                    platS.Add(plat);
-                else
-                {
-                    ModelState.AddModelError("", $"Not found platform with such id {item.Id}");
-                    return StatusCode(422, ModelState);
-                }
+                if (plat == null)
+                    return BadRequest($"Not found platform with such id {item.Id}");
+                platS.Add(plat);
             }
 
             var genrS = new List<Genre>();
             foreach (var item in gameCreate.Genres)
             {
                 var genr = genreRepository.GetGenreById(item.Id);
-                if (genr != null)
-                    genrS.Add(genr);
-                else
-                {
-                    ModelState.AddModelError("", $"Not found genre with such id {item.Id}");
-                    return StatusCode(422, ModelState);
-                }
+                if (genr == null)
+                    return BadRequest($"Not found genre with such id {item.Id}");
+                genrS.Add(genr);
             }
 
             var tagS = new List<Tag>();
             foreach (var item in gameCreate.Tags)
             {
                 var tag = tagRepository.GetTagById(item.Id);
-                if (tag != null)
-                    tagS.Add(tag);
-                else
-                {
-                    ModelState.AddModelError("", $"Not found tag with such id {item.Id}");
-                    return StatusCode(422, ModelState);
-                }
+                if (tag == null)
+                    return BadRequest($"Not found tag with such id {item.Id}");
+                tagS.Add(tag);
             }
 
             var gameMap = mapper.Map<Game>(gameCreate);
 
+            gameMap.AgeRating = gameCreate.AgeRating;
             gameMap.PicturePath = $"\\Images\\gamePicture\\Def.jpg";
             gameMap.Reviews = new List<Review>();
             gameMap.DLCs = new List<DLC>();
@@ -240,15 +260,24 @@ namespace GameLibraryV2.Controllers
                 return StatusCode(422, ModelState);
             }
 
+            if (gameUpdate.Status.Trim().ToLower() != Enums.Status.released.ToString()
+                && gameUpdate.Status.Trim().ToLower() != Enums.Status.announsed.ToString())
+            {
+                return BadRequest("Unsupported status");
+            }
+
+            if (!ageRatingRepository.AgeRatingExists(gameUpdate.AgeRating.Id))
+                return BadRequest($"Not found AgeRating with such id {gameUpdate.AgeRating.Id}");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var devS = new List<Developer>();
             foreach (var item in gameUpdate.Developers)
             {
                 var dev = developerRepository.GetDeveloperById(item.Id);
                 if (dev == null)
-                {
-                    ModelState.AddModelError("", $"Not found developer with such id {item.Id}");
-                    return StatusCode(422, ModelState);
-                }
+                    return BadRequest($"Not found developer with such id {item.Id}");
                 devS.Add(dev);
             }
 
@@ -257,10 +286,7 @@ namespace GameLibraryV2.Controllers
             {
                 var pub = publisherRepository.GetPublisherById(item.Id);
                 if (pub == null)
-                {
-                    ModelState.AddModelError("", $"Not found publisher with such id {item.Id}");
-                    return StatusCode(422, ModelState);
-                }
+                    return BadRequest($"Not found publisher with such id {item.Id}");
                 pubS.Add(pub);
             }
 
@@ -269,10 +295,7 @@ namespace GameLibraryV2.Controllers
             {
                 var plat = platformRepository.GetPlatformById(item.Id);
                 if (plat == null)
-                {
-                    ModelState.AddModelError("", $"Not found platform with such id {item.Id}");
-                    return StatusCode(422, ModelState);
-                }
+                    return BadRequest($"Not found platform with such id {item.Id}");
                 platS.Add(plat);
             }
 
@@ -281,10 +304,7 @@ namespace GameLibraryV2.Controllers
             {
                 var genr = genreRepository.GetGenreById(item.Id);
                 if (genr == null)
-                {
-                    ModelState.AddModelError("", $"Not found genre with such id {item.Id}");
-                    return StatusCode(422, ModelState);
-                }
+                    return BadRequest($"Not found genre with such id {item.Id}");
                 genrS.Add(genr);
             }
 
@@ -293,10 +313,7 @@ namespace GameLibraryV2.Controllers
             {
                 var tag = tagRepository.GetTagById(item.Id);
                 if (tag == null)
-                {
-                    ModelState.AddModelError("", $"Not found tag with such id {item.Id}");
-                    return StatusCode(422, ModelState);
-                }
+                    return BadRequest($"Not found tag with such id {item.Id}");
                 tagS.Add(tag);
             }
 
@@ -304,10 +321,12 @@ namespace GameLibraryV2.Controllers
 
             game.Name = gameUpdate.Name;
             game.Description = gameUpdate.Description;
+            game.Status = gameUpdate.Status;
             game.ReleaseDate = gameUpdate.ReleaseDate;
-            game.AgeRating = gameUpdate.AgeRating;
             game.NSFW = gameUpdate.NSFW;
             game.AveragePlayTime = gameUpdate.AveragePlayTime;
+
+            game.AgeRating = ageRatingRepository.GetAgeRatingById(gameUpdate.AgeRating.Id);
 
             game.SystemRequirementsMin.OC = gameUpdate.SystemRequirementsMin.OC;
             game.SystemRequirementsMin.Processor = gameUpdate.SystemRequirementsMin.Processor;

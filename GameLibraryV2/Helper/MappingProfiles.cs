@@ -2,9 +2,10 @@
 using AutoMapper;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Dto.registry;
-using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Dto.Common;
+using GameLibraryV2.Dto.Create;
+using GameLibraryV2.Dto.create;
 
 namespace GameLibraryV2.Helper
 {
@@ -45,6 +46,7 @@ namespace GameLibraryV2.Helper
             CreateMap<JustIdDto, Tag>();
 
             //Create DTO
+            CreateMap<AgeRatingCreateDto, AgeRating>();
             CreateMap<DeveloperCreateDto, Developer>();
             CreateMap<GameCreateDto, Game>();
             CreateMap<GenreCreateDto, Genre>();

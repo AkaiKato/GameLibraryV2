@@ -74,7 +74,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="userCreate"></param>
         /// <returns></returns>
-        [HttpPost]
+        /*[HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult CreateUser([FromBody] UserCreateDto userCreate)
@@ -129,7 +129,7 @@ namespace GameLibraryV2.Controllers
             }
 
             return Ok("Successfully created");
-        }
+        }*/
 
         /// <summary>
         /// Return all users by specified role

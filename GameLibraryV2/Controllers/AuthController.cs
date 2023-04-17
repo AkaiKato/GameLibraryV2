@@ -3,7 +3,6 @@ using GameLibraryV2.Dto.registry;
 using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
-using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -64,7 +63,6 @@ namespace GameLibraryV2.Controllers
 
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(userCreate.Password);
             userMap.Password = passwordHash;
-
 
             userMap.Nickname = userCreate.Nickname;
             userMap.Age = userCreate.Age;

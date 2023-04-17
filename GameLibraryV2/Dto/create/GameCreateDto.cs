@@ -1,4 +1,5 @@
 ﻿using GameLibraryV2.Dto.Common;
+using GameLibraryV2.Models;
 
 namespace GameLibraryV2.Dto.create
 {
@@ -6,17 +7,19 @@ namespace GameLibraryV2.Dto.create
     {
         public string Name { get; set; } = null!;
 
+        public string Status { get; set; } = null!;
+
         public DateTime ReleaseDate { get; set; }
 
         public string? Description { get; set; }
 
-        public string? AgeRating { get; set; }
+        public AgeRating AgeRating { get; set; } = null!;
 
         public bool NSFW { get; set; }
 
         public string Type { get; set; } = null!;
 
-        public string? AveragePlayTime { get; set; }
+        public double? AveragePlayTime { get; set; }
 
         public SystemRequirementsMinCreateDto SystemRequirementsMin { get; set; } = null!;
 

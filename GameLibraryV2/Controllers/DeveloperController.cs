@@ -68,7 +68,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="developerId"></param>
         /// <returns></returns>
-        [HttpGet("{developerId}/Games")]
+        [HttpGet("{developerId}/games")]
         [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
         [ProducesResponseType(400)]
         public IActionResult GetDeveloperGemes(int developerId)
@@ -124,7 +124,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="developerUpdate"></param>
         /// <returns></returns>
-        [HttpPut("updateDeveloper")]
+        [HttpPut("/updateDeveloper")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult UpdateDeveloperInfo([FromBody] CommonUpdate developerUpdate)
@@ -161,7 +161,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="developerId"></param>
         /// <param name="pic"></param>
         /// <returns></returns>
-        [HttpPut("uploadDeveloperPicture")]
+        [HttpPut("/uploadDeveloperPicture")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult UploadDeveloperPicture([FromQuery] int developerId, IFormFile pic)
@@ -216,7 +216,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="developerId"></param>
         /// <param name="pic"></param>
         /// <returns></returns>
-        [HttpPut("uploadDeveloperMiniPicture")]
+        [HttpPut("/uploadDeveloperMiniPicture")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult UploadDeveloperMiniPicture([FromQuery] int developerId, IFormFile pic)
@@ -269,7 +269,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="developerDelete"></param>
         /// <returns></returns>
-        [HttpDelete("deleteDeveloper")]
+        [HttpDelete("/deleteDeveloper")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult DeleteUser([FromBody] JustIdDto developerDelete)

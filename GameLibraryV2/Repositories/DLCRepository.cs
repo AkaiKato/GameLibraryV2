@@ -16,7 +16,11 @@ namespace GameLibraryV2.Repositories
 
         public DLC GetDLCConnById(int parentGameId, int dlcGame)
         {
-            return dataContext.DLCs.Include(p => p.ParentGame).Include(d => d.DLCGame).Where(d => d.ParentGame.Id == parentGameId && d.DLCGame.Id == dlcGame).FirstOrDefault()!;
+            return dataContext.DLCs
+                .Include(p => p.ParentGame)
+                .Include(d => d.DLCGame)
+                .Where(d => d.ParentGame.Id == parentGameId && d.DLCGame.Id == dlcGame)
+                .FirstOrDefault()!;
         }
 
         public bool DLCExists(int parentGameId, int dlcGameId)

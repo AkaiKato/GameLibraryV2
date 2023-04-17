@@ -1,4 +1,5 @@
 ﻿using GameLibraryV2.Data;
+using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using Microsoft.EntityFrameworkCore;
@@ -14,47 +15,67 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
-        public ICollection<Game> GetGames()
+        public PagedList<Game> GetGames(SearchParameters searchParameters)
         {
-            return dataContext.Games.Select(p => new Game
-            {
-                Id = p.Id,
-                Name = p.Name,
-                PicturePath = p.PicturePath,
-                ReleaseDate = p.ReleaseDate,
-                Description = p.Description,
-                AgeRating = p.AgeRating,
-                NSFW = p.NSFW,
-                Type = p.Type,
-                AveragePlayTime = p.AveragePlayTime,
-                Rating = p.Rating,
-                Developers = p.Developers.Select(t => new Developer
+            var games = dataContext.Games
+                .Where(g => g.ReleaseDate.Year >= searchParameters.MinYearOfRelease
+                && g.ReleaseDate.Year <= searchParameters.MaxYearOfRelease
+                && g.AveragePlayTime >= searchParameters.MinPlayTime
+                && g.AveragePlayTime <= searchParameters.MaxPlayTime
+                && g.Rating.TotalRating >= searchParameters.MinRating
+                && g.Rating.TotalRating <= searchParameters.MaxRating)
+                .Select(p => new Game
                 {
-                    Id = t.Id,
-                    Name = t.Name,
-                }).ToList(),
-                Publishers = p.Publishers.Select(t => new Publisher 
-                { 
-                    Id = t.Id,
-                    Name = t.Name,
-                }).ToList(),
-                Platforms = p.Platforms.Select(t => new Platform
-                { 
-                    Id = t.Id,
-                    Name = t.Name,
-                }).ToList(),
-                Genres = p.Genres.Select(t => new Genre
-                { 
-                    Id = t.Id,
-                    Name = t.Name,
-                }).ToList(),
-                Tags = p.Tags.Select(t => new Tag 
-                { 
-                    Id = t.Id,
-                    Name = t.Name,
-                }).ToList(),
+                    Id = p.Id,
+                    Name = p.Name,
+                    PicturePath = p.PicturePath,
+                    Status = p.Status,
+                    ReleaseDate = p.ReleaseDate,
+                    Description = p.Description,
+                    AgeRating = p.AgeRating,
+                    NSFW = p.NSFW,
+                    Type = p.Type,
+                    AveragePlayTime = p.AveragePlayTime,
+                    Rating = p.Rating,
+                    Developers = p.Developers.Select(t => new Developer
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                    Publishers = p.Publishers.Select(t => new Publisher
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                    Platforms = p.Platforms.Select(t => new Platform
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                    Genres = p.Genres.Select(t => new Genre
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                    Tags = p.Tags.Select(t => new Tag
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                })
+                .OrderByDescending(x => x.Rating.TotalRating).ToList();
+            if (searchParameters.Status != null)
+            {
+                games = games.Where(g => searchParameters.Status.Contains(g.Status.ToLower())).ToList();
+            }
 
-            }).ToList();
+            if(searchParameters.Type != null)
+            {
+                games = games.Where(g => searchParameters.Type.Contains(g.Type.ToLower())).ToList();
+            }
+            
+            return PagedList<Game>.ToPagedList(games.AsQueryable(), searchParameters.PageNumber, searchParameters.PageSize) ;
+           
         }
 
         public bool GameExists(int gameId)
@@ -74,35 +95,74 @@ namespace GameLibraryV2.Repositories
 
         public Game GetGameById(int gameId)
         {
-            return dataContext.Games.Include(d => d.DLCs)!.ThenInclude(dg => dg.DLCGame).Include(d => d.Developers).
-                Include(p => p.Publishers).Include(p => p.Platforms).Include(g => g.Genres).
-                Include(t => t.Tags).Include(p => p.ParentGame).Include(s => s.SystemRequirementsMin).
-                Include(s => s.SystemRequirementsMax).Include(r => r.Rating).Where(x => x.Id == gameId).FirstOrDefault()!;
+            return dataContext.Games
+                .Include(d => d.DLCs)!
+                .ThenInclude(dg => dg.DLCGame)
+                .Include(a => a.AgeRating)
+                .Include(d => d.Developers)
+                .Include(p => p.Publishers)
+                .Include(p => p.Platforms)
+                .Include(g => g.Genres)
+                .Include(t => t.Tags)
+                .Include(p => p.ParentGame)
+                .Include(s => s.SystemRequirementsMin)
+                .Include(s => s.SystemRequirementsMax)
+                .Include(r => r.Rating)
+                .Where(x => x.Id == gameId)
+                .FirstOrDefault()!;
         }
 
         public Game GetGameByName(string gameName)
         {
-            return dataContext.Games.Include(d => d.DLCs)!.ThenInclude(dg => dg.DLCGame).Include(d => d.Developers).
-                Include(p => p.Publishers).Include(p => p.Platforms).Include(g => g.Genres).
-                Include(t => t.Tags).Include(p => p.ParentGame).Include(s => s.SystemRequirementsMin).
-                Include(s => s.SystemRequirementsMax).Include(r => r.Rating).Where(x => x.Name.Trim().ToLower() == gameName.Trim().ToLower()).FirstOrDefault()!;
+            return dataContext.Games
+                .Include(d => d.DLCs)!
+                .ThenInclude(dg => dg.DLCGame)
+                .Include(a => a.AgeRating)
+                .Include(d => d.Developers)
+                .Include(p => p.Publishers)
+                .Include(p => p.Platforms)
+                .Include(g => g.Genres)
+                .Include(t => t.Tags)
+                .Include(p => p.ParentGame)
+                .Include(s => s.SystemRequirementsMin)
+                .Include(s => s.SystemRequirementsMax)
+                .Include(r => r.Rating)
+                .Where(x => x.Name.Trim().ToLower() == gameName.Trim().ToLower())
+                .FirstOrDefault()!;
         }
 
         public Game GetDLCById(int gameId)
         {
-            return dataContext.Games.Include(d => d.DLCs)!.ThenInclude(dg => dg.DLCGame).Include(d => d.Developers).
-                Include(p => p.Publishers).Include(p => p.Platforms).Include(g => g.Genres).
-                Include(t => t.Tags).Include(p => p.ParentGame).Include(s => s.SystemRequirementsMin).
-                Include(s => s.SystemRequirementsMax).Include(r => r.Rating).
-                Where(x => x.Id == gameId && x.Type.Trim().ToLower() == "dlc".Trim().ToLower()).FirstOrDefault()!;
+            return dataContext.Games
+                .Include(a => a.AgeRating)
+                .Include(d => d.Developers)
+                .Include(p => p.Publishers)
+                .Include(p => p.Platforms)
+                .Include(g => g.Genres)
+                .Include(t => t.Tags)
+                .Include(p => p.ParentGame)
+                .Include(s => s.SystemRequirementsMin)
+                .Include(s => s.SystemRequirementsMax)
+                .Include(r => r.Rating)
+                .Where(x => x.Id == gameId && x.Type.Trim().ToLower() == "dlc".Trim().ToLower())
+                .FirstOrDefault()!;
         }
 
         public Game GetDLCByName(string dlcName)
         {
-            return dataContext.Games.Include(d => d.Developers).Include(p => p.Publishers).
-                Include(p => p.Platforms).Include(g => g.Genres).Include(t => t.Tags).Include(p => p.ParentGame).
-                Include(s => s.SystemRequirementsMin).Include(s => s.SystemRequirementsMax).
-                Where(g => g.Name == dlcName && g.Type.ToLower() == "dlc").FirstOrDefault()!;
+            return dataContext.Games
+                .Include(a => a.AgeRating)
+                .Include(d => d.Developers)
+                .Include(p => p.Publishers)
+                .Include(p => p.Platforms)
+                .Include(g => g.Genres)
+                .Include(t => t.Tags)
+                .Include(p => p.ParentGame)
+                .Include(s => s.SystemRequirementsMin)
+                .Include(s => s.SystemRequirementsMax)
+                .Include(r => r.Rating)
+                .Where(g => g.Name == dlcName && g.Type.ToLower() == "dlc")
+                .FirstOrDefault()!;
         }
 
         public IList<Game> GetDLCs()
@@ -112,6 +172,7 @@ namespace GameLibraryV2.Repositories
                 Id = g.Id,
                 Name = g.Name,
                 ReleaseDate = g.ReleaseDate,
+                Status = g.Status,
                 Description = g.Description,
                 AgeRating = g.AgeRating,
                 NSFW = g.NSFW,
@@ -145,6 +206,48 @@ namespace GameLibraryV2.Repositories
             }).ToList();
         }
 
+        public IList<Game> GetGamesByAgeRating(int ageRatingId)
+        {
+            return dataContext.Games.Include(a => a.AgeRating)
+                .Select(g => new Game {
+                    Id = g.Id,
+                    Name = g.Name,
+                    PicturePath = g.PicturePath,
+                    Status = g.Status,
+                    ReleaseDate = g.ReleaseDate,
+                    Description = g.Description,
+                    NSFW = g.NSFW,
+                    Type = g.Type,
+                    AveragePlayTime = g.AveragePlayTime,
+                    Rating = g.Rating,
+                    Developers = g.Developers.Select(t => new Developer
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                    Publishers = g.Publishers.Select(t => new Publisher
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                    Platforms = g.Platforms.Select(t => new Platform
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                    Genres = g.Genres.Select(t => new Genre
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                    Tags = g.Tags.Select(t => new Tag
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                }).ToList();
+        }
+
         public IList<Game> GetGamesByDeveloper(int developerId)
         {
             return dataContext.Games.Where(g => g.Developers.Any(d => d.Id == developerId)).Select(g => new Game
@@ -152,6 +255,7 @@ namespace GameLibraryV2.Repositories
                 Id = g.Id,
                 Name = g.Name,
                 PicturePath = g.PicturePath,
+                Status = g.Status,
                 ReleaseDate = g.ReleaseDate,
                 Description = g.Description,
                 AgeRating = g.AgeRating,
@@ -194,6 +298,7 @@ namespace GameLibraryV2.Repositories
                 Id = g.Id,
                 Name = g.Name,
                 PicturePath = g.PicturePath,
+                Status = g.Status,
                 ReleaseDate = g.ReleaseDate,
                 Description = g.Description,
                 AgeRating = g.AgeRating,
@@ -236,6 +341,7 @@ namespace GameLibraryV2.Repositories
                 Id = g.Id,
                 Name = g.Name,
                 PicturePath = g.PicturePath,
+                Status = g.Status,
                 ReleaseDate = g.ReleaseDate,
                 Description = g.Description,
                 AgeRating = g.AgeRating,
@@ -278,6 +384,7 @@ namespace GameLibraryV2.Repositories
                 Id = g.Id,
                 Name = g.Name,
                 PicturePath = g.PicturePath,
+                Status = g.Status,
                 ReleaseDate = g.ReleaseDate,
                 Description = g.Description,
                 AgeRating = g.AgeRating,
@@ -320,6 +427,7 @@ namespace GameLibraryV2.Repositories
                 Id = g.Id,
                 Name = g.Name,
                 PicturePath = g.PicturePath,
+                Status = g.Status,
                 ReleaseDate = g.ReleaseDate,
                 Description = g.Description,
                 AgeRating = g.AgeRating,

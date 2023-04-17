@@ -1,4 +1,5 @@
 ﻿using GameLibraryV2.Data;
+using GameLibraryV2.Helper;
 using GameLibraryV2.Models;
 
 namespace GameLibraryV2
@@ -16,6 +17,44 @@ namespace GameLibraryV2
         {
             if (!dataContext.Games.Any())
             {
+                //AgeRatings
+                var No = new AgeRating()
+                {
+                    Name = "rating expected",
+                };
+                var EC = new AgeRating()
+                {
+                    Name = "EC",
+                };
+                var E = new AgeRating()
+                {
+                    Name = "E",
+                };
+                var E10 = new AgeRating()
+                {
+                    Name = "E10+",
+                };
+                var T = new AgeRating()
+                {
+                    Name = "T",
+                };
+                var M = new AgeRating()
+                {
+                    Name = "M",
+                };
+                var AO = new AgeRating()
+                {
+                    Name = "AO",
+                };
+                var RP = new AgeRating()
+                {
+                    Name = "RP",
+                };
+                var RP17 = new AgeRating()
+                {
+                    Name = "RP17+",
+                };
+                //----------------------------------------------------
                 //roles
                 var admin = new Role()
                 {
@@ -31,7 +70,7 @@ namespace GameLibraryV2
                 var userRail = new User()
                 {
                     Email = "rail201@yandex.ru",
-                    Password = "password",
+                    Password = BCrypt.Net.BCrypt.HashPassword("password"),
                     Nickname = "SunPatterns",
                     Age = 21,
                     Gender = "Male",
@@ -43,7 +82,7 @@ namespace GameLibraryV2
                 var uservalera = new User()
                 {
                     Email = "ma6upa@yandex.ru",
-                    Password = "password",
+                    Password = BCrypt.Net.BCrypt.HashPassword("password"),
                     Nickname = "Ma6upa",
                     Age = 21,
                     Gender = "Male",
@@ -55,7 +94,7 @@ namespace GameLibraryV2
                 var userThird = new User()
                 {
                     Email = "third@yandex.ru",
-                    Password = "password",
+                    Password = BCrypt.Net.BCrypt.HashPassword("password"),
                     Nickname = "third",
                     Age = 21,
                     Gender = "Male",
@@ -329,10 +368,11 @@ namespace GameLibraryV2
                 {
                     Name = "Euro Truck Simulator 2",
                     PicturePath = $"\\Images\\gamePicture\\Def.jpg",
+                    Status = Enums.Status.released.ToString(),
                     ReleaseDate = new DateTime(2012, 10, 18),
                     Description = "Станьте королем европейских дорог — водителем грузовика, который доставляет важные грузы на немалые расстояния! Вас ждут десятки городов Великобритании, Бельгии, Германии, Италии, Нидерландов, Польши и не только. Испытайте свои умения, выносливость и скорость.",
-                    AgeRating = "Everyone",
-                    AveragePlayTime = "44.5",
+                    AgeRating = E10,
+                    AveragePlayTime = 44.5,
                     NSFW = false,
                     Type = "Game",
                     SystemRequirementsMin = new SystemRequirementsMin
@@ -370,10 +410,11 @@ namespace GameLibraryV2
                 {
                     Name = "Euro Truck Simulator 2 - Going East",
                     PicturePath = $"\\Images\\gamePicture\\Def.jpg",
+                    Status = Enums.Status.released.ToString(),
                     ReleaseDate = new DateTime(2013, 09, 20),
                     Description = "Станьте королем европейских дорог — водителем грузовика, который доставляет важные грузы на немалые расстояния! Вас ждут десятки городов Великобритании, Бельгии, Германии, Италии, Нидерландов, Польши и не только. Испытайте свои умения, выносливость и скорость.",
-                    AgeRating = "Everyone",
-                    AveragePlayTime = "44.5",
+                    AgeRating = E10,
+                    AveragePlayTime = 44.5,
                     NSFW = false,
                     Type = "DLC",
                     ParentGame = euroTruck,
@@ -412,10 +453,11 @@ namespace GameLibraryV2
                 {
                     Name = "Euro Truck Simulator 2 - Scandinavia",
                     PicturePath = $"\\Images\\gamePicture\\Def.jpg",
+                    Status = Enums.Status.released.ToString(),
                     ReleaseDate = new DateTime(2015, 05, 6),
                     Description = "Станьте королем европейских дорог — водителем грузовика, который доставляет важные грузы на немалые расстояния! Вас ждут десятки городов Великобритании, Бельгии, Германии, Италии, Нидерландов, Польши и не только. Испытайте свои умения, выносливость и скорость.",
-                    AgeRating = "Everyone",
-                    AveragePlayTime = "44.5",
+                    AgeRating = E10,
+                    AveragePlayTime = 44.5,
                     NSFW = false,
                     Type = "DLC",
                     ParentGame = euroTruck,
@@ -454,10 +496,11 @@ namespace GameLibraryV2
                 {
                     Name = "Euro Truck Simulator 2 - High Power Cargo Pack",
                     PicturePath = $"\\Images\\gamePicture\\Def.jpg",
+                    Status = Enums.Status.released.ToString(),
                     ReleaseDate = new DateTime(2014, 08, 14),
                     Description = "Станьте королем европейских дорог — водителем грузовика, который доставляет важные грузы на немалые расстояния! Вас ждут десятки городов Великобритании, Бельгии, Германии, Италии, Нидерландов, Польши и не только. Испытайте свои умения, выносливость и скорость.",
-                    AgeRating = "Everyone",
-                    AveragePlayTime = "44.5",
+                    AgeRating = E10,
+                    AveragePlayTime = 44.5,
                     NSFW = false,
                     Type = "DLC",
                     ParentGame = euroTruck,
@@ -535,10 +578,11 @@ namespace GameLibraryV2
                 {
                     Name = "Hollow Knight",
                     PicturePath = $"\\Images\\gamePicture\\Def.jpg",
+                    Status = Enums.Status.released.ToString(),
                     ReleaseDate = new DateTime(2017, 02, 24),
                     Description = "Hollow Knight – это эпическое приключение в огромном разрушенном королевстве, полном насекомых и героев. Исследуйте извилистые пещеры, сражайтесь с порчеными тварями и заводите дружбу со странными жуками – все это в классической двухмерной ручной рисовке.",
-                    AgeRating = "Everyone",
-                    AveragePlayTime = "26.5",
+                    AgeRating = E10,
+                    AveragePlayTime = 26.5,
                     NSFW = false,
                     Type = "Game",
                     SystemRequirementsMin = new SystemRequirementsMin
@@ -580,10 +624,11 @@ namespace GameLibraryV2
                 {
                     Name = "Hollow Knight: HiddenDreams",
                     PicturePath = $"\\Images\\gamePicture\\Def.jpg",
+                    Status = Enums.Status.released.ToString(),
                     ReleaseDate = new DateTime(2017, 06, 03),
                     Description = "Hollow Knight – это эпическое приключение в огромном разрушенном королевстве, полном насекомых и героев. Исследуйте извилистые пещеры, сражайтесь с порчеными тварями и заводите дружбу со странными жуками – все это в классической двухмерной ручной рисовке.",
-                    AgeRating = "Everyone",
-                    AveragePlayTime = "30 mins",
+                    AgeRating = E10,
+                    AveragePlayTime = 0.5,
                     NSFW = false,
                     Type = "DLC",
                     ParentGame = hollowKnight,
@@ -626,10 +671,11 @@ namespace GameLibraryV2
                 {
                     Name = "Hollow Knight: The Grimm Troupe",
                     PicturePath = $"\\Images\\gamePicture\\Def.jpg",
+                    Status = Enums.Status.released.ToString(),
                     ReleaseDate = new DateTime(2017, 10, 26),
                     Description = "Hollow Knight – это эпическое приключение в огромном разрушенном королевстве, полном насекомых и героев. Исследуйте извилистые пещеры, сражайтесь с порчеными тварями и заводите дружбу со странными жуками – все это в классической двухмерной ручной рисовке.",
-                    AgeRating = "Everyone",
-                    AveragePlayTime = "2",
+                    AgeRating = E10,
+                    AveragePlayTime = 2,
                     NSFW = false,
                     Type = "DLC",
                     ParentGame = hollowKnight,
@@ -672,10 +718,11 @@ namespace GameLibraryV2
                 {
                     Name = "Hollow Knight: Godmaster",
                     PicturePath = $"\\Images\\gamePicture\\Def.jpg",
+                    Status = Enums.Status.released.ToString(),
                     ReleaseDate = new DateTime(2018, 06, 23),
                     Description = "Hollow Knight – это эпическое приключение в огромном разрушенном королевстве, полном насекомых и героев. Исследуйте извилистые пещеры, сражайтесь с порчеными тварями и заводите дружбу со странными жуками – все это в классической двухмерной ручной рисовке.",
-                    AgeRating = "Everyone",
-                    AveragePlayTime = "26.5",
+                    AgeRating = E10,
+                    AveragePlayTime = 26.5,
                     NSFW = false,
                     Type = "DLC",
                     ParentGame = hollowKnight,
@@ -764,10 +811,11 @@ namespace GameLibraryV2
                 {
                     Name = "Hungry Knight",
                     PicturePath = $"\\Images\\gamePicture\\Def.jpg",
+                    Status = Enums.Status.released.ToString(),
                     ReleaseDate = new DateTime(2015, 02, 24),
                     Description = "A challenging action game. It's hard, but you can do it! Be brave.",
-                    AgeRating = "Everyone",
-                    AveragePlayTime = "1",
+                    AgeRating = E10,
+                    AveragePlayTime = 1,
                     NSFW = false,
                     Type = "Game",
                     SystemRequirementsMin = new SystemRequirementsMin
@@ -799,10 +847,11 @@ namespace GameLibraryV2
                 {
                     Name = "Enter the Gungeon",
                     PicturePath = $"\\Images\\gamePicture\\Def.jpg",
+                    Status = Enums.Status.released.ToString(),
                     ReleaseDate = new DateTime(2016, 04, 5),
                     Description = "Enter the Gungeon - игра жанра “пулевая завеса в подземелье”, в которой ищущие спасения неудачники стреляют, грабят, перекатываются и опрокидывают столы, чтобы добраться до легендарного сокровища Оружелья: оружия, которое может убить прошлое.",
-                    AgeRating = "Teen",
-                    AveragePlayTime = "22.5",
+                    AgeRating = E10,
+                    AveragePlayTime = 22.5,
                     NSFW = false,
                     Type = "Game",
                     SystemRequirementsMin = new SystemRequirementsMin
@@ -842,10 +891,11 @@ namespace GameLibraryV2
                 {
                     Name = "Cult of the Lamb",
                     PicturePath = $"\\Images\\gamePicture\\Def.jpg",
+                    Status = Enums.Status.released.ToString(),
                     ReleaseDate = new DateTime(2022, 08, 11),
                     Description = "Взращивайте собственный культ в землях лжепророков, совершайте походы по таинственным уголкам леса, объединяйте вокруг себя верных последователей и несите своё слово в массы, чтобы сделать свой культ единственным.",
-                    AgeRating = "Teen",
-                    AveragePlayTime = "14",
+                    AgeRating = E10,
+                    AveragePlayTime = 14,
                     NSFW = false,
                     Type = "Game",
                     SystemRequirementsMin = new SystemRequirementsMin
@@ -885,10 +935,11 @@ namespace GameLibraryV2
                 {
                     Name = "Don't Starve Together",
                     PicturePath = $"\\Images\\gamePicture\\Def.jpg",
+                    Status = Enums.Status.released.ToString(),
                     ReleaseDate = new DateTime(2016, 04, 21),
                     Description = "Fight, Farm, Build and Explore Together in the standalone multiplayer expansion to the uncompromising wilderness survival game, Don't Starve.",
-                    AgeRating = "Teen",
-                    AveragePlayTime = "35.5",
+                    AgeRating = E10,
+                    AveragePlayTime = 35.5,
                     NSFW = false,
                     Type = "Game",
                     SystemRequirementsMin = new SystemRequirementsMin
@@ -975,6 +1026,8 @@ namespace GameLibraryV2
                         Favourite = false,
                     },
                 };
+
+                dataContext.AgeRating.AddRange(EC, E, E10, T, M, AO, RP, RP17);
 
                 dataContext.Developers.AddRange(teamCherryDev, braceYourSelfGamesDev, kleiEntertaimentDev, dodgeRollDev, massiveMonsterDev, scsSoftwareDev);
 

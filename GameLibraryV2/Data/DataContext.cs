@@ -11,6 +11,8 @@ namespace GameLibraryV2.Data
 
         }
 
+        public DbSet<AgeRating> AgeRating { get; set; }
+
         public DbSet<Developer> Developers { get; set; }
 
         public DbSet<DLC> DLCs { get; set; }

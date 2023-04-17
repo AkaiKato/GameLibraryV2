@@ -20,7 +20,8 @@ namespace GameLibraryV2.Repositories
 
         public bool DeveloperNameAlreadyExists(int developerId, string developerName)
         {
-            return dataContext.Developers.Any(d => d.Name.Trim().ToLower() == developerName.Trim().ToLower() && d.Id != developerId);
+            return dataContext.Developers.Any(d => d.Name.Trim().ToLower() == developerName.Trim().ToLower() 
+            && d.Id != developerId);
         }
 
         public Developer GetDeveloperById(int developerId)

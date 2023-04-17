@@ -28,5 +28,11 @@
             user,
             admin,
         }
+
+        public enum Status
+        {
+            released,
+            announsed
+        }
     }
 }

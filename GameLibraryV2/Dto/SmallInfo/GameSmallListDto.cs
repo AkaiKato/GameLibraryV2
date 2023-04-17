@@ -10,6 +10,8 @@ namespace GameLibraryV2.Dto.smallInfo
 
         public string PicturePath { get; set; } = "Def.jpg";
 
+        public string Status { get; set; } = null!;
+
         public DateTime ReleaseDate { get; set; }
 
         public string? Description { get; set; }

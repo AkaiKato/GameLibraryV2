@@ -12,6 +12,20 @@ namespace GameLibraryV2.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AgeRating",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AgeRating", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Developers",
                 columns: table => new
                 {
@@ -191,12 +205,13 @@ namespace GameLibraryV2.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PicturePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AgeRating = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AgeRatingId = table.Column<int>(type: "int", nullable: false),
                     NSFW = table.Column<bool>(type: "bit", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AveragePlayTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AveragePlayTime = table.Column<double>(type: "float", nullable: true),
                     ParentGameId = table.Column<int>(type: "int", nullable: true),
                     SystemRequirementsMinId = table.Column<int>(type: "int", nullable: false),
                     SystemRequirementsMaxId = table.Column<int>(type: "int", nullable: false),
@@ -205,6 +220,12 @@ namespace GameLibraryV2.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Games", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Games_AgeRating_AgeRatingId",
+                        column: x => x.AgeRatingId,
+                        principalTable: "AgeRating",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Games_Games_ParentGameId",
                         column: x => x.ParentGameId,
@@ -530,6 +551,11 @@ namespace GameLibraryV2.Migrations
                 column: "PublishersId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Games_AgeRatingId",
+                table: "Games",
+                column: "AgeRatingId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Games_ParentGameId",
                 table: "Games",
                 column: "ParentGameId");
@@ -641,6 +667,9 @@ namespace GameLibraryV2.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "AgeRating");
 
             migrationBuilder.DropTable(
                 name: "Ratings");

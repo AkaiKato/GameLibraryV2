@@ -24,6 +24,7 @@ builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 builder.Services.AddTransient<Seed>();
+builder.Services.AddScoped<IAgeRatingRepository, AgeRatingRepository>();
 builder.Services.AddScoped<IDeveloperRepository, DeveloperRepository>();
 builder.Services.AddScoped<IDLCRepository, DLCRepository>();
 builder.Services.AddScoped<IFriendRepository, FriendRepository>();
