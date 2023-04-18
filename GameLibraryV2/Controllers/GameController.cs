@@ -92,7 +92,7 @@ namespace GameLibraryV2.Controllers
 
             Response.Headers.Add("X-pagination", JsonSerializer.Serialize(metadata));
 
-            return Ok(Json(Games));
+            return Ok(Games);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace GameLibraryV2.Controllers
         public IActionResult GetGameById(int gameId)
         {
             if (!gameRepository.GameExists(gameId))
-                return NotFound();
+                return NotFound($"Not found game with such id {gameId}");
 
             var Game = mapper.Map<GameDto>(gameRepository.GetGameById(gameId));
 
@@ -127,14 +127,14 @@ namespace GameLibraryV2.Controllers
         public IActionResult GetGameReview(int gameId)
         {
             if (!gameRepository.GameExists(gameId))
-                return NotFound();
+                return NotFound($"Not found game with such id {gameId}");
 
             var Review = mapper.Map<List<ReviewDto>>(reviewRepository.GetGameReviews(gameId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(Review));
+            return Ok(Review);
         }
 
         /// <summary>
@@ -151,10 +151,7 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if (gameRepository.GetGameByName(gameCreate.Name) != null)
-            {
-                ModelState.AddModelError("", "Game with this name already exists");
                 return BadRequest("Game with this name already exists");
-            }
 
             if (gameCreate.Type.Trim().ToLower() != Enums.Types.game.ToString() 
                 && gameCreate.Type.Trim().ToLower() != Enums.Types.dlc.ToString())
@@ -252,13 +249,10 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if (!gameRepository.GameExists(gameUpdate.Id))
-                return NotFound();
+                return NotFound($"Not found game with such id {gameUpdate.Id}");
 
             if(gameRepository.GameNameAlreadyInUse(gameUpdate.Id, gameUpdate.Name))
-            {
-                ModelState.AddModelError("", $"Name already in use");
-                return StatusCode(422, ModelState);
-            }
+                return BadRequest("Name already in use");
 
             if (gameUpdate.Status.Trim().ToLower() != Enums.Status.released.ToString()
                 && gameUpdate.Status.Trim().ToLower() != Enums.Status.announsed.ToString())
@@ -362,57 +356,6 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Update Game Picture
-        /// </summary>
-        /// <param name="gameId"></param>
-        /// <param name="pic"></param>
-        /// <returns></returns>
-        [HttpPut("upload")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public IActionResult UploadGamePicture([FromQuery] int gameId, IFormFile pic)
-        {
-            string[] permittedExtensions = { ".jpg", ".jpeg", ".png" };
-
-            if (pic == null)
-                return BadRequest(ModelState);
-
-            var ext = Path.GetExtension(pic.FileName).ToLowerInvariant();
-            if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
-            {
-                ModelState.AddModelError("", "Unsupported extension");
-                return StatusCode(422, ModelState);
-            }
-
-            if (!gameRepository.GameExists(gameId))
-                return NotFound();
-
-            var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            var game = gameRepository.GetGameById(gameId);
-            var newfilePath = $"\\Images\\gamePicture\\{unique}{ext}";
-            var oldfilePath = game.PicturePath;
-
-            using var stream = new FileStream(newfilePath, FileMode.Create);
-            pic.CopyTo(stream);
-
-            game!.PicturePath = newfilePath;
-
-            if (!gameRepository.UpdateGame(game))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
-
-            if (oldfilePath.Trim() != $"\\Images\\gamePicture\\Def.jpg")
-            {
-                FileInfo f = new(oldfilePath);
-                f.Delete();
-            }
-
-            return Ok("Successfully updated");
-        }
-
-        /// <summary>
         /// Delete specified game
         /// </summary>
         /// <param name="gameDelete"></param>
@@ -423,12 +366,12 @@ namespace GameLibraryV2.Controllers
         public IActionResult DeleteGame([FromBody] JustIdDto gameDelete)
         {
             if(!gameRepository.GameExists(gameDelete.Id))
-                return NotFound();
+                return NotFound($"Not found game with such id {gameDelete.Id}");
 
             var game = gameRepository.GetGameById(gameDelete.Id);
 
             if (!ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(ModelState);
 
             if (game.DLCs != null)
             {

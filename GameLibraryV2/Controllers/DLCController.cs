@@ -36,7 +36,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(DLC));
+            return Ok(DLC);
         }
 
         /// <summary>
@@ -50,14 +50,14 @@ namespace GameLibraryV2.Controllers
         public IActionResult GetDLCById(int dlcId)
         {
             if(!gameRepository.DLCExists(dlcId))
-                return NotFound();
+                return NotFound($"Not found dlc with such id {dlcId}");
 
             var DLC = mapper.Map<GameDto>(gameRepository.GetDLCById(dlcId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(DLC));
+            return Ok(DLC);
         }
 
         /// <summary>
@@ -71,19 +71,16 @@ namespace GameLibraryV2.Controllers
         public IActionResult CreateGameDlc([FromBody] DlcUpdate addDlc)
         {
             if (addDlc == null)
-                return BadRequest();
+                return BadRequest(ModelState);
 
             if (!gameRepository.GameExists(addDlc.ParentGameId))
-                return NotFound();
+                return NotFound($"Not found game with such id {addDlc.ParentGameId}");
 
             if (!gameRepository.DLCExists(addDlc.DLCGameId))
-                return NotFound();
+                return NotFound($"Not found dlc with such id {addDlc.ParentGameId}");
 
             if (dlcRepository.DLCExists(addDlc.ParentGameId, addDlc.DLCGameId))
-            {
-                ModelState.AddModelError("", "DLC already have parent Game");
-                return StatusCode(500, ModelState);
-            }
+                return BadRequest("DLC already have parent Game");
 
             var dlcGame = gameRepository.GetDLCById(addDlc.DLCGameId);
             var parGame = gameRepository.GetGameById(addDlc.ParentGameId);
@@ -111,13 +108,13 @@ namespace GameLibraryV2.Controllers
         public IActionResult DeleteGameDlc([FromBody] DlcUpdate deleteDlc)
         {
             if (deleteDlc == null)
-                return BadRequest();
+                return BadRequest(ModelState);
 
             if (!gameRepository.GameExists(deleteDlc.ParentGameId))
-                return NotFound();
+                return NotFound($"Not found game with such id {deleteDlc.ParentGameId}");
 
             if (!gameRepository.DLCExists(deleteDlc.DLCGameId))
-                return NotFound();
+                return NotFound($"Not found dlc with such id {deleteDlc.DLCGameId}");
 
             var dlc = dlcRepository.GetDLCConnById(deleteDlc.ParentGameId, deleteDlc.DLCGameId);
 

@@ -38,7 +38,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(Genres));
+            return Ok(Genres);
         }
 
         /// <summary>
@@ -52,14 +52,14 @@ namespace GameLibraryV2.Controllers
         public IActionResult GetGenreById(int genreId) 
         {
             if(!genreRepository.GenreExists(genreId))
-                return NotFound();
+                return NotFound($"Not found genre with such id {genreId}");
 
             var Genre = mapper.Map<GenreDto>(genreRepository.GetGenreById(genreId));
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(Genre));
+            return Ok(Genre);
         }
 
         /// <summary>
@@ -73,14 +73,14 @@ namespace GameLibraryV2.Controllers
         public IActionResult GetGenreGames(int genreId)
         {
             if (!genreRepository.GenreExists(genreId))
-                return NotFound();
+                return NotFound($"Not found genre with such id {genreId}");
 
             var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByGenre(genreId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(Games));
+            return Ok(Games);
         }
 
         /// <summary>
@@ -99,10 +99,7 @@ namespace GameLibraryV2.Controllers
             var genre = genreRepository.GetGenreByName(genreCreate.Name);
 
             if (genre != null)
-            {
-                ModelState.AddModelError("", "Genre already exists");
-                return StatusCode(422, ModelState);
-            }
+                return BadRequest("Genre already exists");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -132,13 +129,13 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if (!genreRepository.GenreExists(genreUpdate.Id))
-                return NotFound();
+                return NotFound($"Not found genre with such id {genreUpdate.Id}");
 
             if (genreRepository.GenreNameAlredyInUse(genreUpdate.Id, genreUpdate.Name))
-            {
-                ModelState.AddModelError("", $"Name already in use");
-                return StatusCode(422, ModelState);
-            }
+                return BadRequest("Name already in use");
+
+            if(!ModelState.IsValid) 
+                return BadRequest(ModelState);
 
             var genre = genreRepository.GetGenreById(genreUpdate.Id);
 
@@ -165,12 +162,12 @@ namespace GameLibraryV2.Controllers
         public IActionResult DeleteGenre([FromBody] JustIdDto genreDelete)
         {
             if (!genreRepository.GenreExists(genreDelete.Id))
-                return NotFound();
+                return NotFound($"Not found genre with such id {genreDelete.Id}");
 
             var genre = genreRepository.GetGenreById(genreDelete.Id);
 
             if (!ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(ModelState);
 
             if (!genreRepository.DeleteGenre(genre))
             {

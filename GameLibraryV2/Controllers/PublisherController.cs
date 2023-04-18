@@ -5,7 +5,6 @@ using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
-using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -39,7 +38,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(Publisbhers));
+            return Ok(Publisbhers);
         }
 
         /// <summary>
@@ -53,14 +52,14 @@ namespace GameLibraryV2.Controllers
         public IActionResult GetPublisherById(int publisherId)
         {
             if (!publisherRepository.PublisherExists(publisherId))
-                return NotFound();
+                return NotFound($"Not found publisher with such id {publisherId}");
 
             var Publisbher = mapper.Map<PublisherDto>(publisherRepository.GetPublisherById(publisherId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(Publisbher));
+            return Ok(Publisbher);
         }
 
         /// <summary>
@@ -74,14 +73,14 @@ namespace GameLibraryV2.Controllers
         public IActionResult GetPublisherGames(int publisherId)
         {
             if (!publisherRepository.PublisherExists(publisherId))
-                return NotFound();
+                return NotFound($"Not found publisher with such id {publisherId}");
 
             var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByPublisher(publisherId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(Games));
+            return Ok(Games);
         }
 
         /// <summary>
@@ -100,10 +99,7 @@ namespace GameLibraryV2.Controllers
             var publisher = publisherRepository.GetPublisherByName(publisherCreate.Name);
 
             if (publisher != null)
-            {
-                ModelState.AddModelError("", "Publisher already exists");
-                return StatusCode(422, ModelState);
-            }
+                return BadRequest("Publisher already exists");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -133,13 +129,13 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if (!publisherRepository.PublisherExists(publisherUpdate.Id))
-                return NotFound();
+                return NotFound($"Not found publisher with such id {publisherUpdate.Id}");
 
             if (publisherRepository.PublisherNameAlreadyExists(publisherUpdate.Id, publisherUpdate.Name))
-            {
-                ModelState.AddModelError("", $"Name already in use");
-                return StatusCode(422, ModelState);
-            }
+                return BadRequest("Name already in use");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var developer = publisherRepository.GetPublisherById(publisherUpdate.Id);
 
@@ -156,113 +152,6 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Update publisher picture
-        /// </summary>
-        /// <param name="publisherId"></param>
-        /// <param name="pic"></param>
-        /// <returns></returns>
-        [HttpPut("uploadPublisherPicture")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public IActionResult UploadPublisherPicture([FromQuery] int publisherId, IFormFile pic)
-        {
-            string[] permittedExtensions = { ".jpg", ".jpeg", ".png" };
-
-            if (pic == null)
-                return BadRequest(ModelState);
-
-            var ext = Path.GetExtension(pic.FileName).ToLowerInvariant();
-            if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
-            {
-                ModelState.AddModelError("", "Unsupported extension");
-                return StatusCode(422, ModelState);
-            }
-
-            if (!publisherRepository.PublisherExists(publisherId))
-                return NotFound();
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            var publisher = publisherRepository.GetPublisherById(publisherId);
-            var newfilePath = $"\\Images\\publisherPicture\\{unique}{ext}";
-            var oldfilePath = publisher.PicturePath;
-
-            using var stream = new FileStream(newfilePath, FileMode.Create);
-            pic.CopyTo(stream);
-            publisher!.PicturePath = newfilePath;
-
-            if (!publisherRepository.UpdatePublisher(publisher))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
-
-            if (oldfilePath.Trim() != $"\\Images\\publisherPicture\\Def.jpg")
-            {
-                FileInfo f = new(oldfilePath);
-                f.Delete();
-            }
-
-
-            return Ok("Successfully updated");
-        }
-
-        /// <summary>
-        /// Update publisher mini picture
-        /// </summary>
-        /// <param name="publisherId"></param>
-        /// <param name="pic"></param>
-        /// <returns></returns>
-        [HttpPut("uploadPublisherMiniPicture")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public IActionResult UploadPublihserMiniPicture([FromQuery] int publisherId, IFormFile pic)
-        {
-            string[] permittedExtensions = { ".jpg", ".jpeg", ".png" };
-
-            if (pic == null)
-                return BadRequest(ModelState);
-
-            var ext = Path.GetExtension(pic.FileName).ToLowerInvariant();
-            if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
-            {
-                ModelState.AddModelError("", "Unsupported extension");
-                return StatusCode(422, ModelState);
-            }
-
-            if (!publisherRepository.PublisherExists(publisherId))
-                return NotFound();
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            var publisher = publisherRepository.GetPublisherById(publisherId);
-            var newfilePath = $"\\Images\\publisherMiniPicture\\{unique}{ext}";
-            var oldfilePath = publisher.MiniPicturePath;
-
-            using var stream = new FileStream(newfilePath, FileMode.Create);
-            pic.CopyTo(stream);
-            publisher!.MiniPicturePath = newfilePath;
-
-            if (!publisherRepository.UpdatePublisher(publisher))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
-
-            if (oldfilePath.Trim() != $"\\Images\\publisherMiniPicture\\Def.jpg")
-            {
-                FileInfo f = new(oldfilePath);
-                f.Delete();
-            }
-
-            return Ok("Successfully updated");
-        }
-
-        /// <summary>
         /// Delete specified publisher
         /// </summary>
         /// <param name="deletePublisher"></param>
@@ -273,12 +162,12 @@ namespace GameLibraryV2.Controllers
         public IActionResult DeletePublisher([FromBody] JustIdDto deletePublisher)
         {
             if (!publisherRepository.PublisherExists(deletePublisher.Id))
-                return NotFound();
+                return NotFound($"Not found publisher with such id {deletePublisher.Id}");
 
             var publisher = publisherRepository.GetPublisherById(deletePublisher.Id);
 
             if (!ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(ModelState);
 
             if (publisher.PicturePath != $"\\Images\\publisherPicture\\Def.jpg")
             {

@@ -3,10 +3,8 @@ using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Dto.Update;
-using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
-using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -124,7 +122,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="developerUpdate"></param>
         /// <returns></returns>
-        [HttpPut("/updateDeveloper")]
+        [HttpPut("updateDeveloper")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult UpdateDeveloperInfo([FromBody] CommonUpdate developerUpdate)
@@ -133,13 +131,10 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if (!developerRepository.DeveloperExists(developerUpdate.Id))
-                return NotFound();
+                return NotFound($"Not found developer with such id {developerUpdate.Id}");
 
             if (developerRepository.DeveloperNameAlreadyExists(developerUpdate.Id, developerUpdate.Name))
-            {
-                ModelState.AddModelError("", $"Name already in use");
-                return StatusCode(422, ModelState);
-            }
+                return BadRequest($"Name already in use");
 
             var developer = developerRepository.GetDeveloperById(developerUpdate.Id);
 
@@ -156,131 +151,22 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Update developer picture
-        /// </summary>
-        /// <param name="developerId"></param>
-        /// <param name="pic"></param>
-        /// <returns></returns>
-        [HttpPut("/uploadDeveloperPicture")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public IActionResult UploadDeveloperPicture([FromQuery] int developerId, IFormFile pic)
-        {
-            string[] permittedExtensions = { ".jpg", ".jpeg", ".png" };
-
-            if (pic == null)
-                return BadRequest(ModelState);
-
-            var ext = Path.GetExtension(pic.FileName).ToLowerInvariant();
-            if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
-            {
-                ModelState.AddModelError("", "Unsupported extension");
-                return StatusCode(422, ModelState);
-            }
-
-            if (!developerRepository.DeveloperExists(developerId))
-                return NotFound();
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            var developer = developerRepository.GetDeveloperById(developerId);
-            var newfilePath = $"\\Images\\developerPicture\\{unique}{ext}";
-            var oldfilePath = developer.PicturePath;
-
-            using var stream = new FileStream(newfilePath, FileMode.Create);
-            pic.CopyTo(stream);
-
-            developer!.PicturePath = newfilePath;
-
-            if (!developerRepository.UpdateDeveloper(developer))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
-
-            if (oldfilePath.Trim() != $"\\Images\\developerPicture\\Def.jpg")
-            {
-                FileInfo f = new(oldfilePath);
-                f.Delete();
-            }
-
-
-            return Ok("Successfully updated");
-        }
-
-        /// <summary>
-        /// Update developer mini picture
-        /// </summary>
-        /// <param name="developerId"></param>
-        /// <param name="pic"></param>
-        /// <returns></returns>
-        [HttpPut("/uploadDeveloperMiniPicture")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public IActionResult UploadDeveloperMiniPicture([FromQuery] int developerId, IFormFile pic)
-        {
-            string[] permittedExtensions = { ".jpg", ".jpeg", ".png" };
-
-            if (pic == null)
-                return BadRequest(ModelState);
-
-            var ext = Path.GetExtension(pic.FileName).ToLowerInvariant();
-            if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
-            {
-                ModelState.AddModelError("", "Unsupported extension");
-                return StatusCode(422, ModelState);
-            }
-
-            if (!developerRepository.DeveloperExists(developerId))
-                return NotFound();
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            var developer = developerRepository.GetDeveloperById(developerId);
-            var newfilePath = $"\\Images\\developerMiniPicture\\{unique}{ext}";
-            var oldfilePath = developer.MiniPicturePath;
-
-            using var stream = new FileStream(newfilePath, FileMode.Create);
-            pic.CopyTo(stream);
-
-            developer!.MiniPicturePath = newfilePath;
-
-            if (!developerRepository.UpdateDeveloper(developer))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
-
-            if (oldfilePath.Trim() != $"\\Images\\developerMiniPicture\\Def.jpg")
-            {
-                FileInfo f = new(oldfilePath);
-                f.Delete();
-            }
-
-            return Ok("Successfully updated");
-        }
-
-        /// <summary>
         /// Delete specified developer
         /// </summary>
         /// <param name="developerDelete"></param>
         /// <returns></returns>
-        [HttpDelete("/deleteDeveloper")]
+        [HttpDelete("deleteDeveloper")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult DeleteUser([FromBody] JustIdDto developerDelete)
         {
             if (!developerRepository.DeveloperExists(developerDelete.Id))
-                return NotFound();
+                return NotFound($"Not found developer with such id {developerDelete.Id}");
 
             var developer = developerRepository.GetDeveloperById(developerDelete.Id);
 
             if (!ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(ModelState);
 
             if (developer.PicturePath != $"\\Images\\developerPicture\\Def.jpg")
             {

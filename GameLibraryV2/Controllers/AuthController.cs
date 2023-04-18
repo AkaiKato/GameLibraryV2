@@ -36,32 +36,35 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if (userRepository.HasEmail(userCreate.Email))
-            {
-                ModelState.AddModelError("", "User with Email already registrated");
-                return StatusCode(422, ModelState);
-            }
+                return BadRequest("User with Email already registrated");
 
             if (userRepository.HasNickname(userCreate.Nickname))
-            {
-                ModelState.AddModelError("", "User with this Nickname already exists");
-                return StatusCode(422, ModelState);
-            }
+                return BadRequest("User with this Nickname already exists");
 
             if (userCreate.Gender.Trim().ToLower() != Enums.Genders.male.ToString() &&
                 userCreate.Gender.Trim().ToLower() != Enums.Genders.female.ToString())
-            {
-                ModelState.AddModelError("", "Unsupported Gender");
-                return StatusCode(422, ModelState);
+            { 
+                return BadRequest("Unsupported Gender"); 
             }
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var userMap = new User();
+            var userMap = new User
+            {
+                Email = userCreate.Email,
+                Password = BCrypt.Net.BCrypt.HashPassword(userCreate.Password),
+                Nickname = userCreate.Nickname,
+                Age = userCreate.Age,
+                Gender = userCreate.Gender,
+                PicturePath = $"\\Images\\userPicture\\Def.jpg",
+                RegistrationdDate = DateTime.Now,
+                UserGames = new List<PersonGame>() { },
+                UserRoles = new List<Role>() { roleRepository.GetRoleByName(Enums.Roles.user.ToString()) },
+                UserFriends = new List<Friend>() { },
+            };
 
-            userMap.Email = userCreate.Email;
-
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(userCreate.Password);
+            /*string passwordHash = BCrypt.Net.BCrypt.HashPassword(userCreate.Password);
             userMap.Password = passwordHash;
 
             userMap.Nickname = userCreate.Nickname;
@@ -72,7 +75,7 @@ namespace GameLibraryV2.Controllers
             userMap.RegistrationdDate = DateTime.Now;
             userMap.UserGames = new List<PersonGame>() { };
             userMap.UserRoles = new List<Role>() { roleRepository.GetRoleByName(Enums.Roles.user.ToString()) };
-            userMap.UserFriends = new List<Friend>() { };
+            userMap.UserFriends = new List<Friend>() { };*/
 
             if (!userRepository.CreateUser(userMap))
             {
@@ -87,10 +90,10 @@ namespace GameLibraryV2.Controllers
         public IActionResult Login([FromBody] UserLogin userLogin)
         {
             if (userLogin == null) 
-                return BadRequest();
+                return BadRequest(ModelState);
 
             if(!userRepository.UserExistsByNickname(userLogin.Nickname))
-                return NotFound();
+                return NotFound($"Not found user with such nickname {userLogin.Nickname}");
 
             var user = userRepository.GetUserByNickname(userLogin.Nickname);
 
@@ -121,7 +124,7 @@ namespace GameLibraryV2.Controllers
 
             if(!userRepository.UserExistsById(userId.Id))
             {
-                return NotFound();
+                return NotFound($"Not found user with such id {userId.Id}");
             }
             var user = userRepository.GetUserById(userId.Id);
 

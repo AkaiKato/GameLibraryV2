@@ -45,14 +45,14 @@ namespace GameLibraryV2.Controllers
         public IActionResult GetPersonGames(int userId)
         {
             if(!userRepository.UserExistsById(userId))
-                return NotFound();
+                return NotFound($"Not found user with such id {userId}");
 
             var PersonGames = mapper.Map<List<PersonGameDto>>(personGameRepository.PersonGames(userId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(PersonGames));
+            return Ok(PersonGames);
         }
 
         /// <summary>
@@ -67,14 +67,14 @@ namespace GameLibraryV2.Controllers
         public IActionResult GetPersonGamesByList(int userId, string list) 
         {
             if(!userRepository.UserExistsById(userId))
-                return NotFound();
+                return NotFound($"Not found user with such id {userId}");
 
             var PersonGamesByList = mapper.Map<List<PersonGameDto>>(personGameRepository.PersonGamesByList(userId, list));
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(PersonGamesByList));
+            return Ok(PersonGamesByList);
         }
 
         /// <summary>
@@ -91,10 +91,10 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if(!userRepository.UserExistsById(personGameCreate.UserId))
-                return NotFound(ModelState);
+                return NotFound($"Not found user with such id {personGameCreate.UserId}");
 
             if(!gameRepository.GameExists(personGameCreate.GameId))
-                return NotFound(ModelState);
+                return NotFound($"Not found game with such id {personGameCreate.GameId}");
 
             personGameCreate.List = personGameCreate.List.Trim().ToLower();
 
@@ -102,12 +102,11 @@ namespace GameLibraryV2.Controllers
                 personGameCreate.List != Enums.List.completed.ToString() && personGameCreate.List != Enums.List.dropped.ToString() && 
                 personGameCreate.List != Enums.List.postponed.ToString())
             {
-                ModelState.AddModelError("", "Unssuported list");
-                return StatusCode(422, ModelState);
+                return BadRequest("Unssuported list");
             }
 
             if (!ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(ModelState);
 
             var personGame = new PersonGame() 
             {
@@ -122,7 +121,7 @@ namespace GameLibraryV2.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok(Json("Successfully added"));
+            return Ok("Successfully added");
         }
 
         /// <summary>
@@ -139,7 +138,7 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if (!personGameRepository.PersonGameExists(personGameUpdate.Id))
-                return NotFound();
+                return NotFound($"Not found persongame with such id {personGameUpdate.Id}");
 
             personGameUpdate.List = personGameUpdate.List.Trim().ToLower();
 
@@ -147,18 +146,14 @@ namespace GameLibraryV2.Controllers
                 personGameUpdate.List != Enums.List.completed.ToString() && personGameUpdate.List != Enums.List.dropped.ToString() &&
                 personGameUpdate.List != Enums.List.postponed.ToString())
             {
-                ModelState.AddModelError("", "Unssuported list");
-                return StatusCode(422, ModelState);
+                return BadRequest("Unssuported list");
             }
 
             if((personGameUpdate.Score < 1 || personGameUpdate.Score > 10) && personGameUpdate.Score != -1)
-            {
-                ModelState.AddModelError("", "Wrong Score");
-                return StatusCode(422, ModelState);
-            }    
+                return BadRequest("Wrong Score");   
 
             if (!ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(ModelState);
 
             var personGame = personGameRepository.GetPersonGameById(personGameUpdate.Id);
 
@@ -167,10 +162,7 @@ namespace GameLibraryV2.Controllers
                 var review = reviewRepository.GetReviewByUserIdAndGameId(personGame.User.Id, personGame.Game.Id);
                 review.Rating = personGameUpdate.Score;
                 if (!reviewRepository.UpdateReview(review))
-                {
-                    ModelState.AddModelError("", "Something went wrong while saving");
-                    return StatusCode(500, ModelState);
-                }
+                    return BadRequest("Something went wrong while saving");
             }
 
             if(personGame.Score != personGameUpdate.Score)
@@ -195,7 +187,7 @@ namespace GameLibraryV2.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok(Json("Successfully updated"));
+            return Ok("Successfully updated");
         }
 
         /// <summary>
@@ -212,10 +204,10 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if (!personGameRepository.PersonGameExists(personGameDelete.Id))
-                return NotFound();
+                return NotFound($"Not found personGame with such id {personGameDelete.Id}");
 
             if (!ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(ModelState);
 
             var personGame = personGameRepository.GetPersonGameById(personGameDelete.Id);
 
@@ -238,7 +230,7 @@ namespace GameLibraryV2.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok(Json("Successfully deleted"));
+            return Ok("Successfully deleted");
         }
     }
 }

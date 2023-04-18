@@ -51,14 +51,14 @@ namespace GameLibraryV2.Controllers
         public IActionResult GetAgeRatingById(int ageRatingId)
         {
             if(!ageRatingRepository.AgeRatingExists(ageRatingId))
-                return NotFound();
+                return NotFound($"Not found AgeRating with such id {ageRatingId}");
 
             var AgeRating = ageRatingRepository.GetAgeRatingById(ageRatingId);
 
             if(!ModelState.IsValid) 
                 return BadRequest(ModelState);
 
-            return Ok(Json(AgeRating));
+            return Ok(AgeRating);
         }
 
         /// <summary>
@@ -70,14 +70,14 @@ namespace GameLibraryV2.Controllers
         public IActionResult GetAgeRatingGames(int ageRatingId)
         {
             if(!ageRatingRepository.AgeRatingExists(ageRatingId))
-                return NotFound();
+                return NotFound($"Not found game with such id {ageRatingId}");
 
             var AgeRatingGames = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByAgeRating(ageRatingId));
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(AgeRatingGames));
+            return Ok(AgeRatingGames);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace GameLibraryV2.Controllers
         public IActionResult CreateAgeRating([FromBody] AgeRatingCreateDto ageRatingCreate) 
         {
             if(ageRatingCreate == null)
-                return BadRequest();
+                return BadRequest(ModelState);
 
             var ageRating = ageRatingRepository.GetAgeRatingByName(ageRatingCreate.Name);
 
@@ -115,14 +115,14 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="ageRatingUpdate"></param>
         /// <returns></returns>
-        [HttpPut("/updateAgeRating")]
+        [HttpPut("updateAgeRating")]
         public IActionResult UpdateAgeRating([FromBody] CommonUpdate ageRatingUpdate)
         {
             if(ageRatingUpdate == null)
-                return BadRequest();
+                return BadRequest(ModelState);
 
             if(!ageRatingRepository.AgeRatingExists(ageRatingUpdate.Id))
-                return NotFound();
+                return NotFound($"Not found game with such id {ageRatingUpdate.Id}");
 
             if(ageRatingRepository.AgeRatingAlreadyExists(ageRatingUpdate.Id, ageRatingUpdate.Name))
                 return BadRequest("Age Rating Name already in use");
@@ -141,16 +141,16 @@ namespace GameLibraryV2.Controllers
             return Ok("successfully updated");
         }
 
-        [HttpDelete("/deleteAgeRating")]
+        [HttpDelete("deleteAgeRating")]
         public IActionResult DeleteAgeRating([FromBody] JustIdDto ageRatingDelete)
         {
             if (!ageRatingRepository.AgeRatingExists(ageRatingDelete.Id))
-                return NotFound();
+                return NotFound($"Not found game with such id {ageRatingDelete.Id}");
 
             var ageRating = ageRatingRepository.GetAgeRatingById(ageRatingDelete.Id);
 
             if(!ModelState.IsValid) 
-                return BadRequest();
+                return BadRequest(ModelState);
 
             if (!ageRatingRepository.DeleteAgeRating(ageRating))
             {

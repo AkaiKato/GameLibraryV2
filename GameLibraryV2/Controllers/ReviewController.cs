@@ -41,16 +41,16 @@ namespace GameLibraryV2.Controllers
         public IActionResult CreateGameReview([FromBody] ReviewCreateDto reviewCreate)
         {
             if (reviewCreate == null)
-                return BadRequest();
+                return BadRequest(ModelState);
 
             if (!gameRepository.GameExists(reviewCreate.GameId))
-                return NotFound(ModelState);
+                return NotFound($"Not found game with such id {reviewCreate.GameId}");
 
             if (!userRepository.UserExistsById(reviewCreate.UserId))
-                return NotFound(ModelState);
+                return NotFound($"Not found user with such id {reviewCreate.UserId}");
 
             if (!personGamesRepository.PersonGameExists(reviewCreate.UserId, reviewCreate.GameId))
-                return NotFound(ModelState);
+                return NotFound($"Not found in person Game");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -84,7 +84,10 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if (!reviewRepository.ReviewExists(reviewUpdate.Id))
-                return NotFound();
+                return NotFound($"Not found review with such id {reviewUpdate.Id}");
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);  
 
             var review = reviewRepository.GetReviewById(reviewUpdate.Id);
 
@@ -113,7 +116,10 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if (!reviewRepository.ReviewExists(reviewRatingUpdate.Id))
-                return NotFound();
+                return NotFound($"Not found review with such id {reviewRatingUpdate.Id}");
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var review = reviewRepository.GetReviewById(reviewRatingUpdate.Id);
 
@@ -142,7 +148,10 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if (!reviewRepository.ReviewExists(reviewDelete.Id))
-                return NotFound();
+                return NotFound($"Not found review with such id {reviewDelete.Id}");
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var review = reviewRepository.GetReviewById(reviewDelete.Id);
 

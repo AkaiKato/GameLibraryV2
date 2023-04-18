@@ -33,14 +33,14 @@ namespace GameLibraryV2.Controllers
         public IActionResult GetUserFriends(int userId)
         {
             if (!userRepository.UserExistsById(userId))
-                return NotFound();
+                return NotFound($"Not found user with such id {userId}");
 
             var UserFriends = mapper.Map<List<FriendDto>>(friendRepository.GetUserFriends(userId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(UserFriends));
+            return Ok(UserFriends);
         }
 
         /// <summary>
@@ -54,10 +54,10 @@ namespace GameLibraryV2.Controllers
         public IActionResult AddFriend([FromBody] FriendUpdate addFriend)
         {
             if (!userRepository.UserExistsById(addFriend.UserId))
-                return NotFound(ModelState);
+                return NotFound($"Not found user with such id {addFriend.UserId}");
 
             if (!userRepository.UserExistsById(addFriend.FriendId))
-                return NotFound(ModelState);
+                return NotFound($"Not found user with such id {addFriend.FriendId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -66,10 +66,7 @@ namespace GameLibraryV2.Controllers
             var fusers = friendRepository.GetUserFriends(addFriend.UserId);
 
             if (fusers.Any(u => u.Friendu.Id == addFriend.FriendId))
-            {
-                ModelState.AddModelError("", "Already friends");
-                return StatusCode(500, ModelState);
-            }
+                return BadRequest("Already friends");
 
             var friend = userRepository.GetUserById(addFriend.FriendId);
 
@@ -93,21 +90,19 @@ namespace GameLibraryV2.Controllers
         public IActionResult DeleteFriend([FromBody] FriendUpdate deleteFriend)
         {
             if (!userRepository.UserExistsById(deleteFriend.UserId))
-                return NotFound(ModelState);
+                return NotFound($"Not found user with such id {deleteFriend.UserId}");
 
             if (!userRepository.UserExistsById(deleteFriend.FriendId))
-                return NotFound(ModelState);
+                return NotFound($"Not found user with such id {deleteFriend.FriendId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var fusers = friendRepository.GetUserFriends(deleteFriend.UserId).Where(u => u.Friendu.Id == deleteFriend.FriendId).FirstOrDefault();
+            var fusers = friendRepository.GetUserFriends(deleteFriend.UserId).
+                Where(u => u.Friendu.Id == deleteFriend.FriendId).FirstOrDefault();
 
             if (fusers == null)
-            {
-                ModelState.AddModelError("", "No such friend");
-                return StatusCode(422, ModelState);
-            }
+                return BadRequest("No such friend");
 
             if (!friendRepository.DeleteFriend(fusers))
             {

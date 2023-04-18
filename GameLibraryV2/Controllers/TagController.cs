@@ -7,6 +7,7 @@ using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using static GameLibraryV2.Helper.Enums;
 
 namespace GameLibraryV2.Controllers
 {
@@ -31,14 +32,14 @@ namespace GameLibraryV2.Controllers
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IList<TagDto>))]
-        public IActionResult GetGenres()
+        public IActionResult GetTags()
         {
             var Tags = mapper.Map<List<TagDto>>(tagRepository.GetTags());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(Tags));
+            return Ok(Tags);
         }
 
         /// <summary>
@@ -49,17 +50,17 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{tagId}")]
         [ProducesResponseType(200, Type = typeof(TagDto))]
         [ProducesResponseType(400)]
-        public IActionResult GetGenreById(int tagId)
+        public IActionResult GetTagById(int tagId)
         {
             if (!tagRepository.TagExists(tagId))
-                return NotFound();
-
-            var Tag = mapper.Map<TagDto>(tagRepository.GetTagById(tagId));
+                return NotFound($"Not found tag with such id {tagId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(Tag));
+            var Tag = mapper.Map<TagDto>(tagRepository.GetTagById(tagId));
+
+            return Ok(Tag);
         }
 
         /// <summary>
@@ -70,17 +71,17 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{tagId}/games")]
         [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetGenreGames(int tagId)
+        public IActionResult GetTagGames(int tagId)
         {
             if (!tagRepository.TagExists(tagId))
-                return NotFound();
-
-            var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByTag(tagId));
+                return NotFound($"Not found tag with such id {tagId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(Games));
+            var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByTag(tagId));
+
+            return Ok(Games);
         }
 
         /// <summary>
@@ -99,10 +100,7 @@ namespace GameLibraryV2.Controllers
             var tag = tagRepository.GetTagByName(tagCreate.Name);
 
             if (tag != null)
-            {
-                ModelState.AddModelError("", "Tag already exists");
-                return StatusCode(422, ModelState);
-            }
+                return BadRequest("Tag already exists");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -132,13 +130,13 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if (!tagRepository.TagExists(tagUpdate.Id))
-                return NotFound();
+                return NotFound($"Not found tag with such id {tagUpdate.Id}");
 
             if (tagRepository.TagNameAlreadyInUse(tagUpdate.Id, tagUpdate.Name))
-            {
-                ModelState.AddModelError("", $"Name already in use");
-                return StatusCode(422, ModelState);
-            }
+                return BadRequest("Name already in use");
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var tag = tagRepository.GetTagById(tagUpdate.Id);
 
@@ -165,12 +163,12 @@ namespace GameLibraryV2.Controllers
         public IActionResult DeleteTag([FromBody] JustIdDto tagDelete)
         {
             if (!tagRepository.TagExists(tagDelete.Id))
-                return NotFound();
-
-            var platform = tagRepository.GetTagById(tagDelete.Id);
+                return NotFound($"Not found tag with such id {tagDelete.Id}");
 
             if (!ModelState.IsValid)
                 return BadRequest();
+
+            var platform = tagRepository.GetTagById(tagDelete.Id);
 
             if (!tagRepository.DeleteTag(platform))
             {

@@ -7,6 +7,7 @@ using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace GameLibraryV2.Controllers
 {
@@ -43,7 +44,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(Platforms));
+            return Ok(Platforms);
         }
 
         /// <summary>
@@ -57,14 +58,14 @@ namespace GameLibraryV2.Controllers
         public IActionResult GetPersonGamesByList(int platformId)
         {
             if (!platformRepository.PlatformExist(platformId))
-                return NotFound();
+                return NotFound($"Not found platform with such id {platformId}");
 
             var Platform = mapper.Map<PlatformDto>(platformRepository.GetPlatformById(platformId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(Platform));
+            return Ok(Platform);
         }
 
         /// <summary>
@@ -78,14 +79,14 @@ namespace GameLibraryV2.Controllers
         public IActionResult GetPlatformGame(int platformId)
         {
             if (!platformRepository.PlatformExist(platformId))
-                return NotFound();
+                return NotFound($"Not found platform with such id {platformId}");
 
             var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGameByPlatform(platformId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(Games));
+            return Ok(Games);
         }
 
         /// <summary>
@@ -104,10 +105,7 @@ namespace GameLibraryV2.Controllers
             var platform = platformRepository.GetPlatformByName(platformCreate.Name);
 
             if (platform != null)
-            {
-                ModelState.AddModelError("", "Platform already exists");
-                return StatusCode(422, ModelState);
-            }
+                return BadRequest("Platform already exists");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -137,13 +135,13 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if (!platformRepository.PlatformExist(platformUpdate.Id))
-                return NotFound();
+                return NotFound($"Not found platform with such id {platformUpdate.Id}");
 
             if (platformRepository.PlatformNameAlredyInUse(platformUpdate.Id, platformUpdate.Name))
-            {
-                ModelState.AddModelError("", $"Name already in use");
-                return StatusCode(422, ModelState);
-            }
+                return BadRequest("Name already in use");
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var platform = platformRepository.GetPlatformById(platformUpdate.Id);
 
@@ -170,7 +168,7 @@ namespace GameLibraryV2.Controllers
         public IActionResult DeletePlatform([FromBody] JustIdDto platfromDelete)
         {
             if (!platformRepository.PlatformExist(platfromDelete.Id))
-                return NotFound();
+                return NotFound($"Not found platform with such id {platfromDelete.Id}");
 
             var platform = platformRepository.GetPlatformById(platfromDelete.Id);
 

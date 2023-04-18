@@ -5,6 +5,7 @@ using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Policy;
 
 namespace GameLibraryV2.Controllers
 {
@@ -25,7 +26,7 @@ namespace GameLibraryV2.Controllers
         /// Get all ratings
         /// </summary>
         /// <returns></returns>
-        [HttpGet("/ratings")]
+        [HttpGet("ratings")]
         [ProducesResponseType(200, Type = typeof(IList<Rating>))]
         [ProducesResponseType(400)]
         public IActionResult GetAllRatings()
@@ -35,7 +36,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(ratings));
+            return Ok(ratings);
         }
 
         /// <summary>
@@ -43,25 +44,25 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="gameId"></param>
         /// <returns></returns>
-        [HttpGet("/gameRating")]
+        [HttpGet("gameRating")]
         [ProducesResponseType(200, Type = typeof(Rating))]
         [ProducesResponseType(400)]
         public IActionResult GetGameRating(int gameId)
         {
             if (!gameRepository.GameExists(gameId))
-                return NotFound();
+                return NotFound($"Not found game with such id {gameId}");
 
             var game = gameRepository.GetGameById(gameId);
 
             if (!ratingRepository.RatingExists(game.Rating.Id))
-                return NotFound();
+                return NotFound($"Not found rating with such id {game.Rating.Id}");
 
             var rating = ratingRepository.GetRatingById(game.Rating.Id);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(rating));
+            return Ok(rating);
         }
 
         /// <summary>
@@ -69,7 +70,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="ratingUpdate"></param>
         /// <returns></returns>
-        [HttpPut("/gameRatingAdd")]
+        [HttpPut("gameRatingAdd")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         public IActionResult UpdateGameRating(RatingUpdate ratingUpdate)
@@ -78,7 +79,10 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if(!ratingRepository.RatingExists(ratingUpdate.RatingId))
-                return NotFound();
+                return NotFound($"Not found rating with such id {ratingUpdate.RatingId}");
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var rating = ratingRepository.GetRatingById(ratingUpdate.RatingId);
 
@@ -90,7 +94,7 @@ namespace GameLibraryV2.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok(Json("Successfully updated"));
+            return Ok("Successfully updated");
         }
 
         /// <summary>
@@ -98,7 +102,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="ratingId"></param>
         /// <returns></returns>
-        [HttpPut("/gameRatingNulling")]
+        [HttpPut("gameRatingNulling")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         public IActionResult DeleteGameRating(JustIdDto ratingId)
@@ -107,7 +111,10 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if(!ratingRepository.RatingExists(ratingId.Id))
-                return NotFound();
+                return NotFound($"Not found rating with such id {ratingId.Id}");
+
+            if(!ModelState.IsValid) 
+                return BadRequest(ModelState);
 
             var rating = ratingRepository.GetRatingById(ratingId.Id);
 
@@ -129,24 +136,9 @@ namespace GameLibraryV2.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok(Json("Successfully nulled"));
+            return Ok("Successfully nulled");
         }
 
-        private int calcCountOfNumbers(Rating x)
-        {
-            return x.NumberOfTen + x.NumberOfNine + x.NumberOfEight + x.NumberOfSeven 
-                + x.NumberOfSix + x.NumberOfFive + x.NumberOfFour + x.NumberOfThree 
-                + x.NumberOfTwo + x.NumberOfOne; 
-        }
-
-        private int calcSumOfNumbers(Rating x)
-        {
-            return 10 * x.NumberOfTen + 9 * x.NumberOfNine + 8 * x.NumberOfEight + 
-                7 * x.NumberOfSeven + 6 * x.NumberOfSix + 5 * x.NumberOfFive + 
-                4 * x.NumberOfFour + 3 * x.NumberOfThree + 2 * x.NumberOfTwo + x.NumberOfOne;
-        }
-
-        //Расчет тотал рейтинг
         [HttpGet("/tr")]
         public IActionResult TotalRatingCalculation()
         {
@@ -154,22 +146,22 @@ namespace GameLibraryV2.Controllers
 
             double avg = Math.Round((double)gamesRatings.Average(x =>
             {
-                int count = calcCountOfNumbers(x);
+                int count = CalcCountOfNumbers(x);
 
                 if (count < numberOfScores)
                     return null;
 
-                return (calcSumOfNumbers(x) / count); 
+                return (CalcSumOfNumbers(x) / count); 
             })!, 2);
 
             foreach (var gR in gamesRatings)
             {
-                double currentNumbers = calcCountOfNumbers(gR);
+                double currentNumbers = CalcCountOfNumbers(gR);
 
                 if (currentNumbers < numberOfScores)
                     continue;
 
-                double currentRating = calcSumOfNumbers(gR);
+                double currentRating = CalcSumOfNumbers(gR);
 
                 double cR = Math.Round(currentRating / currentNumbers, 2);
 
@@ -183,7 +175,21 @@ namespace GameLibraryV2.Controllers
                 }
             }
 
-            return Ok(Json(gamesRatings));
+            return Ok(gamesRatings);
+        }
+
+        private static int CalcCountOfNumbers(Rating x)
+        {
+            return x.NumberOfTen + x.NumberOfNine + x.NumberOfEight + x.NumberOfSeven
+                + x.NumberOfSix + x.NumberOfFive + x.NumberOfFour + x.NumberOfThree
+                + x.NumberOfTwo + x.NumberOfOne;
+        }
+
+        private static int CalcSumOfNumbers(Rating x)
+        {
+            return 10 * x.NumberOfTen + 9 * x.NumberOfNine + 8 * x.NumberOfEight +
+                7 * x.NumberOfSeven + 6 * x.NumberOfSix + 5 * x.NumberOfFive +
+                4 * x.NumberOfFour + 3 * x.NumberOfThree + 2 * x.NumberOfTwo + x.NumberOfOne;
         }
 
     }
