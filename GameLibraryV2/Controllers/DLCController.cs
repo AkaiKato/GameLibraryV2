@@ -31,10 +31,10 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
         public IActionResult GetDLCs()
         {
-            var DLC = mapper.Map<List<GameSmallListDto>>(gameRepository.GetDLCs());
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var DLC = mapper.Map<List<GameSmallListDto>>(gameRepository.GetDLCs());
 
             return Ok(DLC);
         }
@@ -52,10 +52,10 @@ namespace GameLibraryV2.Controllers
             if(!gameRepository.DLCExists(dlcId))
                 return NotFound($"Not found dlc with such id {dlcId}");
 
-            var DLC = mapper.Map<GameDto>(gameRepository.GetDLCById(dlcId));
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var DLC = mapper.Map<GameDto>(gameRepository.GetDLCById(dlcId));
 
             return Ok(DLC);
         }
@@ -81,6 +81,9 @@ namespace GameLibraryV2.Controllers
 
             if (dlcRepository.DLCExists(addDlc.ParentGameId, addDlc.DLCGameId))
                 return BadRequest("DLC already have parent Game");
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var dlcGame = gameRepository.GetDLCById(addDlc.DLCGameId);
             var parGame = gameRepository.GetGameById(addDlc.ParentGameId);
@@ -115,6 +118,9 @@ namespace GameLibraryV2.Controllers
 
             if (!gameRepository.DLCExists(deleteDlc.DLCGameId))
                 return NotFound($"Not found dlc with such id {deleteDlc.DLCGameId}");
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var dlc = dlcRepository.GetDLCConnById(deleteDlc.ParentGameId, deleteDlc.DLCGameId);
 

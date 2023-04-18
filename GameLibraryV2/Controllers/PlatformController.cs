@@ -39,10 +39,10 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetPlatforms()
         {
-            var Platforms = mapper.Map<List<PlatformDto>>(platformRepository.GetPlatforms());
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var Platforms = mapper.Map<List<PlatformDto>>(platformRepository.GetPlatforms());
 
             return Ok(Platforms);
         }
@@ -60,10 +60,10 @@ namespace GameLibraryV2.Controllers
             if (!platformRepository.PlatformExist(platformId))
                 return NotFound($"Not found platform with such id {platformId}");
 
-            var Platform = mapper.Map<PlatformDto>(platformRepository.GetPlatformById(platformId));
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var Platform = mapper.Map<PlatformDto>(platformRepository.GetPlatformById(platformId));
 
             return Ok(Platform);
         }
@@ -81,10 +81,10 @@ namespace GameLibraryV2.Controllers
             if (!platformRepository.PlatformExist(platformId))
                 return NotFound($"Not found platform with such id {platformId}");
 
-            var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGameByPlatform(platformId));
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGameByPlatform(platformId));
 
             return Ok(Games);
         }
@@ -170,10 +170,10 @@ namespace GameLibraryV2.Controllers
             if (!platformRepository.PlatformExist(platfromDelete.Id))
                 return NotFound($"Not found platform with such id {platfromDelete.Id}");
 
-            var platform = platformRepository.GetPlatformById(platfromDelete.Id);
-
             if (!ModelState.IsValid)
                 return BadRequest();
+
+            var platform = platformRepository.GetPlatformById(platfromDelete.Id);
 
             var pg = personGameRepository.GetAllPersonGames().Where(pg => pg.PlayedPlatform!.Id == platform.Id).ToList();
 

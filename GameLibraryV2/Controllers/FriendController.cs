@@ -35,10 +35,10 @@ namespace GameLibraryV2.Controllers
             if (!userRepository.UserExistsById(userId))
                 return NotFound($"Not found user with such id {userId}");
 
-            var UserFriends = mapper.Map<List<FriendDto>>(friendRepository.GetUserFriends(userId));
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var UserFriends = mapper.Map<List<FriendDto>>(friendRepository.GetUserFriends(userId));
 
             return Ok(UserFriends);
         }

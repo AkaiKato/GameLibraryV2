@@ -166,7 +166,7 @@ namespace GameLibraryV2.Controllers
                 return NotFound($"Not found tag with such id {tagDelete.Id}");
 
             if (!ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(ModelState);
 
             var platform = tagRepository.GetTagById(tagDelete.Id);
 

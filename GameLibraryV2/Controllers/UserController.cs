@@ -175,8 +175,7 @@ namespace GameLibraryV2.Controllers
             if(userRepository.UserNicknameAlreadyInUser(userUpdate.Id, userUpdate.Nickname))
                 return BadRequest("Nickname already in use");
 
-            if (userUpdate.Gender.Trim().ToLower() != Enums.Genders.male.ToString() && 
-                userUpdate.Gender.Trim().ToLower() != Enums.Genders.female.ToString())
+            if(!Enum.GetNames(typeof(Enums.Genders)).Contains(userUpdate.Gender))
             {
                 return BadRequest("Unsupported Gender");
             }
@@ -187,7 +186,7 @@ namespace GameLibraryV2.Controllers
             var user = userRepository.GetUserById(userUpdate.Id);
 
             user.Email = userUpdate.Email;
-            user.Password = userUpdate.Password;
+            user.Password = BCrypt.Net.BCrypt.HashPassword(userUpdate.Password);
             user.Nickname = userUpdate.Nickname;
             user.Age = userUpdate.Age;
             user.Gender = userUpdate.Gender;

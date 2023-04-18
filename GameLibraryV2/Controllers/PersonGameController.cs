@@ -47,10 +47,10 @@ namespace GameLibraryV2.Controllers
             if(!userRepository.UserExistsById(userId))
                 return NotFound($"Not found user with such id {userId}");
 
-            var PersonGames = mapper.Map<List<PersonGameDto>>(personGameRepository.PersonGames(userId));
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var PersonGames = mapper.Map<List<PersonGameDto>>(personGameRepository.PersonGames(userId));
 
             return Ok(PersonGames);
         }
@@ -69,10 +69,10 @@ namespace GameLibraryV2.Controllers
             if(!userRepository.UserExistsById(userId))
                 return NotFound($"Not found user with such id {userId}");
 
-            var PersonGamesByList = mapper.Map<List<PersonGameDto>>(personGameRepository.PersonGamesByList(userId, list));
-
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var PersonGamesByList = mapper.Map<List<PersonGameDto>>(personGameRepository.PersonGamesByList(userId, list));
 
             return Ok(PersonGamesByList);
         }
@@ -96,14 +96,10 @@ namespace GameLibraryV2.Controllers
             if(!gameRepository.GameExists(personGameCreate.GameId))
                 return NotFound($"Not found game with such id {personGameCreate.GameId}");
 
-            personGameCreate.List = personGameCreate.List.Trim().ToLower();
-
-            if (personGameCreate.List != Enums.List.planned.ToString()  && personGameCreate.List != Enums.List.playing.ToString() && 
-                personGameCreate.List != Enums.List.completed.ToString() && personGameCreate.List != Enums.List.dropped.ToString() && 
-                personGameCreate.List != Enums.List.postponed.ToString())
-            {
-                return BadRequest("Unssuported list");
-            }
+            personGameCreate.List = personGameCreate.List;
+            
+            if(!Enum.GetNames(typeof(Enums.List)).Contains(personGameCreate.List.Trim().ToLower()))
+               return BadRequest("Unsupported list");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -140,16 +136,10 @@ namespace GameLibraryV2.Controllers
             if (!personGameRepository.PersonGameExists(personGameUpdate.Id))
                 return NotFound($"Not found persongame with such id {personGameUpdate.Id}");
 
-            personGameUpdate.List = personGameUpdate.List.Trim().ToLower();
+            if (!Enum.GetNames(typeof(Enums.List)).Contains(personGameUpdate.List.Trim().ToLower()))
+                return BadRequest("Unsupported list");
 
-            if (personGameUpdate.List != Enums.List.planned.ToString() && personGameUpdate.List != Enums.List.playing.ToString() &&
-                personGameUpdate.List != Enums.List.completed.ToString() && personGameUpdate.List != Enums.List.dropped.ToString() &&
-                personGameUpdate.List != Enums.List.postponed.ToString())
-            {
-                return BadRequest("Unssuported list");
-            }
-
-            if((personGameUpdate.Score < 1 || personGameUpdate.Score > 10) && personGameUpdate.Score != -1)
+            if ((personGameUpdate.Score < 1 || personGameUpdate.Score > 10) && personGameUpdate.Score != -1)
                 return BadRequest("Wrong Score");   
 
             if (!ModelState.IsValid)
@@ -172,7 +162,6 @@ namespace GameLibraryV2.Controllers
             }
 
             personGame.Score = personGameUpdate.Score;
-
             personGame.Comment = personGameUpdate.Comment;
             personGame.List = personGameUpdate.List.Trim().ToLower();
 

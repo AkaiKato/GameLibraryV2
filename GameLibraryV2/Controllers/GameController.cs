@@ -58,9 +58,6 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
         public IActionResult GetGames([FromQuery] SearchParameters searchParameters)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             if(!searchParameters.ValidYearRange)
                 return BadRequest("Max release year cannot be less than min year");
 
@@ -75,6 +72,9 @@ namespace GameLibraryV2.Controllers
 
             if (!searchParameters.ValidType)
                 return BadRequest("Not Valid Type");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var games = gameRepository.GetGames(searchParameters);
 
@@ -108,12 +108,12 @@ namespace GameLibraryV2.Controllers
             if (!gameRepository.GameExists(gameId))
                 return NotFound($"Not found game with such id {gameId}");
 
-            var Game = mapper.Map<GameDto>(gameRepository.GetGameById(gameId));
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(Game));
+            var Game = mapper.Map<GameDto>(gameRepository.GetGameById(gameId));
+
+            return Ok(Game);
         }
 
         /// <summary>
@@ -129,10 +129,10 @@ namespace GameLibraryV2.Controllers
             if (!gameRepository.GameExists(gameId))
                 return NotFound($"Not found game with such id {gameId}");
 
-            var Review = mapper.Map<List<ReviewDto>>(reviewRepository.GetGameReviews(gameId));
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var Review = mapper.Map<List<ReviewDto>>(reviewRepository.GetGameReviews(gameId));
 
             return Ok(Review);
         }
@@ -153,17 +153,11 @@ namespace GameLibraryV2.Controllers
             if (gameRepository.GetGameByName(gameCreate.Name) != null)
                 return BadRequest("Game with this name already exists");
 
-            if (gameCreate.Type.Trim().ToLower() != Enums.Types.game.ToString() 
-                && gameCreate.Type.Trim().ToLower() != Enums.Types.dlc.ToString())
-            {
+            if (!Enum.GetNames(typeof(Enums.Types)).Contains(gameCreate.Type.Trim().ToLower()))
                 return BadRequest("Unsupported type");
-            }
 
-            if(gameCreate.Status.Trim().ToLower() != Enums.Status.released.ToString()
-                && gameCreate.Status.Trim().ToLower() != Enums.Status.announsed.ToString()) 
-            {
+            if (!Enum.GetNames(typeof(Enums.Status)).Contains(gameCreate.Status.Trim().ToLower()))
                 return BadRequest("Unsupported status");
-            }
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -254,11 +248,8 @@ namespace GameLibraryV2.Controllers
             if(gameRepository.GameNameAlreadyInUse(gameUpdate.Id, gameUpdate.Name))
                 return BadRequest("Name already in use");
 
-            if (gameUpdate.Status.Trim().ToLower() != Enums.Status.released.ToString()
-                && gameUpdate.Status.Trim().ToLower() != Enums.Status.announsed.ToString())
-            {
+            if (!Enum.GetNames(typeof(Enums.Status)).Contains(gameUpdate.Status.Trim().ToLower()))
                 return BadRequest("Unsupported status");
-            }
 
             if (!ageRatingRepository.AgeRatingExists(gameUpdate.AgeRating.Id))
                 return BadRequest($"Not found AgeRating with such id {gameUpdate.AgeRating.Id}");
@@ -368,10 +359,10 @@ namespace GameLibraryV2.Controllers
             if(!gameRepository.GameExists(gameDelete.Id))
                 return NotFound($"Not found game with such id {gameDelete.Id}");
 
-            var game = gameRepository.GetGameById(gameDelete.Id);
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var game = gameRepository.GetGameById(gameDelete.Id);
 
             if (game.DLCs != null)
             {

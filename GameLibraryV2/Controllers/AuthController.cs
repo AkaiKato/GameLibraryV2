@@ -1,5 +1,6 @@
 ﻿using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.registry;
+using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
@@ -41,11 +42,8 @@ namespace GameLibraryV2.Controllers
             if (userRepository.HasNickname(userCreate.Nickname))
                 return BadRequest("User with this Nickname already exists");
 
-            if (userCreate.Gender.Trim().ToLower() != Enums.Genders.male.ToString() &&
-                userCreate.Gender.Trim().ToLower() != Enums.Genders.female.ToString())
-            { 
-                return BadRequest("Unsupported Gender"); 
-            }
+            if (!Enum.GetNames(typeof(Enums.Genders)).Contains(userCreate.Gender))
+                return BadRequest("Unsupported Gender");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -123,19 +121,14 @@ namespace GameLibraryV2.Controllers
             var refreshToken = Request.Cookies["refreshToken"];
 
             if(!userRepository.UserExistsById(userId.Id))
-            {
                 return NotFound($"Not found user with such id {userId.Id}");
-            }
+
             var user = userRepository.GetUserById(userId.Id);
 
             if (!user.RefreshToken.Equals(refreshToken))
-            {
                 return Unauthorized("Invalid Refresh Token");
-            }
             else if(user.TokenExpires < DateTime.Now)
-            {
                 return Unauthorized("Token expired");
-            }
 
             string token = CreateToken(user);
             var newRefreshToken = GenerateRefreshToken();

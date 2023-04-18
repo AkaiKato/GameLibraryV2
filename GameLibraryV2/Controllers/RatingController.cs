@@ -57,10 +57,10 @@ namespace GameLibraryV2.Controllers
             if (!ratingRepository.RatingExists(game.Rating.Id))
                 return NotFound($"Not found rating with such id {game.Rating.Id}");
 
-            var rating = ratingRepository.GetRatingById(game.Rating.Id);
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var rating = ratingRepository.GetRatingById(game.Rating.Id);
 
             return Ok(rating);
         }

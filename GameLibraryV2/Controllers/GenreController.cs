@@ -33,10 +33,10 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(200, Type = typeof(IList<GenreDto>))]
         public IActionResult GetGenres()
         {
-            var Genres = mapper.Map<List<GenreDto>>(genreRepository.GetGenres());
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var Genres = mapper.Map<List<GenreDto>>(genreRepository.GetGenres());
 
             return Ok(Genres);
         }
@@ -54,10 +54,10 @@ namespace GameLibraryV2.Controllers
             if(!genreRepository.GenreExists(genreId))
                 return NotFound($"Not found genre with such id {genreId}");
 
-            var Genre = mapper.Map<GenreDto>(genreRepository.GetGenreById(genreId));
-
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var Genre = mapper.Map<GenreDto>(genreRepository.GetGenreById(genreId));
 
             return Ok(Genre);
         }
@@ -75,10 +75,10 @@ namespace GameLibraryV2.Controllers
             if (!genreRepository.GenreExists(genreId))
                 return NotFound($"Not found genre with such id {genreId}");
 
-            var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByGenre(genreId));
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByGenre(genreId));
 
             return Ok(Games);
         }
@@ -164,10 +164,10 @@ namespace GameLibraryV2.Controllers
             if (!genreRepository.GenreExists(genreDelete.Id))
                 return NotFound($"Not found genre with such id {genreDelete.Id}");
 
-            var genre = genreRepository.GetGenreById(genreDelete.Id);
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var genre = genreRepository.GetGenreById(genreDelete.Id);
 
             if (!genreRepository.DeleteGenre(genre))
             {

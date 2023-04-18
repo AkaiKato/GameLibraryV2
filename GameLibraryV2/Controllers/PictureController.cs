@@ -42,7 +42,6 @@ namespace GameLibraryV2.Controllers
 
             var ext = Path.GetExtension(pic.FileName).ToLowerInvariant();
             if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
-
                 return BadRequest("Unsupported extension");
 
             if (!developerRepository.DeveloperExists(developerId))

@@ -8,7 +8,7 @@
             playing,
             completed,
             dropped,
-            postponed,
+            onhold,
         }
 
         public enum Types

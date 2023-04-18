@@ -33,10 +33,10 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetPublishers()
         {
-            var Publisbhers = mapper.Map<List<PublisherDto>>(publisherRepository.GetPublishers());
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var Publisbhers = mapper.Map<List<PublisherDto>>(publisherRepository.GetPublishers());
 
             return Ok(Publisbhers);
         }
@@ -54,10 +54,10 @@ namespace GameLibraryV2.Controllers
             if (!publisherRepository.PublisherExists(publisherId))
                 return NotFound($"Not found publisher with such id {publisherId}");
 
-            var Publisbher = mapper.Map<PublisherDto>(publisherRepository.GetPublisherById(publisherId));
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var Publisbher = mapper.Map<PublisherDto>(publisherRepository.GetPublisherById(publisherId));
 
             return Ok(Publisbher);
         }
@@ -75,10 +75,10 @@ namespace GameLibraryV2.Controllers
             if (!publisherRepository.PublisherExists(publisherId))
                 return NotFound($"Not found publisher with such id {publisherId}");
 
-            var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByPublisher(publisherId));
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByPublisher(publisherId));
 
             return Ok(Games);
         }

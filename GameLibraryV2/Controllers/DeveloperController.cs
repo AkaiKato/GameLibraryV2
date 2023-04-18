@@ -32,12 +32,12 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(200, Type = typeof(IList<DeveloperDto>))]
         public IActionResult GetDevelopers()
         {
-            var Developers = mapper.Map<List<DeveloperDto>>(developerRepository.GetDevelopers());
-
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(Developers));
+            var Developers = mapper.Map<List<DeveloperDto>>(developerRepository.GetDevelopers());
+
+            return Ok(Developers);
         }
 
         /// <summary>
@@ -53,12 +53,12 @@ namespace GameLibraryV2.Controllers
             if(!developerRepository.DeveloperExists(developerId))
                 return NotFound();
 
-            var Developer = mapper.Map<DeveloperDto>(developerRepository.GetDeveloperById(developerId));
-
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(Developer));
+            var Developer = mapper.Map<DeveloperDto>(developerRepository.GetDeveloperById(developerId));
+
+            return Ok(Developer);
         }
 
         /// <summary>
@@ -74,12 +74,12 @@ namespace GameLibraryV2.Controllers
             if (!developerRepository.DeveloperExists(developerId))
                 return NotFound();
 
-            var DeveloperGames = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByDeveloper(developerId));
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(Json(DeveloperGames));
+            var DeveloperGames = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByDeveloper(developerId));
+
+            return Ok(DeveloperGames);
         }
 
         /// <summary>
@@ -136,6 +136,9 @@ namespace GameLibraryV2.Controllers
             if (developerRepository.DeveloperNameAlreadyExists(developerUpdate.Id, developerUpdate.Name))
                 return BadRequest($"Name already in use");
 
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var developer = developerRepository.GetDeveloperById(developerUpdate.Id);
 
             developer.Name = developerUpdate.Name;
@@ -163,10 +166,10 @@ namespace GameLibraryV2.Controllers
             if (!developerRepository.DeveloperExists(developerDelete.Id))
                 return NotFound($"Not found developer with such id {developerDelete.Id}");
 
-            var developer = developerRepository.GetDeveloperById(developerDelete.Id);
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var developer = developerRepository.GetDeveloperById(developerDelete.Id);
 
             if (developer.PicturePath != $"\\Images\\developerPicture\\Def.jpg")
             {
