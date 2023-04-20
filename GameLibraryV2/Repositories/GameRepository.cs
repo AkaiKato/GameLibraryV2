@@ -3,6 +3,8 @@ using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Net.WebSockets;
 
 namespace GameLibraryV2.Repositories
 {
@@ -18,7 +20,8 @@ namespace GameLibraryV2.Repositories
         public PagedList<Game> GetGames(SearchParameters searchParameters)
         {
             var games = dataContext.Games
-                .Where(g => g.ReleaseDate.Year >= searchParameters.MinYearOfRelease
+                .Where(g => g.NSFW == searchParameters.NSFW 
+                && g.ReleaseDate.Year >= searchParameters.MinYearOfRelease
                 && g.ReleaseDate.Year <= searchParameters.MaxYearOfRelease
                 && g.AveragePlayTime >= searchParameters.MinPlayTime
                 && g.AveragePlayTime <= searchParameters.MaxPlayTime
@@ -63,17 +66,50 @@ namespace GameLibraryV2.Repositories
                         Name = t.Name,
                     }).ToList(),
                 })
-                .OrderByDescending(x => x.Rating.TotalRating).ToList();
+                .OrderByDescending(x => x.Rating.TotalRating)
+                .AsEnumerable();
+
             if (searchParameters.Status != null)
-            {
-                games = games.Where(g => searchParameters.Status.Contains(g.Status.ToLower())).ToList();
-            }
+                games = games.Where(g => searchParameters.Status
+                                .Where(y => y != null)
+                                .Select(y => y.ToLower())
+                                .Contains(g.Status.ToLower()))
+                                .AsEnumerable();
 
             if(searchParameters.Type != null)
-            {
-                games = games.Where(g => searchParameters.Type.Contains(g.Type.ToLower())).ToList();
-            }
+                games = games.Where(g => searchParameters.Type
+                                .Where(y => y != null)
+                                .Select(y => y.ToLower())
+                                .Contains(g.Type.ToLower()))
+                                .AsEnumerable();
+
+            if(searchParameters.Genre != null)
+                games = games.Where(g => searchParameters.GenreEquals(g.Genres, searchParameters.Genre))
+                                .AsEnumerable();
+
+            if(searchParameters.Tag != null)
+                games = games.Where(g => searchParameters.TagEquals(g.Tags, searchParameters.Tag))
+                                .AsEnumerable();
+
+            if (searchParameters.Platform != null)
+                games = games.Where(g => searchParameters.PlatformEquals(g.Platforms, searchParameters.Platform))
+                                .AsEnumerable();
+
+            if (searchParameters.Developer != null)
+                games = games.Where(g => searchParameters.DeveloperEquals(g.Developers, searchParameters.Developer))
+                                .AsEnumerable();
+
+            if(searchParameters.Publisher != null)
+                games = games.Where(g => searchParameters.PublisherEquals(g.Publishers, searchParameters.Publisher))
+                                .AsEnumerable();
             
+            if(searchParameters.AgeRating != null)
+                games = games.Where(g => searchParameters.AgeRating
+                                .Where(a => a != null)
+                                .Select(a => a.ToLower())
+                                .Contains(g.AgeRating.Name.Trim().ToLower()))
+                                .AsEnumerable();
+
             return PagedList<Game>.ToPagedList(games.AsQueryable(), searchParameters.PageNumber, searchParameters.PageSize) ;
            
         }

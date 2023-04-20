@@ -19,6 +19,5 @@ namespace GameLibraryV2.Interfaces
         public bool UpdateAgeRating(AgeRating ageRating);
 
         public bool DeleteAgeRating(AgeRating ageRating);
-
     }
 }

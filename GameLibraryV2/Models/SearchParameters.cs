@@ -1,20 +1,22 @@
-﻿using AutoMapper.Configuration.Annotations;
-using GameLibraryV2.Helper;
+﻿using GameLibraryV2.Helper;
+using GameLibraryV2.Interfaces;
 
 namespace GameLibraryV2.Models
 {
     public class SearchParameters
     {
+        //-----------------------------------------------
         const int maxPageSize = 50;
 
         private int _pageSize = 10;
 
         public int PageNumber { get; set; } = 1;
 
-        public int PageSize { 
-            get
-            {
-                return _pageSize;
+        public int PageSize 
+        { 
+            get 
+            { 
+                return _pageSize; 
             }
             set
             {
@@ -84,5 +86,82 @@ namespace GameLibraryV2.Models
 
             return true;
         }
+
+        //----------------------------------------------
+        public string[]? Genre { get; set; }
+
+        protected internal bool GenreEquals(IList<Genre> obj, string[] obj2)
+        {
+            foreach (var item in obj2)
+            {
+                if (obj.Any(x => x.Name.Trim().ToLower() == item.Trim().ToLower()))
+                    continue;
+                return false;
+            }
+            return true;
+        }
+
+        //----------------------------------------------
+        public string[]? Tag { get; set; }
+
+        protected internal bool TagEquals(IList<Tag> obj, string[] obj2)
+        {
+            foreach (var item in obj2)
+            {
+                if (obj.Any(x => x.Name.Trim().ToLower() == item.Trim().ToLower()))
+                    continue;
+                return false;
+            }
+            return true;
+        }
+
+        //----------------------------------------------
+        public string[]? Platform { get; set; }
+
+        protected internal bool PlatformEquals(IList<Platform> obj, string[] obj2)
+        {
+            foreach (var item in obj2)
+            {
+                if (obj.Any(x => x.Name.Trim().ToLower() == item.Trim().ToLower()))
+                    continue;
+                return false;
+            }
+            return true;
+        }
+
+        //----------------------------------------------
+        public string[]? Developer { get; set; }
+
+        protected internal bool DeveloperEquals(IList<Developer> obj, string[] obj2)
+        {
+            foreach (var item in obj)
+            {
+                if (obj2.Any(x => x.Trim().ToLower() == item.Name.Trim().ToLower()))
+                    continue;
+                return false;
+            }
+            return true;
+        }
+
+        //----------------------------------------------
+        public string[]? Publisher { get; set; }
+
+        protected internal bool PublisherEquals(IList<Publisher> obj, string[] obj2)
+        {
+            foreach (var item in obj)
+            {
+                if (obj2.Any(x => x.Trim().ToLower() == item.Name.Trim().ToLower()))
+                    continue;
+                return false;
+            }
+            return true;
+        }
+
+        //----------------------------------------------
+        public string[]? AgeRating { get; set; }
+
+        //----------------------------------------------
+        public bool NSFW { get; set; } = false;
+
     }
 }

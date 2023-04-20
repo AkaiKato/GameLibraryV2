@@ -176,9 +176,7 @@ namespace GameLibraryV2.Controllers
                 return BadRequest("Nickname already in use");
 
             if(!Enum.GetNames(typeof(Enums.Genders)).Contains(userUpdate.Gender))
-            {
                 return BadRequest("Unsupported Gender");
-            }
 
             if(!ModelState.IsValid) 
                 return BadRequest(ModelState);

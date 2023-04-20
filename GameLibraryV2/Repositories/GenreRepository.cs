@@ -62,8 +62,7 @@ namespace GameLibraryV2.Repositories
         {
             var saved = dataContext.SaveChanges();
             //var saved = 1;
-            return saved > 0 ? true : false;
+            return saved > 0;
         }
-
     }
 }
