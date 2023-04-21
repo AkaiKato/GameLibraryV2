@@ -6,7 +6,6 @@ using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -54,7 +53,7 @@ namespace GameLibraryV2.Controllers
         /// Return games OrderByRating
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getGamesOrederByRating")]
+        [HttpGet("games/rating")]
         [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
         public IActionResult GetGamesOrderByRating([FromQuery] FilterParameters filterParameters)
         {
@@ -99,7 +98,7 @@ namespace GameLibraryV2.Controllers
         /// Return games OrederByName (alphabetical)
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getGamesOrederByName")]
+        [HttpGet("games/name")]
         [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
         public IActionResult GetGamesOrderByName([FromQuery] FilterParameters filterParameters)
         {

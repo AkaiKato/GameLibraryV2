@@ -35,7 +35,7 @@ namespace GameLibraryV2.Controllers
         /// Return all users
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("userAll")]
         [Authorize(Roles = "admin")]
         [ProducesResponseType(200, Type = typeof(IList<UserDto>))]
         [ProducesResponseType(400)]

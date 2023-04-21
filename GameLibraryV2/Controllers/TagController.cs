@@ -7,6 +7,7 @@ using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using static GameLibraryV2.Helper.Enums;
 
 namespace GameLibraryV2.Controllers
@@ -30,7 +31,7 @@ namespace GameLibraryV2.Controllers
         /// Return all Tags
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("tagAll")]
         [ProducesResponseType(200, Type = typeof(IList<TagDto>))]
         public IActionResult GetTags()
         {
@@ -64,22 +65,103 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Return all tag games
+        /// Return all tag games OrderByRating
         /// </summary>
         /// <param name="tagId"></param>
+        /// <param name="filterParameters"></param>
         /// <returns></returns>
-        [HttpGet("{tagId}/games")]
+        [HttpGet("{tagId}/games/rating")]
         [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetTagGames(int tagId)
+        public IActionResult GetTagGamesOrderByRating(int tagId, [FromQuery] FilterParameters filterParameters)
         {
             if (!tagRepository.TagExists(tagId))
                 return NotFound($"Not found tag with such id {tagId}");
 
+            if (!filterParameters.ValidYearRange)
+                return BadRequest("Max release year cannot be less than min year");
+
+            if (!filterParameters.ValidPlayTime)
+                return BadRequest("Max playtime cannot be less than min playtime");
+
+            if (!filterParameters.ValidRating)
+                return BadRequest("Rating cannot be less than 0");
+
+            if (!filterParameters.ValidStatus)
+                return BadRequest("Not Valid Status");
+
+            if (!filterParameters.ValidType)
+                return BadRequest("Not Valid Type");
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByTag(tagId));
+            var games = gameRepository.GetGamesByTagOrderByRating(tagId, filterParameters);
+
+            var metadata = new
+            {
+                games.TotalCount,
+                games.PageSize,
+                games.CurrentPage,
+                games.TotalPages,
+                games.HasNext,
+                games.HasPrevious,
+            };
+
+            var Games = mapper.Map<List<GameSmallListDto>>(games);
+
+            Response.Headers.Add("X-pagination", JsonSerializer.Serialize(metadata));
+
+            return Ok(Games);
+        }
+
+        /// <summary>
+        /// Return all tag games OrderByName
+        /// </summary>
+        /// <param name="tagId"></param>
+        /// <param name="filterParameters"></param>
+        /// <returns></returns>
+        [HttpGet("{tagId}/games/name")]
+        [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetTagGamesOrderByName(int tagId, [FromQuery] FilterParameters filterParameters)
+        {
+            if (!tagRepository.TagExists(tagId))
+                return NotFound($"Not found tag with such id {tagId}");
+
+            if (!filterParameters.ValidYearRange)
+                return BadRequest("Max release year cannot be less than min year");
+
+            if (!filterParameters.ValidPlayTime)
+                return BadRequest("Max playtime cannot be less than min playtime");
+
+            if (!filterParameters.ValidRating)
+                return BadRequest("Rating cannot be less than 0");
+
+            if (!filterParameters.ValidStatus)
+                return BadRequest("Not Valid Status");
+
+            if (!filterParameters.ValidType)
+                return BadRequest("Not Valid Type");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var games = gameRepository.GetGamesByTagOrderByName(tagId, filterParameters);
+
+            var metadata = new
+            {
+                games.TotalCount,
+                games.PageSize,
+                games.CurrentPage,
+                games.TotalPages,
+                games.HasNext,
+                games.HasPrevious,
+            };
+
+            var Games = mapper.Map<List<GameSmallListDto>>(games);
+
+            Response.Headers.Add("X-pagination", JsonSerializer.Serialize(metadata));
 
             return Ok(Games);
         }
@@ -89,7 +171,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="tagCreate"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("createTag")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult CreateTag([FromBody] TagCreateDto tagCreate)

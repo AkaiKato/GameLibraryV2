@@ -27,7 +27,7 @@ namespace GameLibraryV2.Controllers
         /// Return all DLC
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("dlcAll")]
         [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
         public IActionResult GetDLCs()
         {

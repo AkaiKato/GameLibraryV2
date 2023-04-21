@@ -6,6 +6,7 @@ using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace GameLibraryV2.Controllers
 {
@@ -28,7 +29,7 @@ namespace GameLibraryV2.Controllers
         /// Get all Publishers
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("publisherAll")]
         [ProducesResponseType(200, Type = typeof(IList<PublisherDto>))]
         [ProducesResponseType(400)]
         public IActionResult GetPublishers()
@@ -63,22 +64,103 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Get all publisher Games
+        /// Get all publisher Games OrderByRating
         /// </summary>
         /// <param name="publisherId"></param>
+        /// <param name="filterParameters"></param>
         /// <returns></returns>
-        [HttpGet("{publisherId}/games")]
+        [HttpGet("{publisherId}/games/rating")]
         [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetPublisherGames(int publisherId)
+        public IActionResult GetPublisherGamesOrderByRating(int publisherId, [FromQuery] FilterParameters filterParameters)
         {
             if (!publisherRepository.PublisherExists(publisherId))
                 return NotFound($"Not found publisher with such id {publisherId}");
 
+            if (!filterParameters.ValidYearRange)
+                return BadRequest("Max release year cannot be less than min year");
+
+            if (!filterParameters.ValidPlayTime)
+                return BadRequest("Max playtime cannot be less than min playtime");
+
+            if (!filterParameters.ValidRating)
+                return BadRequest("Rating cannot be less than 0");
+
+            if (!filterParameters.ValidStatus)
+                return BadRequest("Not Valid Status");
+
+            if (!filterParameters.ValidType)
+                return BadRequest("Not Valid Type");
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGamesByPublisher(publisherId));
+            var games = gameRepository.GetGamesByPublisherOrderByRating(publisherId, filterParameters);
+
+            var metadata = new
+            {
+                games.TotalCount,
+                games.PageSize,
+                games.CurrentPage,
+                games.TotalPages,
+                games.HasNext,
+                games.HasPrevious,
+            };
+
+            var Games = mapper.Map<List<GameSmallListDto>>(games);
+
+            Response.Headers.Add("X-pagination", JsonSerializer.Serialize(metadata));
+
+            return Ok(Games);
+        }
+
+        /// <summary>
+        /// Get all publisher Games OrderByName
+        /// </summary>
+        /// <param name="publisherId"></param>
+        /// <param name="filterParameters"></param>
+        /// <returns></returns>
+        [HttpGet("{publisherId}/games/name")]
+        [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetPublisherGamesOrderByName(int publisherId, [FromQuery] FilterParameters filterParameters)
+        {
+            if (!publisherRepository.PublisherExists(publisherId))
+                return NotFound($"Not found publisher with such id {publisherId}");
+
+            if (!filterParameters.ValidYearRange)
+                return BadRequest("Max release year cannot be less than min year");
+
+            if (!filterParameters.ValidPlayTime)
+                return BadRequest("Max playtime cannot be less than min playtime");
+
+            if (!filterParameters.ValidRating)
+                return BadRequest("Rating cannot be less than 0");
+
+            if (!filterParameters.ValidStatus)
+                return BadRequest("Not Valid Status");
+
+            if (!filterParameters.ValidType)
+                return BadRequest("Not Valid Type");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var games = gameRepository.GetGamesByPublisherOrderByName(publisherId, filterParameters);
+
+            var metadata = new
+            {
+                games.TotalCount,
+                games.PageSize,
+                games.CurrentPage,
+                games.TotalPages,
+                games.HasNext,
+                games.HasPrevious,
+            };
+
+            var Games = mapper.Map<List<GameSmallListDto>>(games);
+
+            Response.Headers.Add("X-pagination", JsonSerializer.Serialize(metadata));
 
             return Ok(Games);
         }
@@ -88,7 +170,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="publisherCreate"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("createPublisher")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult CreatePublisher([FromBody] PublisherCreateDto publisherCreate)

@@ -27,7 +27,7 @@ namespace GameLibraryV2.Controllers
         /// Return all roles
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("roleAll")]
         [ProducesResponseType(200, Type = typeof(IList<RoleDto>))]
         [ProducesResponseType(400)]
         public IActionResult GetRoles()
@@ -120,7 +120,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="roleCreate"></param>
         /// <returns></returns>
-        [HttpPost]  
+        [HttpPost("createRole")]  
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult CreateRole([FromBody] RoleCreateDto roleCreate)

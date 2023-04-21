@@ -19,17 +19,29 @@ namespace GameLibraryV2.Interfaces
 
         public IList<Game> GetDLCs();
 
-        public IList<Game> GetGamesByAgeRating(int ageratingId);
+        public PagedList<Game> GetGamesByAgeRatingOrderByRating(int ageratingId, FilterParameters filterParameters);
 
-        public IList<Game> GetGamesByDeveloper(int developerId);
+        public PagedList<Game> GetGamesByAgeRatingOrderByName(int ageratingId, FilterParameters filterParameters);
 
-        public IList<Game> GetGamesByGenre(int genreId);
+        public PagedList<Game> GetGamesByDeveloperOrderByRating(int developerId, FilterParameters filterParameters);
 
-        public IList<Game> GetGameByPlatform(int platformId);
+        public PagedList<Game> GetGamesByDeveloperOrderByName(int developerId, FilterParameters filterParameters);
 
-        public IList<Game> GetGamesByPublisher(int publisherId);
+        public PagedList<Game> GetGamesByGenreOrderByRating(int genreId, FilterParameters filterParameters);
 
-        public IList<Game> GetGamesByTag(int tagId);
+        public PagedList<Game> GetGamesByGenreOrderByName(int genreId, FilterParameters filterParameters);
+
+        public PagedList<Game> GetGameByPlatformOrderByRating(int platformId, FilterParameters filterParameters);
+
+        public PagedList<Game> GetGameByPlatformOrderByName(int platformId, FilterParameters filterParameters);
+
+        public PagedList<Game> GetGamesByPublisherOrderByRating(int publisherId, FilterParameters filterParameters);
+
+        public PagedList<Game> GetGamesByPublisherOrderByName(int publisherId, FilterParameters filterParameters);
+
+        public PagedList<Game> GetGamesByTagOrderByRating(int tagId, FilterParameters filterParameters);
+
+        public PagedList<Game> GetGamesByTagOrderByName(int tagId, FilterParameters filterParameters);
 
         public bool GameExists(int gameId);
 

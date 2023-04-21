@@ -35,7 +35,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="reviewCreate"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("createReview")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult CreateGameReview([FromBody] ReviewCreateDto reviewCreate)

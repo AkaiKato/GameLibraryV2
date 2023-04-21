@@ -8,6 +8,7 @@ using GameLibraryV2.Models;
 using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Text.Json;
 
 namespace GameLibraryV2.Controllers
 {
@@ -34,7 +35,7 @@ namespace GameLibraryV2.Controllers
         /// Return all platforms
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("platfrormAll")]
         [ProducesResponseType(200, Type = typeof(IList<PlatformDto>))]
         [ProducesResponseType(400)]
         public IActionResult GetPlatforms()
@@ -69,22 +70,103 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Return games on specified platform
+        /// Return games on specified platform OrderByRating
         /// </summary>
         /// <param name="platformId"></param>
+        /// <param name="filterParameters"></param>
         /// <returns></returns>
-        [HttpGet("{platformId}/games")]
+        [HttpGet("{platformId}/games/rating")]
         [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetPlatformGame(int platformId)
+        public IActionResult GetPlatformGameOrderByRating(int platformId, [FromQuery] FilterParameters filterParameters)
         {
             if (!platformRepository.PlatformExist(platformId))
                 return NotFound($"Not found platform with such id {platformId}");
 
+            if (!filterParameters.ValidYearRange)
+                return BadRequest("Max release year cannot be less than min year");
+
+            if (!filterParameters.ValidPlayTime)
+                return BadRequest("Max playtime cannot be less than min playtime");
+
+            if (!filterParameters.ValidRating)
+                return BadRequest("Rating cannot be less than 0");
+
+            if (!filterParameters.ValidStatus)
+                return BadRequest("Not Valid Status");
+
+            if (!filterParameters.ValidType)
+                return BadRequest("Not Valid Type");
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var Games = mapper.Map<List<GameSmallListDto>>(gameRepository.GetGameByPlatform(platformId));
+            var games = gameRepository.GetGameByPlatformOrderByRating(platformId, filterParameters);
+
+            var metadata = new
+            {
+                games.TotalCount,
+                games.PageSize,
+                games.CurrentPage,
+                games.TotalPages,
+                games.HasNext,
+                games.HasPrevious,
+            };
+
+            var Games = mapper.Map<List<GameSmallListDto>>(games);
+
+            Response.Headers.Add("X-pagination", JsonSerializer.Serialize(metadata));
+
+            return Ok(Games);
+        }
+
+        /// <summary>
+        /// Return games on specified platform OrderByName
+        /// </summary>
+        /// <param name="platformId"></param>
+        /// <param name="filterParameters"></param>
+        /// <returns></returns>
+        [HttpGet("{platformId}/games/name")]
+        [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetPlatformGameOrderByName(int platformId, [FromQuery] FilterParameters filterParameters)
+        {
+            if (!platformRepository.PlatformExist(platformId))
+                return NotFound($"Not found platform with such id {platformId}");
+
+            if (!filterParameters.ValidYearRange)
+                return BadRequest("Max release year cannot be less than min year");
+
+            if (!filterParameters.ValidPlayTime)
+                return BadRequest("Max playtime cannot be less than min playtime");
+
+            if (!filterParameters.ValidRating)
+                return BadRequest("Rating cannot be less than 0");
+
+            if (!filterParameters.ValidStatus)
+                return BadRequest("Not Valid Status");
+
+            if (!filterParameters.ValidType)
+                return BadRequest("Not Valid Type");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var games = gameRepository.GetGameByPlatformOrderByName(platformId, filterParameters);
+
+            var metadata = new
+            {
+                games.TotalCount,
+                games.PageSize,
+                games.CurrentPage,
+                games.TotalPages,
+                games.HasNext,
+                games.HasPrevious,
+            };
+
+            var Games = mapper.Map<List<GameSmallListDto>>(games);
+
+            Response.Headers.Add("X-pagination", JsonSerializer.Serialize(metadata));
 
             return Ok(Games);
         }
@@ -94,7 +176,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="platformCreate"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("createPlatform")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult CreatePLatform([FromBody] PlatformCreateDto platformCreate)
