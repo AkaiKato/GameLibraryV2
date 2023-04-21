@@ -5,7 +5,9 @@ namespace GameLibraryV2.Interfaces
 {
     public interface IGameRepository
     {
-        public PagedList<Game> GetGames(SearchParameters searchParameters);
+        public PagedList<Game> GetGamesOrderByRating(FilterParameters filterParameters);
+
+        public PagedList<Game> GetGamesOrderByName(FilterParameters filterParameters);
 
         public Game GetGameById(int gameId);
 

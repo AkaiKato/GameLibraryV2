@@ -51,32 +51,77 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Return all games
+        /// Return games OrderByRating
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("getGamesOrederByRating")]
         [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
-        public IActionResult GetGames([FromQuery] SearchParameters searchParameters)
+        public IActionResult GetGamesOrderByRating([FromQuery] FilterParameters filterParameters)
         {
-            if(!searchParameters.ValidYearRange)
+            if(!filterParameters.ValidYearRange)
                 return BadRequest("Max release year cannot be less than min year");
 
-            if (!searchParameters.ValidPlayTime)
+            if (!filterParameters.ValidPlayTime)
                 return BadRequest("Max playtime cannot be less than min playtime");
 
-            if (!searchParameters.ValidRating)
+            if (!filterParameters.ValidRating)
                 return BadRequest("Rating cannot be less than 0");
 
-            if(!searchParameters.ValidStatus)
+            if(!filterParameters.ValidStatus)
                 return BadRequest("Not Valid Status");
 
-            if (!searchParameters.ValidType)
+            if (!filterParameters.ValidType)
                 return BadRequest("Not Valid Type");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = gameRepository.GetGames(searchParameters);
+            var games = gameRepository.GetGamesOrderByRating(filterParameters);
+
+            var metadata = new
+            {
+                games.TotalCount,
+                games.PageSize,
+                games.CurrentPage,
+                games.TotalPages,
+                games.HasNext,
+                games.HasPrevious,
+            };
+
+            var Games = mapper.Map<List<GameSmallListDto>>(games);
+
+            Response.Headers.Add("X-pagination", JsonSerializer.Serialize(metadata));
+
+            return Ok(Games);
+        }
+
+        /// <summary>
+        /// Return games OrederByName (alphabetical)
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getGamesOrederByName")]
+        [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
+        public IActionResult GetGamesOrderByName([FromQuery] FilterParameters filterParameters)
+        {
+            if (!filterParameters.ValidYearRange)
+                return BadRequest("Max release year cannot be less than min year");
+
+            if (!filterParameters.ValidPlayTime)
+                return BadRequest("Max playtime cannot be less than min playtime");
+
+            if (!filterParameters.ValidRating)
+                return BadRequest("Rating cannot be less than 0");
+
+            if (!filterParameters.ValidStatus)
+                return BadRequest("Not Valid Status");
+
+            if (!filterParameters.ValidType)
+                return BadRequest("Not Valid Type");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var games = gameRepository.GetGamesOrderByName(filterParameters);
 
             var metadata = new
             {
@@ -142,7 +187,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="gameCreate"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("createGame")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult CreateGame([FromBody] GameCreateDto gameCreate)

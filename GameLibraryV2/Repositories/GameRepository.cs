@@ -3,8 +3,6 @@ using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Net.WebSockets;
 
 namespace GameLibraryV2.Repositories
 {
@@ -17,16 +15,16 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
-        public PagedList<Game> GetGames(SearchParameters searchParameters)
+        public PagedList<Game> GetGamesOrderByRating(FilterParameters filterParameters)
         {
             var games = dataContext.Games
-                .Where(g => g.NSFW == searchParameters.NSFW 
-                && g.ReleaseDate.Year >= searchParameters.MinYearOfRelease
-                && g.ReleaseDate.Year <= searchParameters.MaxYearOfRelease
-                && g.AveragePlayTime >= searchParameters.MinPlayTime
-                && g.AveragePlayTime <= searchParameters.MaxPlayTime
-                && g.Rating.TotalRating >= searchParameters.MinRating
-                && g.Rating.TotalRating <= searchParameters.MaxRating)
+                .Where(g => g.NSFW == filterParameters.NSFW 
+                && g.ReleaseDate.Year >= filterParameters.MinYearOfRelease
+                && g.ReleaseDate.Year <= filterParameters.MaxYearOfRelease
+                && g.AveragePlayTime >= filterParameters.MinPlayTime
+                && g.AveragePlayTime <= filterParameters.MaxPlayTime
+                && g.Rating.TotalRating >= filterParameters.MinRating
+                && g.Rating.TotalRating <= filterParameters.MaxRating)
                 .Select(p => new Game
                 {
                     Id = p.Id,
@@ -69,49 +67,146 @@ namespace GameLibraryV2.Repositories
                 .OrderByDescending(x => x.Rating.TotalRating)
                 .AsEnumerable();
 
-            if (searchParameters.Status != null)
-                games = games.Where(g => searchParameters.Status
+            if (filterParameters.Status != null)
+                games = games.Where(g => filterParameters.Status
                                 .Where(y => y != null)
                                 .Select(y => y.ToLower())
                                 .Contains(g.Status.ToLower()))
                                 .AsEnumerable();
 
-            if(searchParameters.Type != null)
-                games = games.Where(g => searchParameters.Type
+            if(filterParameters.Type != null)
+                games = games.Where(g => filterParameters.Type
                                 .Where(y => y != null)
                                 .Select(y => y.ToLower())
                                 .Contains(g.Type.ToLower()))
                                 .AsEnumerable();
 
-            if(searchParameters.Genre != null)
-                games = games.Where(g => searchParameters.GenreEquals(g.Genres, searchParameters.Genre))
+            if(filterParameters.Genre != null)
+                games = games.Where(g => filterParameters.GenreEquals(g.Genres, filterParameters.Genre))
                                 .AsEnumerable();
 
-            if(searchParameters.Tag != null)
-                games = games.Where(g => searchParameters.TagEquals(g.Tags, searchParameters.Tag))
+            if(filterParameters.Tag != null)
+                games = games.Where(g => filterParameters.TagEquals(g.Tags, filterParameters.Tag))
                                 .AsEnumerable();
 
-            if (searchParameters.Platform != null)
-                games = games.Where(g => searchParameters.PlatformEquals(g.Platforms, searchParameters.Platform))
+            if (filterParameters.Platform != null)
+                games = games.Where(g => filterParameters.PlatformEquals(g.Platforms, filterParameters.Platform))
                                 .AsEnumerable();
 
-            if (searchParameters.Developer != null)
-                games = games.Where(g => searchParameters.DeveloperEquals(g.Developers, searchParameters.Developer))
+            if (filterParameters.Developer != null)
+                games = games.Where(g => filterParameters.DeveloperEquals(g.Developers, filterParameters.Developer))
                                 .AsEnumerable();
 
-            if(searchParameters.Publisher != null)
-                games = games.Where(g => searchParameters.PublisherEquals(g.Publishers, searchParameters.Publisher))
+            if(filterParameters.Publisher != null)
+                games = games.Where(g => filterParameters.PublisherEquals(g.Publishers, filterParameters.Publisher))
                                 .AsEnumerable();
             
-            if(searchParameters.AgeRating != null)
-                games = games.Where(g => searchParameters.AgeRating
+            if(filterParameters.AgeRating != null)
+                games = games.Where(g => filterParameters.AgeRating
                                 .Where(a => a != null)
                                 .Select(a => a.ToLower())
                                 .Contains(g.AgeRating.Name.Trim().ToLower()))
                                 .AsEnumerable();
 
-            return PagedList<Game>.ToPagedList(games.AsQueryable(), searchParameters.PageNumber, searchParameters.PageSize) ;
+            return PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize) ;
            
+        }
+
+        public PagedList<Game> GetGamesOrderByName(FilterParameters filterParameters)
+        {
+            var games = dataContext.Games
+                .Where(g => g.NSFW == filterParameters.NSFW
+                && g.ReleaseDate.Year >= filterParameters.MinYearOfRelease
+                && g.ReleaseDate.Year <= filterParameters.MaxYearOfRelease
+                && g.AveragePlayTime >= filterParameters.MinPlayTime
+                && g.AveragePlayTime <= filterParameters.MaxPlayTime
+                && g.Rating.TotalRating >= filterParameters.MinRating
+                && g.Rating.TotalRating <= filterParameters.MaxRating)
+                .Select(p => new Game
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    PicturePath = p.PicturePath,
+                    Status = p.Status,
+                    ReleaseDate = p.ReleaseDate,
+                    Description = p.Description,
+                    AgeRating = p.AgeRating,
+                    NSFW = p.NSFW,
+                    Type = p.Type,
+                    AveragePlayTime = p.AveragePlayTime,
+                    Rating = p.Rating,
+                    Developers = p.Developers.Select(t => new Developer
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                    Publishers = p.Publishers.Select(t => new Publisher
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                    Platforms = p.Platforms.Select(t => new Platform
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                    Genres = p.Genres.Select(t => new Genre
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                    Tags = p.Tags.Select(t => new Tag
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                })
+                .OrderBy(x => x.Name)
+                .AsEnumerable();
+
+            if (filterParameters.Status != null)
+                games = games.Where(g => filterParameters.Status
+                                .Where(y => y != null)
+                                .Select(y => y.ToLower())
+                                .Contains(g.Status.ToLower()))
+                                .AsEnumerable();
+
+            if (filterParameters.Type != null)
+                games = games.Where(g => filterParameters.Type
+                                .Where(y => y != null)
+                                .Select(y => y.ToLower())
+                                .Contains(g.Type.ToLower()))
+                                .AsEnumerable();
+
+            if (filterParameters.Genre != null)
+                games = games.Where(g => filterParameters.GenreEquals(g.Genres, filterParameters.Genre))
+                                .AsEnumerable();
+
+            if (filterParameters.Tag != null)
+                games = games.Where(g => filterParameters.TagEquals(g.Tags, filterParameters.Tag))
+                                .AsEnumerable();
+
+            if (filterParameters.Platform != null)
+                games = games.Where(g => filterParameters.PlatformEquals(g.Platforms, filterParameters.Platform))
+                                .AsEnumerable();
+
+            if (filterParameters.Developer != null)
+                games = games.Where(g => filterParameters.DeveloperEquals(g.Developers, filterParameters.Developer))
+                                .AsEnumerable();
+
+            if (filterParameters.Publisher != null)
+                games = games.Where(g => filterParameters.PublisherEquals(g.Publishers, filterParameters.Publisher))
+                                .AsEnumerable();
+
+            if (filterParameters.AgeRating != null)
+                games = games.Where(g => filterParameters.AgeRating
+                                .Where(a => a != null)
+                                .Select(a => a.ToLower())
+                                .Contains(g.AgeRating.Name.Trim().ToLower()))
+                                .AsEnumerable();
+
+            return PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize);
+
         }
 
         public bool GameExists(int gameId)
