@@ -1,13 +1,11 @@
-﻿namespace GameLibraryV2.Models
+﻿namespace GameLibraryV2.Models.Common
 {
-    public class Platform
+    public class AgeRating
     {
         public int Id { get; set; }
-   
+
         public string Name { get; set; } = null!;
-    
+
         public string? Description { get; set; }
-    
-        public virtual IList<Game>? PlatformGames { get; set; }
     }
 }

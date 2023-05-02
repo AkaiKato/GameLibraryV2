@@ -1,5 +1,4 @@
 ﻿using GameLibraryV2.Dto.smallInfo;
-using GameLibraryV2.Models;
 
 namespace GameLibraryV2.Dto.Common
 {
@@ -8,6 +7,8 @@ namespace GameLibraryV2.Dto.Common
         public int Id { get; set; }
 
         public UserSmallDto User { get; set; } = null!;
+
+        public GameSmallDto Game { get; set; } = null!;
 
         public int Rating { get; set; }
 

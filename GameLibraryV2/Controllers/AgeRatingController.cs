@@ -7,6 +7,7 @@ using GameLibraryV2.Models;
 using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Dto.Common;
 using System.Text.Json;
+using GameLibraryV2.Models.Common;
 
 namespace GameLibraryV2.Controllers
 {
@@ -35,10 +36,10 @@ namespace GameLibraryV2.Controllers
         [HttpGet("ageRatingAll")]
         public IActionResult GetAgeRatings()
         {
-            var AgeRatings = ageRatingRepository.GetAgeRatings();
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var AgeRatings = ageRatingRepository.GetAgeRatings();
 
             return Ok(AgeRatings);
         }
@@ -54,10 +55,10 @@ namespace GameLibraryV2.Controllers
             if(!ageRatingRepository.AgeRatingExists(ageRatingId))
                 return NotFound($"Not found AgeRating with such id {ageRatingId}");
 
-            var AgeRating = ageRatingRepository.GetAgeRatingById(ageRatingId);
-
-            if(!ModelState.IsValid) 
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var AgeRating = ageRatingRepository.GetAgeRatingById(ageRatingId);
 
             return Ok(AgeRating);
         }
@@ -221,6 +222,11 @@ namespace GameLibraryV2.Controllers
             return Ok("successfully updated");
         }
 
+        /// <summary>
+        /// Delete Specified ageRating
+        /// </summary>
+        /// <param name="ageRatingDelete"></param>
+        /// <returns></returns>
         [HttpDelete("deleteAgeRating")]
         public IActionResult DeleteAgeRating([FromBody] JustIdDto ageRatingDelete)
         {

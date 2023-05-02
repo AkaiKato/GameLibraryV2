@@ -6,7 +6,9 @@ using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
+using GameLibraryV2.Models.Common;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace GameLibraryV2.Controllers
@@ -21,9 +23,12 @@ namespace GameLibraryV2.Controllers
         private readonly IGenreRepository genreRepository;
         private readonly ITagRepository tagRepository;
         private readonly IPlatformRepository platformRepository;
+        private readonly IPersonGamesRepository personGamesRepository;
         private readonly IReviewRepository reviewRepository;
         private readonly IDLCRepository dlcRepository;
         private readonly IAgeRatingRepository ageRatingRepository;
+        private readonly IUserRepository userRepository;
+        private readonly ILogger<Game> logger;
         private readonly IMapper mapper;
 
         public GameController(IGameRepository _gameRepository,
@@ -32,20 +37,26 @@ namespace GameLibraryV2.Controllers
             IGenreRepository _genreRepository,
             ITagRepository _tagRepository,
             IPlatformRepository _platformRepository,
+            IPersonGamesRepository _personGamesRepository,
             IReviewRepository _reviewRepository,
             IDLCRepository _dlcRepository,
             IAgeRatingRepository _ageRatingRepository,
+            IUserRepository _userRepository,
+            ILogger<Game> _logger,
             IMapper _mapper)
         {
             gameRepository = _gameRepository;
             developerRepository = _developerRepository;
             publisherRepository = _publisherRepository;
             platformRepository = _platformRepository;
+            personGamesRepository = _personGamesRepository;
             genreRepository = _genreRepository;
             tagRepository = _tagRepository;
             reviewRepository = _reviewRepository;
             dlcRepository = _dlcRepository;
             ageRatingRepository = _ageRatingRepository;
+            userRepository = _userRepository;
+            logger = _logger;
             mapper = _mapper;
         }
 
@@ -76,6 +87,9 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             var games = gameRepository.GetGamesOrderByRating(filterParameters);
+
+            logger.Log(LogLevel.Information, $"Requested Path: {Request.Path}");
+            logger.LogInformation(filterParameters.ToString());
 
             var metadata = new
             {
@@ -156,6 +170,8 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             var Game = mapper.Map<GameDto>(gameRepository.GetGameById(gameId));
+
+            Game.PicturePath = PictureController.PathToUrl(Game.PicturePath);
 
             return Ok(Game);
         }
@@ -434,6 +450,22 @@ namespace GameLibraryV2.Controllers
             }
 
             return Ok("Successfully Deleted");
+        }
+
+        [HttpGet("{userId}/favouriteGames")]
+        [ProducesResponseType(200, Type = typeof(GameDto))]
+        [ProducesResponseType(400)]
+        public IActionResult GetUserFavouriteGames(int userId)
+        {
+            if (!userRepository.UserExistsById(userId))
+                return NotFound($"Not found user with such id {userId}");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var games = mapper.Map<List<GameSmallListDto>>(personGamesRepository.GetPersonFavouriteGame(userId));
+
+            return Ok(games);
         }
 
     }

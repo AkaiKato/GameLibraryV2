@@ -1,5 +1,5 @@
 ﻿using GameLibraryV2.Dto.smallInfo;
-using GameLibraryV2.Models;
+using GameLibraryV2.Models.Common;
 
 namespace GameLibraryV2.Dto.Common
 {

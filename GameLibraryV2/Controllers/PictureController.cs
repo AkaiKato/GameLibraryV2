@@ -1,5 +1,4 @@
 ﻿using GameLibraryV2.Interfaces;
-using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -317,6 +316,12 @@ namespace GameLibraryV2.Controllers
             }
 
             return Ok("Successfully updated");
+        }
+
+
+        protected internal static string PathToUrl(string path)
+        {
+            return path.Replace("\\","/");
         }
     }
 }

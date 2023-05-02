@@ -1,4 +1,5 @@
 ﻿using GameLibraryV2.Helper;
+using GameLibraryV2.Models.Common;
 
 namespace GameLibraryV2.Models
 {

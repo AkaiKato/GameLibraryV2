@@ -1,4 +1,4 @@
-﻿namespace GameLibraryV2.Models
+﻿namespace GameLibraryV2.Models.Common
 {
     public class SystemRequirementsMin
     {

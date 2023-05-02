@@ -1,6 +1,6 @@
 ﻿using GameLibraryV2.Data;
 using GameLibraryV2.Interfaces;
-using GameLibraryV2.Models;
+using GameLibraryV2.Models.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameLibraryV2.Repositories
@@ -22,6 +22,29 @@ namespace GameLibraryV2.Repositories
         public Review GetReviewByUserIdAndGameId(int userId, int gameId)
         {
             return dataContext.Reviews.Where(r => r.User.Id == userId && r.Game.Id == gameId).FirstOrDefault()!;
+        }
+
+        public IList<Review> GetUserReviews(int userId)
+        {
+            return dataContext.Reviews.Where(r => r.User.Id == userId).Select(x => new Review
+            {
+                Id = x.Id,
+                User = new User
+                {
+                    Id = x.User.Id,
+                    Nickname = x.User.Nickname,
+                    PicturePath = x.User.PicturePath,
+                },
+                Game = new Game
+                {
+                    Id = x.Game.Id,
+                    Name = x.Game.Name,
+                },
+                Rating = x.Rating,
+                Text = x.Text,
+                PublishDate = x.PublishDate,
+                ReviewRating = x.ReviewRating,
+            }).ToList();
         }
 
         public IList<Review> GetGameReviews(int gameId)

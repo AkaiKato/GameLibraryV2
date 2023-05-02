@@ -1,4 +1,4 @@
-﻿using GameLibraryV2.Models;
+﻿using GameLibraryV2.Models.Common;
 
 namespace GameLibraryV2.Interfaces
 {
@@ -7,6 +7,8 @@ namespace GameLibraryV2.Interfaces
         public Review GetReviewById(int reviewId);
 
         public Review GetReviewByUserIdAndGameId(int userId, int gameId);
+
+        public IList<Review> GetUserReviews(int gameId);
 
         public IList<Review> GetGameReviews(int gameId);
 

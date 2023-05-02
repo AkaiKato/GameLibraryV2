@@ -1,6 +1,6 @@
-﻿namespace GameLibraryV2.Models
+﻿namespace GameLibraryV2.Models.Common
 {
-    public class Tag
+    public class Platform
     {
         public int Id { get; set; }
 
@@ -8,6 +8,6 @@
 
         public string? Description { get; set; }
 
-        public virtual IList<Game>? TagsGames { get; set; }
+        public virtual IList<Game>? PlatformGames { get; set; }
     }
 }

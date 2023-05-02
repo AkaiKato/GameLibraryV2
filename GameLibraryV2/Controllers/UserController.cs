@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 using GameLibraryV2.Dto.Common;
-using GameLibraryV2.Dto.registry;
 using GameLibraryV2.Dto.Update;
-using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
-using GameLibraryV2.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static GameLibraryV2.Helper.Enums;
@@ -18,16 +15,22 @@ namespace GameLibraryV2.Controllers
         private readonly IUserRepository userRepository;
         private readonly IRoleRepository roleRepository;
         private readonly IFriendRepository friendRepository;
+        private readonly IPersonGamesRepository personGamesRepository;
+        private readonly IReviewRepository reviewRepository;
         private readonly IMapper mapper;
 
         public UserController(IUserRepository _userRepository,
             IRoleRepository _roleRepository,
             IFriendRepository _friendRepository,
+            IPersonGamesRepository _personGamesRepository,
+            IReviewRepository _reviewRepository,
             IMapper _mapper)
         {
             userRepository = _userRepository;
             roleRepository = _roleRepository;
             friendRepository = _friendRepository;
+            personGamesRepository = _personGamesRepository;
+            reviewRepository = _reviewRepository;
             mapper = _mapper;
         }
 
@@ -67,70 +70,31 @@ namespace GameLibraryV2.Controllers
 
             var User = mapper.Map<UserDto>(userRepository.GetUserById(userId));
 
-            return Ok(User);
+            var FavouriteGames = personGamesRepository.GetPersonFavouriteGame(userId).Take(5);
+
+            var PublisherStatistic = personGamesRepository.GetPersonPublisherStatistic(userId).Take(5);
+
+            var TagStatistic = personGamesRepository.GetPersonTagStatistic(userId).Take(5);
+
+            var DeveloperStatistic = personGamesRepository.GetPersonDeveloperStatistic(userId).Take(5);
+
+            var PlatformStatistic = personGamesRepository.GetPersonPlatformStatistic(userId);
+
+            var UserReviews = mapper.Map<List<ReviewDto>>(reviewRepository.GetUserReviews(userId));
+
+            var userPage = new
+            {
+                User,
+                FavouriteGames,
+                PublisherStatistic,
+                TagStatistic,
+                DeveloperStatistic,
+                PlatformStatistic,
+                UserReviews,
+            };
+
+            return Ok(userPage);
         }
-
-        /// <summary>
-        /// Creates new User
-        /// </summary>
-        /// <param name="userCreate"></param>
-        /// <returns></returns>
-        /*[HttpPost]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public IActionResult CreateUser([FromBody] UserCreateDto userCreate)
-        {
-            if (userCreate == null)
-                return BadRequest(ModelState);
-
-            if (userRepository.HasEmail(userCreate.Email))
-            {
-                ModelState.AddModelError("", "User with Email already registrated");
-                return StatusCode(422, ModelState);
-            }
-
-            if (userRepository.HasNickname(userCreate.Nickname))
-            {
-                ModelState.AddModelError("", "User with this Nickname already exists");
-                return StatusCode(422, ModelState);
-            }
-
-            if (userCreate.Gender.Trim().ToLower() != Enums.Genders.male.ToString() && 
-                userCreate.Gender.Trim().ToLower() != Enums.Genders.female.ToString())
-            {
-                ModelState.AddModelError("", "Unsupported Gender");
-                return StatusCode(422, ModelState);
-            }
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var userMap = new User();
-
-            userMap.Email = userCreate.Email;
-
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(userCreate.Password);
-            userMap.Password = passwordHash;
-
-
-            userMap.Nickname = userCreate.Nickname;
-            userMap.Age = userCreate.Age;
-            userMap.Gender = userCreate.Gender;
-
-            userMap.PicturePath = $"\\Images\\userPicture\\Def.jpg";
-            userMap.RegistrationdDate = DateTime.Now;
-            userMap.UserGames = new List<PersonGame>() { };
-            userMap.UserRoles = new List<Role>() { roleRepository.GetRoleByName(Enums.Roles.user.ToString())};
-            userMap.UserFriends = new List<Friend>() { };
-
-            if (!userRepository.CreateUser(userMap))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
-
-            return Ok("Successfully created");
-        }*/
 
         /// <summary>
         /// Return specified user role
@@ -175,7 +139,7 @@ namespace GameLibraryV2.Controllers
             if(userRepository.UserNicknameAlreadyInUser(userUpdate.Id, userUpdate.Nickname))
                 return BadRequest("Nickname already in use");
 
-            if(!Enum.GetNames(typeof(Enums.Genders)).Contains(userUpdate.Gender))
+            if(!Enum.GetNames(typeof(Genders)).Contains(userUpdate.Gender))
                 return BadRequest("Unsupported Gender");
 
             if(!ModelState.IsValid) 

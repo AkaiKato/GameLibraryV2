@@ -2,6 +2,7 @@
 using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
+using GameLibraryV2.Models.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameLibraryV2.Repositories
@@ -18,7 +19,7 @@ namespace GameLibraryV2.Repositories
         public PagedList<Game> GetGamesOrderByRating(FilterParameters filterParameters)
         {
             var games = dataContext.Games
-                .Where(g => g.NSFW == filterParameters.NSFW 
+                .Where(g => g.NSFW == filterParameters.NSFW
                 && g.ReleaseDate.Year >= filterParameters.MinYearOfRelease
                 && g.ReleaseDate.Year <= filterParameters.MaxYearOfRelease
                 && g.AveragePlayTime >= filterParameters.MinPlayTime
@@ -64,6 +65,7 @@ namespace GameLibraryV2.Repositories
                         Name = t.Name,
                     }).ToList(),
                 })
+                .AsSplitQuery()
                 .OrderByDescending(x => x.Rating.TotalRating)
                 .AsEnumerable();
 

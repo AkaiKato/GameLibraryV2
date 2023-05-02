@@ -1,5 +1,5 @@
 ﻿using GameLibraryV2.Dto.Common;
-using GameLibraryV2.Models;
+using GameLibraryV2.Models.Common;
 
 namespace GameLibraryV2.Dto.create
 {

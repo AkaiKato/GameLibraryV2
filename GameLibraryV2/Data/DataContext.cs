@@ -1,4 +1,4 @@
-﻿using GameLibraryV2.Models;
+﻿using GameLibraryV2.Models.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameLibraryV2.Data

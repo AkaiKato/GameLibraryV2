@@ -1,6 +1,7 @@
 ﻿using GameLibraryV2.Data;
+using GameLibraryV2.Dto.Statistic;
 using GameLibraryV2.Interfaces;
-using GameLibraryV2.Models;
+using GameLibraryV2.Models.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameLibraryV2.Repositories
@@ -47,6 +48,66 @@ namespace GameLibraryV2.Repositories
         public PersonGame GetPersonGameByUserIdAndGameId(int userId, int gameId)
         {
             return dataContext.PersonGames.Where(u => u.User.Id == userId && u.Game.Id == gameId).FirstOrDefault()!;
+        }
+
+        public IList<CountStatistic> GetPersonPublisherStatistic(int userId)
+        {
+            return dataContext.PersonGames.Where(pg => pg.User.Id == userId)
+                .SelectMany(x => x.Game.Publishers)
+                .GroupBy(x => new {x.Id, x.Name})
+                .Select(x => new CountStatistic{ Id = x.Key.Id, Name = x.Key.Name, Count = x.Count()})
+                .OrderByDescending(x => x.Count)
+                .ToList();
+        }
+
+        public IList<CountStatistic> GetPersonTagStatistic(int userId)
+        {
+            return dataContext.PersonGames.Where(pg => pg.User.Id == userId)
+                .SelectMany(x => x.Game.Tags)
+                .GroupBy(x => new { x.Id, x.Name })
+                .Select(x => new CountStatistic { Id = x.Key.Id, Name = x.Key.Name, Count = x.Count()})
+                .OrderByDescending(x => x.Count)
+                .ToList();
+        }
+
+        public IList<CountStatistic> GetPersonDeveloperStatistic(int userId)
+        {
+            return dataContext.PersonGames.Where(pg => pg.User.Id == userId)
+                .SelectMany(x => x.Game.Developers)
+                .GroupBy(x => new { x.Id, x.Name })
+                .Select(x => new CountStatistic { Id = x.Key.Id, Name = x.Key.Name, Count = x.Count() })
+                .OrderByDescending(x => x.Count)
+                .ToList();
+        }
+
+        public IList<CountStatistic> GetPersonPlatformStatistic(int userId)
+        {
+            return dataContext.PersonGames.Where(pg => pg.User.Id == userId && pg.PlayedPlatform != null)
+                .Select(x => x.PlayedPlatform)
+                .GroupBy(x => new { x!.Id, x.Name })
+                .Select(x => new CountStatistic { Id = x.Key.Id, Name = x.Key.Name, Count = x.Count() })
+                .OrderByDescending(x => x.Count)
+                .ToList();
+        }
+
+        public IList<CountStatistic> GetPersonGenreStatistic(int userId)
+        {
+            return dataContext.PersonGames.Where(pg => pg.User.Id == userId)
+                .SelectMany(x => x.Game.Genres)
+                .GroupBy(x => new { x.Id, x.Name })
+                .Select(x => new CountStatistic { Id = x.Key.Id, Name = x.Key.Name, Count = x.Count() })
+                .OrderByDescending(x => x.Count)
+                .ToList();
+        }
+
+        public IList<Game> GetPersonFavouriteGame(int userId)
+        {
+            return dataContext.PersonGames.Where(pg => pg.User.Id == userId && pg.Favourite == true)
+                .Include(g => g.Game).ThenInclude(r => r.Rating).Include(g => g.Game).
+                ThenInclude(r => r.Developers).Include(g => g.Game).ThenInclude(r => r.Publishers).Include(g => g.Game).
+                ThenInclude(r => r.Platforms).Include(g => g.Game).ThenInclude(r => r.Genres).Include(g => g.Game).
+                ThenInclude(r => r.Tags)
+                .Select(x => x.Game).ToList();
         }
 
         public bool PersonGameExists(Guid personGameId)

@@ -1,4 +1,4 @@
-﻿namespace GameLibraryV2.Models
+﻿namespace GameLibraryV2.Models.Common
 {
     public class User
     {
@@ -9,12 +9,12 @@
         public string Nickname { get; set; } = null!;
 
         public string Password { get; set; } = null!;
-        
+
         public int Age { get; set; }
 
         public string Gender { get; set; } = null!;
 
-        public string PicturePath { get; set; } = null!; 
+        public string PicturePath { get; set; } = null!;
 
         public DateTime RegistrationdDate { get; set; }
 

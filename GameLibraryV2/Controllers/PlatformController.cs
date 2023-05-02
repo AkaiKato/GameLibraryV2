@@ -5,6 +5,7 @@ using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
+using GameLibraryV2.Models.Common;
 using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;

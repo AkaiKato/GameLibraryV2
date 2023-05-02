@@ -1,6 +1,6 @@
-﻿namespace GameLibraryV2.Models
+﻿namespace GameLibraryV2.Models.Common
 {
-    public class Developer
+    public class Publisher
     {
         public int Id { get; set; }
 
@@ -12,6 +12,6 @@
 
         public string MiniPicturePath { get; set; } = null!;
 
-        public virtual IList<Game>? DeveloperGames { get; set; }
+        public virtual IList<Game>? PublisherGames { get; set; }
     }
 }

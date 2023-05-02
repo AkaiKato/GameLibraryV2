@@ -1,9 +1,9 @@
 ﻿using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.registry;
-using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
+using GameLibraryV2.Models.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -61,19 +61,6 @@ namespace GameLibraryV2.Controllers
                 UserRoles = new List<Role>() { roleRepository.GetRoleByName(Enums.Roles.user.ToString()) },
                 UserFriends = new List<Friend>() { },
             };
-
-            /*string passwordHash = BCrypt.Net.BCrypt.HashPassword(userCreate.Password);
-            userMap.Password = passwordHash;
-
-            userMap.Nickname = userCreate.Nickname;
-            userMap.Age = userCreate.Age;
-            userMap.Gender = userCreate.Gender;
-
-            userMap.PicturePath = $"\\Images\\userPicture\\Def.jpg";
-            userMap.RegistrationdDate = DateTime.Now;
-            userMap.UserGames = new List<PersonGame>() { };
-            userMap.UserRoles = new List<Role>() { roleRepository.GetRoleByName(Enums.Roles.user.ToString()) };
-            userMap.UserFriends = new List<Friend>() { };*/
 
             if (!userRepository.CreateUser(userMap))
             {
@@ -144,7 +131,7 @@ namespace GameLibraryV2.Controllers
         }
 
 
-        private RefreshToken GenerateRefreshToken()
+        private static RefreshToken GenerateRefreshToken()
         {
             var refreshToken = new RefreshToken
             {
