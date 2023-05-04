@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameLibraryV2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230417133651_init")]
+    [Migration("20230502140955_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -56,7 +56,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("GameGenre");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.AgeRating", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.AgeRating", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -76,7 +76,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("AgeRating");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.DLC", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.DLC", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -99,7 +99,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("DLCs");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Developer", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.Developer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -127,7 +127,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("Developers");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Friend", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.Friend", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -150,7 +150,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("Friends");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Game", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.Game", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -216,7 +216,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Genre", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.Genre", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -236,7 +236,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("Genres");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.PersonGame", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.PersonGame", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -275,7 +275,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("PersonGames");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Platform", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.Platform", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -295,7 +295,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("Platforms");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Publisher", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.Publisher", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -323,7 +323,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("Publishers");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Rating", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.Rating", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -369,7 +369,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("Ratings");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Review", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.Review", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -405,7 +405,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Role", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -422,7 +422,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.SystemRequirementsMax", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.SystemRequirementsMax", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -459,7 +459,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("SystemRequirementsMax");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.SystemRequirementsMin", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.SystemRequirementsMin", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -496,7 +496,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("SystemRequirementsMin");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Tag", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.Tag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -516,7 +516,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.User", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -627,13 +627,13 @@ namespace GameLibraryV2.Migrations
 
             modelBuilder.Entity("DeveloperGame", b =>
                 {
-                    b.HasOne("GameLibraryV2.Models.Game", null)
+                    b.HasOne("GameLibraryV2.Models.Common.Game", null)
                         .WithMany()
                         .HasForeignKey("DeveloperGamesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameLibraryV2.Models.Developer", null)
+                    b.HasOne("GameLibraryV2.Models.Common.Developer", null)
                         .WithMany()
                         .HasForeignKey("DevelopersId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -642,28 +642,28 @@ namespace GameLibraryV2.Migrations
 
             modelBuilder.Entity("GameGenre", b =>
                 {
-                    b.HasOne("GameLibraryV2.Models.Game", null)
+                    b.HasOne("GameLibraryV2.Models.Common.Game", null)
                         .WithMany()
                         .HasForeignKey("GenreGamesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameLibraryV2.Models.Genre", null)
+                    b.HasOne("GameLibraryV2.Models.Common.Genre", null)
                         .WithMany()
                         .HasForeignKey("GenresId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.DLC", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.DLC", b =>
                 {
-                    b.HasOne("GameLibraryV2.Models.Game", "DLCGame")
+                    b.HasOne("GameLibraryV2.Models.Common.Game", "DLCGame")
                         .WithMany()
                         .HasForeignKey("DLCGameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameLibraryV2.Models.Game", "ParentGame")
+                    b.HasOne("GameLibraryV2.Models.Common.Game", "ParentGame")
                         .WithMany("DLCs")
                         .HasForeignKey("ParentGameId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -674,15 +674,15 @@ namespace GameLibraryV2.Migrations
                     b.Navigation("ParentGame");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Friend", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.Friend", b =>
                 {
-                    b.HasOne("GameLibraryV2.Models.User", "Friendu")
+                    b.HasOne("GameLibraryV2.Models.Common.User", "Friendu")
                         .WithMany()
                         .HasForeignKey("FrienduId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameLibraryV2.Models.User", "User")
+                    b.HasOne("GameLibraryV2.Models.Common.User", "User")
                         .WithMany("UserFriends")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -693,31 +693,31 @@ namespace GameLibraryV2.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Game", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.Game", b =>
                 {
-                    b.HasOne("GameLibraryV2.Models.AgeRating", "AgeRating")
+                    b.HasOne("GameLibraryV2.Models.Common.AgeRating", "AgeRating")
                         .WithMany()
                         .HasForeignKey("AgeRatingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameLibraryV2.Models.Game", "ParentGame")
+                    b.HasOne("GameLibraryV2.Models.Common.Game", "ParentGame")
                         .WithMany()
                         .HasForeignKey("ParentGameId");
 
-                    b.HasOne("GameLibraryV2.Models.Rating", "Rating")
+                    b.HasOne("GameLibraryV2.Models.Common.Rating", "Rating")
                         .WithMany()
                         .HasForeignKey("RatingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameLibraryV2.Models.SystemRequirementsMax", "SystemRequirementsMax")
+                    b.HasOne("GameLibraryV2.Models.Common.SystemRequirementsMax", "SystemRequirementsMax")
                         .WithMany()
                         .HasForeignKey("SystemRequirementsMaxId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameLibraryV2.Models.SystemRequirementsMin", "SystemRequirementsMin")
+                    b.HasOne("GameLibraryV2.Models.Common.SystemRequirementsMin", "SystemRequirementsMin")
                         .WithMany()
                         .HasForeignKey("SystemRequirementsMinId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -734,19 +734,19 @@ namespace GameLibraryV2.Migrations
                     b.Navigation("SystemRequirementsMin");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.PersonGame", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.PersonGame", b =>
                 {
-                    b.HasOne("GameLibraryV2.Models.Game", "Game")
+                    b.HasOne("GameLibraryV2.Models.Common.Game", "Game")
                         .WithMany()
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameLibraryV2.Models.Platform", "PlayedPlatform")
+                    b.HasOne("GameLibraryV2.Models.Common.Platform", "PlayedPlatform")
                         .WithMany()
                         .HasForeignKey("PlayedPlatformId");
 
-                    b.HasOne("GameLibraryV2.Models.User", "User")
+                    b.HasOne("GameLibraryV2.Models.Common.User", "User")
                         .WithMany("UserGames")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -759,15 +759,15 @@ namespace GameLibraryV2.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Review", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.Review", b =>
                 {
-                    b.HasOne("GameLibraryV2.Models.Game", "Game")
+                    b.HasOne("GameLibraryV2.Models.Common.Game", "Game")
                         .WithMany("Reviews")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameLibraryV2.Models.User", "User")
+                    b.HasOne("GameLibraryV2.Models.Common.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -780,13 +780,13 @@ namespace GameLibraryV2.Migrations
 
             modelBuilder.Entity("GamePlatform", b =>
                 {
-                    b.HasOne("GameLibraryV2.Models.Game", null)
+                    b.HasOne("GameLibraryV2.Models.Common.Game", null)
                         .WithMany()
                         .HasForeignKey("PlatformGamesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameLibraryV2.Models.Platform", null)
+                    b.HasOne("GameLibraryV2.Models.Common.Platform", null)
                         .WithMany()
                         .HasForeignKey("PlatformsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -795,13 +795,13 @@ namespace GameLibraryV2.Migrations
 
             modelBuilder.Entity("GamePublisher", b =>
                 {
-                    b.HasOne("GameLibraryV2.Models.Game", null)
+                    b.HasOne("GameLibraryV2.Models.Common.Game", null)
                         .WithMany()
                         .HasForeignKey("PublisherGamesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameLibraryV2.Models.Publisher", null)
+                    b.HasOne("GameLibraryV2.Models.Common.Publisher", null)
                         .WithMany()
                         .HasForeignKey("PublishersId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -810,13 +810,13 @@ namespace GameLibraryV2.Migrations
 
             modelBuilder.Entity("GameTag", b =>
                 {
-                    b.HasOne("GameLibraryV2.Models.Game", null)
+                    b.HasOne("GameLibraryV2.Models.Common.Game", null)
                         .WithMany()
                         .HasForeignKey("TagsGamesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameLibraryV2.Models.Tag", null)
+                    b.HasOne("GameLibraryV2.Models.Common.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -825,27 +825,27 @@ namespace GameLibraryV2.Migrations
 
             modelBuilder.Entity("RoleUser", b =>
                 {
-                    b.HasOne("GameLibraryV2.Models.User", null)
+                    b.HasOne("GameLibraryV2.Models.Common.User", null)
                         .WithMany()
                         .HasForeignKey("RoleUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameLibraryV2.Models.Role", null)
+                    b.HasOne("GameLibraryV2.Models.Common.Role", null)
                         .WithMany()
                         .HasForeignKey("UserRolesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Game", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.Game", b =>
                 {
                     b.Navigation("DLCs");
 
                     b.Navigation("Reviews");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.User", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.User", b =>
                 {
                     b.Navigation("UserFriends");
 

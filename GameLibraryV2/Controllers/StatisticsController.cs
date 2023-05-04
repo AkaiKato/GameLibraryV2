@@ -19,6 +19,11 @@ namespace GameLibraryV2.Controllers
             personGamesRepository = _personGamesRepository;
         }
 
+        /// <summary>
+        /// Return publisherStatistic for specified user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet("{userId}/publishers")]
         public IActionResult GetUserPublisherStatistics(int userId) 
         {
@@ -33,6 +38,11 @@ namespace GameLibraryV2.Controllers
             return Ok(games);
         }
 
+        /// <summary>
+        /// Return tagStatisitic for specified user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet("{userId}/tags")]
         public IActionResult GetUserTagStatistics(int userId)
         {
@@ -47,6 +57,11 @@ namespace GameLibraryV2.Controllers
             return Ok(games);
         }
 
+        /// <summary>
+        /// return developerStatisitc for specified user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet("{userId}/developer")]
         public IActionResult GetUserDeveloperStatistics(int userId)
         {
@@ -61,6 +76,11 @@ namespace GameLibraryV2.Controllers
             return Ok(games);
         }
 
+        /// <summary>
+        /// Return platformStatisitc for specified user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet("{userId}/platforms")]
         public IActionResult GetUserPlatformStatistics(int userId)
         {
@@ -75,6 +95,11 @@ namespace GameLibraryV2.Controllers
             return Ok(games);
         }
 
+        /// <summary>
+        /// Return genreStatistic for specified user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet("{userId}/genres")]
         public IActionResult GetUserGenreStatistics(int userId)
         {
