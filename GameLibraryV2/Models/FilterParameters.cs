@@ -1,4 +1,5 @@
 ﻿using GameLibraryV2.Helper;
+using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
 
 namespace GameLibraryV2.Models
@@ -35,6 +36,7 @@ namespace GameLibraryV2.Models
 
         public bool NSFW { get; set; } = false;
 
+        public bool Rating { get; set; } = true;
 
         protected internal bool ValidYearRange => MaxYearOfRelease > MinYearOfRelease;
 
@@ -45,7 +47,6 @@ namespace GameLibraryV2.Models
         protected internal bool ValidStatus => StatusIsValid(Status);
 
         protected internal bool ValidType => TypeIsValid(Type);
-
 
         private static bool StatusIsValid(string[]? status)
         {
@@ -76,19 +77,6 @@ namespace GameLibraryV2.Models
                     return false;
             }
 
-            return true;
-        }
-
-        protected internal bool GenreEquals(IList<Genre> obj, string[] obj2)
-        {
-            foreach (var item in obj2)
-            {
-                if (item == null)
-                    continue;
-                if (obj.Any(x => x.Name.Trim().ToLower() == item.Trim().ToLower()))
-                    continue;
-                return false;
-            }
             return true;
         }
 

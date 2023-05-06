@@ -6,9 +6,12 @@ namespace GameLibraryV2.Interfaces
 {
     public interface IGameRepository
     {
-        public PagedList<Game> GetGamesOrderByRating(FilterParameters filterParameters);
-
-        public PagedList<Game> GetGamesOrderByName(FilterParameters filterParameters);
+        /// <summary>
+        /// Фильтрует по полученным данным.
+        /// </summary>
+        /// <param name="filterParameters"></param>
+        /// <returns></returns>
+        public PagedList<Game> GetGames(FilterParameters filterParameters);
 
         public Game GetGameById(int gameId);
 
@@ -20,29 +23,17 @@ namespace GameLibraryV2.Interfaces
 
         public IList<Game> GetDLCs();
 
-        public PagedList<Game> GetGamesByAgeRatingOrderByRating(int ageratingId, FilterParameters filterParameters);
+        public PagedList<Game> GetGamesByAgeRating(int ageratingId, FilterParameters filterParameters);
 
-        public PagedList<Game> GetGamesByAgeRatingOrderByName(int ageratingId, FilterParameters filterParameters);
+        public PagedList<Game> GetGamesByDeveloper(int developerId, FilterParameters filterParameters);
 
-        public PagedList<Game> GetGamesByDeveloperOrderByRating(int developerId, FilterParameters filterParameters);
+        public PagedList<Game> GetGamesByGenre(int genreId, FilterParameters filterParameters);
 
-        public PagedList<Game> GetGamesByDeveloperOrderByName(int developerId, FilterParameters filterParameters);
+        public PagedList<Game> GetGameByPlatform(int platformId, FilterParameters filterParameters);
 
-        public PagedList<Game> GetGamesByGenreOrderByRating(int genreId, FilterParameters filterParameters);
+        public PagedList<Game> GetGamesByPublisher(int publisherId, FilterParameters filterParameters);
 
-        public PagedList<Game> GetGamesByGenreOrderByName(int genreId, FilterParameters filterParameters);
-
-        public PagedList<Game> GetGameByPlatformOrderByRating(int platformId, FilterParameters filterParameters);
-
-        public PagedList<Game> GetGameByPlatformOrderByName(int platformId, FilterParameters filterParameters);
-
-        public PagedList<Game> GetGamesByPublisherOrderByRating(int publisherId, FilterParameters filterParameters);
-
-        public PagedList<Game> GetGamesByPublisherOrderByName(int publisherId, FilterParameters filterParameters);
-
-        public PagedList<Game> GetGamesByTagOrderByRating(int tagId, FilterParameters filterParameters);
-
-        public PagedList<Game> GetGamesByTagOrderByName(int tagId, FilterParameters filterParameters);
+        public PagedList<Game> GetGamesByTag(int tagId, FilterParameters filterParameters);
 
         public bool GameExists(int gameId);
 

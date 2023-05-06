@@ -66,15 +66,15 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Return all tag games OrderByRating
+        /// Return all tag games
         /// </summary>
         /// <param name="tagId"></param>
         /// <param name="filterParameters"></param>
         /// <returns></returns>
-        [HttpGet("{tagId}/games/rating")]
+        [HttpGet("{tagId}/games")]
         [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetTagGamesOrderByRating(int tagId, [FromQuery] FilterParameters filterParameters)
+        public IActionResult GetTagGames(int tagId, [FromQuery] FilterParameters filterParameters)
         {
             if (!tagRepository.TagExists(tagId))
                 return NotFound($"Not found tag with such id {tagId}");
@@ -97,58 +97,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = gameRepository.GetGamesByTagOrderByRating(tagId, filterParameters);
-
-            var metadata = new
-            {
-                games.TotalCount,
-                games.PageSize,
-                games.CurrentPage,
-                games.TotalPages,
-                games.HasNext,
-                games.HasPrevious,
-            };
-
-            var Games = mapper.Map<List<GameSmallListDto>>(games);
-
-            Response.Headers.Add("X-pagination", JsonSerializer.Serialize(metadata));
-
-            return Ok(Games);
-        }
-
-        /// <summary>
-        /// Return all tag games OrderByName
-        /// </summary>
-        /// <param name="tagId"></param>
-        /// <param name="filterParameters"></param>
-        /// <returns></returns>
-        [HttpGet("{tagId}/games/name")]
-        [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
-        [ProducesResponseType(400)]
-        public IActionResult GetTagGamesOrderByName(int tagId, [FromQuery] FilterParameters filterParameters)
-        {
-            if (!tagRepository.TagExists(tagId))
-                return NotFound($"Not found tag with such id {tagId}");
-
-            if (!filterParameters.ValidYearRange)
-                return BadRequest("Max release year cannot be less than min year");
-
-            if (!filterParameters.ValidPlayTime)
-                return BadRequest("Max playtime cannot be less than min playtime");
-
-            if (!filterParameters.ValidRating)
-                return BadRequest("Rating cannot be less than 0");
-
-            if (!filterParameters.ValidStatus)
-                return BadRequest("Not Valid Status");
-
-            if (!filterParameters.ValidType)
-                return BadRequest("Not Valid Type");
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var games = gameRepository.GetGamesByTagOrderByName(tagId, filterParameters);
+            var games = gameRepository.GetGamesByTag(tagId, filterParameters);
 
             var metadata = new
             {

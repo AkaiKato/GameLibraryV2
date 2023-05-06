@@ -65,15 +65,15 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Get all publisher Games OrderByRating
+        /// Get all publisher Games
         /// </summary>
         /// <param name="publisherId"></param>
         /// <param name="filterParameters"></param>
         /// <returns></returns>
-        [HttpGet("{publisherId}/games/rating")]
+        [HttpGet("{publisherId}/games")]
         [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetPublisherGamesOrderByRating(int publisherId, [FromQuery] FilterParameters filterParameters)
+        public IActionResult GetPublisherGames(int publisherId, [FromQuery] FilterParameters filterParameters)
         {
             if (!publisherRepository.PublisherExists(publisherId))
                 return NotFound($"Not found publisher with such id {publisherId}");
@@ -96,58 +96,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = gameRepository.GetGamesByPublisherOrderByRating(publisherId, filterParameters);
-
-            var metadata = new
-            {
-                games.TotalCount,
-                games.PageSize,
-                games.CurrentPage,
-                games.TotalPages,
-                games.HasNext,
-                games.HasPrevious,
-            };
-
-            var Games = mapper.Map<List<GameSmallListDto>>(games);
-
-            Response.Headers.Add("X-pagination", JsonSerializer.Serialize(metadata));
-
-            return Ok(Games);
-        }
-
-        /// <summary>
-        /// Get all publisher Games OrderByName
-        /// </summary>
-        /// <param name="publisherId"></param>
-        /// <param name="filterParameters"></param>
-        /// <returns></returns>
-        [HttpGet("{publisherId}/games/name")]
-        [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
-        [ProducesResponseType(400)]
-        public IActionResult GetPublisherGamesOrderByName(int publisherId, [FromQuery] FilterParameters filterParameters)
-        {
-            if (!publisherRepository.PublisherExists(publisherId))
-                return NotFound($"Not found publisher with such id {publisherId}");
-
-            if (!filterParameters.ValidYearRange)
-                return BadRequest("Max release year cannot be less than min year");
-
-            if (!filterParameters.ValidPlayTime)
-                return BadRequest("Max playtime cannot be less than min playtime");
-
-            if (!filterParameters.ValidRating)
-                return BadRequest("Rating cannot be less than 0");
-
-            if (!filterParameters.ValidStatus)
-                return BadRequest("Not Valid Status");
-
-            if (!filterParameters.ValidType)
-                return BadRequest("Not Valid Type");
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var games = gameRepository.GetGamesByPublisherOrderByName(publisherId, filterParameters);
+            var games = gameRepository.GetGamesByPublisher(publisherId, filterParameters);
 
             var metadata = new
             {

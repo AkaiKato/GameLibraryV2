@@ -64,13 +64,13 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Return all AgeRating games OrderByRating
+        /// Return all AgeRating games
         /// </summary>
         /// <param name="ageRatingId"></param>
         /// <param name="filterParameters"></param>
         /// <returns></returns>
-        [HttpGet("{ageRatingId}/games/rating")]
-        public IActionResult GetAgeRatingGamesOrderByRating(int ageRatingId, [FromQuery] FilterParameters filterParameters)
+        [HttpGet("{ageRatingId}/games")]
+        public IActionResult GetAgeRatingGames(int ageRatingId, [FromQuery] FilterParameters filterParameters)
         {
             if(!ageRatingRepository.AgeRatingExists(ageRatingId))
                 return NotFound($"Not found game with such id {ageRatingId}");
@@ -93,56 +93,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = gameRepository.GetGamesByAgeRatingOrderByRating(ageRatingId, filterParameters);
-
-            var metadata = new
-            {
-                games.TotalCount,
-                games.PageSize,
-                games.CurrentPage,
-                games.TotalPages,
-                games.HasNext,
-                games.HasPrevious,
-            };
-
-            var AgeRatingGames = mapper.Map<List<GameSmallListDto>>(games);
-
-            Response.Headers.Add("X-pagination", JsonSerializer.Serialize(metadata));
-
-            return Ok(AgeRatingGames);
-        }
-
-        /// <summary>
-        /// Return all AgeRating games OrderByName
-        /// </summary>
-        /// <param name="ageRatingId"></param>
-        /// <param name="filterParameters"></param>
-        /// <returns></returns>
-        [HttpGet("{ageRatingId}/games/name")]
-        public IActionResult GetAgeRatingGamesOrderByName(int ageRatingId, [FromQuery] FilterParameters filterParameters)
-        {
-            if (!ageRatingRepository.AgeRatingExists(ageRatingId))
-                return NotFound($"Not found game with such id {ageRatingId}");
-
-            if (!filterParameters.ValidYearRange)
-                return BadRequest("Max release year cannot be less than min year");
-
-            if (!filterParameters.ValidPlayTime)
-                return BadRequest("Max playtime cannot be less than min playtime");
-
-            if (!filterParameters.ValidRating)
-                return BadRequest("Rating cannot be less than 0");
-
-            if (!filterParameters.ValidStatus)
-                return BadRequest("Not Valid Status");
-
-            if (!filterParameters.ValidType)
-                return BadRequest("Not Valid Type");
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var games = gameRepository.GetGamesByAgeRatingOrderByName(ageRatingId, filterParameters);
+            var games = gameRepository.GetGamesByAgeRating(ageRatingId, filterParameters);
 
             var metadata = new
             {

@@ -64,15 +64,15 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Return all genre games OrderByRating
+        /// Return all genre games
         /// </summary>
         /// <param name="genreId"></param>
         /// <param name="filterParameters"></param>
         /// <returns></returns>
-        [HttpGet("{genreId}/games/rating")]
+        [HttpGet("{genreId}/games")]
         [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetGenreGamesOrderByRating(int genreId, [FromQuery] FilterParameters filterParameters)
+        public IActionResult GetGenreGames(int genreId, [FromQuery] FilterParameters filterParameters)
         {
             if (!genreRepository.GenreExists(genreId))
                 return NotFound($"Not found genre with such id {genreId}");
@@ -95,58 +95,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = gameRepository.GetGamesByGenreOrderByRating(genreId, filterParameters);
-
-            var metadata = new
-            {
-                games.TotalCount,
-                games.PageSize,
-                games.CurrentPage,
-                games.TotalPages,
-                games.HasNext,
-                games.HasPrevious,
-            };
-
-            var Games = mapper.Map<List<GameSmallListDto>>(games);
-
-            Response.Headers.Add("X-pagination", JsonSerializer.Serialize(metadata));
-
-            return Ok(Games);
-        }
-
-        /// <summary>
-        /// Return all genre games OrderByName
-        /// </summary>
-        /// <param name="genreId"></param>
-        /// <param name="filterParameters"></param>
-        /// <returns></returns>
-        [HttpGet("{genreId}/games/name")]
-        [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
-        [ProducesResponseType(400)]
-        public IActionResult GetGenreGamesOrderByName(int genreId, [FromQuery] FilterParameters filterParameters)
-        {
-            if (!genreRepository.GenreExists(genreId))
-                return NotFound($"Not found genre with such id {genreId}");
-
-            if (!filterParameters.ValidYearRange)
-                return BadRequest("Max release year cannot be less than min year");
-
-            if (!filterParameters.ValidPlayTime)
-                return BadRequest("Max playtime cannot be less than min playtime");
-
-            if (!filterParameters.ValidRating)
-                return BadRequest("Rating cannot be less than 0");
-
-            if (!filterParameters.ValidStatus)
-                return BadRequest("Not Valid Status");
-
-            if (!filterParameters.ValidType)
-                return BadRequest("Not Valid Type");
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var games = gameRepository.GetGamesByGenreOrderByName(genreId, filterParameters);
+            var games = gameRepository.GetGamesByGenre(genreId, filterParameters);
 
             var metadata = new
             {

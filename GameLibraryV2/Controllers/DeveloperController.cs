@@ -64,15 +64,15 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Return all developer games OrderByRating
+        /// Return all developer games
         /// </summary>
         /// <param name="developerId"></param>
         /// <param name="filterParameters"></param>
         /// <returns></returns>
-        [HttpGet("{developerId}/games/rating")]
+        [HttpGet("{developerId}/games")]
         [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetDeveloperGamesOrderByRating(int developerId, [FromQuery] FilterParameters filterParameters)
+        public IActionResult GetDeveloperGames(int developerId, [FromQuery] FilterParameters filterParameters)
         {
             if (!developerRepository.DeveloperExists(developerId))
                 return NotFound();
@@ -95,58 +95,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = gameRepository.GetGamesByDeveloperOrderByRating(developerId, filterParameters);
-
-            var metadata = new
-            {
-                games.TotalCount,
-                games.PageSize,
-                games.CurrentPage,
-                games.TotalPages,
-                games.HasNext,
-                games.HasPrevious,
-            };
-
-            var DeveloperGames = mapper.Map<List<GameSmallListDto>>(games);
-
-            Response.Headers.Add("X-pagination", JsonSerializer.Serialize(metadata));
-
-            return Ok(DeveloperGames);
-        }
-
-        /// <summary>
-        /// Return all developer games OrderByName
-        /// </summary>
-        /// <param name="developerId"></param>
-        /// <param name="filterParameters"></param>
-        /// <returns></returns>
-        [HttpGet("{developerId}/games/name")]
-        [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
-        [ProducesResponseType(400)]
-        public IActionResult GetDeveloperGamesOrderByName(int developerId, [FromQuery] FilterParameters filterParameters)
-        {
-            if (!developerRepository.DeveloperExists(developerId))
-                return NotFound();
-
-            if (!filterParameters.ValidYearRange)
-                return BadRequest("Max release year cannot be less than min year");
-
-            if (!filterParameters.ValidPlayTime)
-                return BadRequest("Max playtime cannot be less than min playtime");
-
-            if (!filterParameters.ValidRating)
-                return BadRequest("Rating cannot be less than 0");
-
-            if (!filterParameters.ValidStatus)
-                return BadRequest("Not Valid Status");
-
-            if (!filterParameters.ValidType)
-                return BadRequest("Not Valid Type");
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var games = gameRepository.GetGamesByDeveloperOrderByName(developerId, filterParameters);
+            var games = gameRepository.GetGamesByDeveloper(developerId, filterParameters);
 
             var metadata = new
             {
