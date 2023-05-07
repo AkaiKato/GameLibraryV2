@@ -30,12 +30,12 @@ namespace GameLibraryV2.Controllers
         [HttpGet("roleAll")]
         [ProducesResponseType(200, Type = typeof(IList<RoleDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetRoles()
+        public async Task<IActionResult> GetRoles()
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var Roles = mapper.Map<List<RoleDto>>(roleRepository.GetRoles());
+            var Roles = mapper.Map<List<RoleDto>>(await roleRepository.GetRolesAsync());
 
             return Ok(Roles);
         }
@@ -48,15 +48,15 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{roleId}")]
         [ProducesResponseType(200, Type = typeof(RoleDto))]
         [ProducesResponseType(400)]
-        public IActionResult GetPublisherById(int roleId)
+        public async Task<IActionResult> GetPublisherById(int roleId)
         {
-            if (!roleRepository.RoleExists(roleId))
+            if (!await roleRepository.RoleExistsAsync(roleId))
                 return NotFound($"Not found role with such id {roleId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var Role = mapper.Map<RoleDto>(roleRepository.GetRoleById(roleId));
+            var Role = mapper.Map<RoleDto>(await roleRepository.GetRoleByIdAsync(roleId));
 
             return Ok(Role);
         }
@@ -70,15 +70,15 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{roleId}/users")]
         [ProducesResponseType(200, Type = typeof(IList<UserDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetRoleUsers(int roleId)
+        public async Task<IActionResult> GetRoleUsers(int roleId)
         {
-            if (!roleRepository.RoleExists(roleId))
+            if (!await roleRepository.RoleExistsAsync(roleId))
                 return NotFound($"Not found role with such id {roleId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var User = mapper.Map<List<UserDto>>(userRepository.GetUsersByRole(roleId));
+            var User = mapper.Map<List<UserDto>>(await userRepository.GetUsersByRoleAsync(roleId));
 
             return Ok(User);
         }
@@ -91,26 +91,23 @@ namespace GameLibraryV2.Controllers
         [HttpPut("addRole")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult AddRole([FromBody] RoleUpdate addRole)
+        public async Task<IActionResult> AddRole([FromBody] RoleUpdate addRole)
         {
-            if (!userRepository.UserExistsById(addRole.UserId))
+            if (!await userRepository.UserExistsByIdAsync(addRole.UserId))
                 return NotFound($"Not found user with such id {addRole.UserId}");
 
-            if (!roleRepository.RoleExists(addRole.RoleId))
+            if (!await roleRepository.RoleExistsAsync(addRole.RoleId))
                 return NotFound($"Not found role with such id {addRole.RoleId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = userRepository.GetUserById(addRole.UserId);
-            var role = roleRepository.GetRoleById(addRole.RoleId);
+            var user = await userRepository.GetUserByIdAsync(addRole.UserId);
+            var role = await roleRepository.GetRoleByIdAsync(addRole.RoleId);
             user.UserRoles.Add(role);
 
-            if (!userRepository.UpdateUser(user))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            userRepository.UpdateUser(user);
+            await userRepository.SaveUserAsync();
 
             return Ok("Successfully added");
         }
@@ -123,12 +120,12 @@ namespace GameLibraryV2.Controllers
         [HttpPost("createRole")]  
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateRole([FromBody] RoleCreateDto roleCreate)
+        public async Task<IActionResult> CreateRole([FromBody] RoleCreateDto roleCreate)
         {
             if (roleCreate == null)
                 return BadRequest(ModelState);
 
-            var role = roleRepository.GetRoleByName(roleCreate.RoleName);
+            var role = await roleRepository.GetRoleByNameAsync(roleCreate.RoleName);
 
             if (role != null)
                 return BadRequest("Role already exists");
@@ -138,11 +135,8 @@ namespace GameLibraryV2.Controllers
 
             var roleMap = mapper.Map<Role>(roleCreate);
 
-            if (!roleRepository.CreateRole(roleMap))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            roleRepository.CreateRole(roleMap);
+            await roleRepository.SaveRoleAsync();
 
             return Ok("Successfully created");
         }
@@ -155,19 +149,19 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deleteUserRole")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult DeleteRole([FromBody] RoleUpdate deleteRole)
+        public async Task<IActionResult> DeleteRole([FromBody] RoleUpdate deleteRole)
         {
-            if (!userRepository.UserExistsById(deleteRole.UserId))
+            if (!await userRepository.UserExistsByIdAsync(deleteRole.UserId))
                 return NotFound($"Not found user with such id {deleteRole.UserId}");
 
-            if (!roleRepository.RoleExists(deleteRole.RoleId))
+            if (!await roleRepository.RoleExistsAsync(deleteRole.RoleId))
                 return NotFound($"Not found user with such id {deleteRole.RoleId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = userRepository.GetUserById(deleteRole.UserId);
-            var fusers = roleRepository.GetUserRole(deleteRole.UserId).ToList();
+            var user = await userRepository.GetUserByIdAsync(deleteRole.UserId);
+            var fusers = (await roleRepository.GetUserRoleAsync(deleteRole.UserId)).ToList();
 
             if (fusers.Count <= 1)
                 return BadRequest("User can't have less then one role Or user doesn't have this role");
@@ -176,11 +170,8 @@ namespace GameLibraryV2.Controllers
 
             user.UserRoles = fusers;
 
-            if (!userRepository.UpdateUser(user))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            userRepository.UpdateUser(user);
+            await userRepository.SaveUserAsync();
 
             return Ok("Successfully deleted");
         }

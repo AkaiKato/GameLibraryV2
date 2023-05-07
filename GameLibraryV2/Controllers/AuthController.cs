@@ -31,15 +31,15 @@ namespace GameLibraryV2.Controllers
         }
 
         [HttpPost("/register")]
-        public IActionResult Register([FromBody] UserCreateDto userCreate)
+        public async Task<IActionResult> Register([FromBody] UserCreateDto userCreate)
         {
             if (userCreate == null)
                 return BadRequest(ModelState);
 
-            if (userRepository.HasEmail(userCreate.Email))
+            if (await userRepository.HasEmailAsync(userCreate.Email))
                 return BadRequest("User with Email already registrated");
 
-            if (userRepository.HasNickname(userCreate.Nickname))
+            if (await userRepository.HasNicknameAsync(userCreate.Nickname))
                 return BadRequest("User with this Nickname already exists");
 
             if (!Enum.GetNames(typeof(Enums.Genders)).Contains(userCreate.Gender))
@@ -58,29 +58,26 @@ namespace GameLibraryV2.Controllers
                 PicturePath = $"\\Images\\userPicture\\Def.jpg",
                 RegistrationdDate = DateTime.Now,
                 UserGames = new List<PersonGame>() { },
-                UserRoles = new List<Role>() { roleRepository.GetRoleByName(Enums.Roles.user.ToString()) },
+                UserRoles = new List<Role>() { await roleRepository.GetRoleByNameAsync(Enums.Roles.user.ToString()) },
                 UserFriends = new List<Friend>() { },
             };
 
-            if (!userRepository.CreateUser(userMap))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            userRepository.CreateUser(userMap);
+            await userRepository.SaveUserAsync();
 
             return Ok("Successfully created");
         }
 
         [HttpPost("/login")]
-        public IActionResult Login([FromBody] UserLogin userLogin)
+        public async Task<IActionResult> Login([FromBody] UserLogin userLogin)
         {
             if (userLogin == null) 
                 return BadRequest(ModelState);
 
-            if(!userRepository.UserExistsByNickname(userLogin.Nickname))
+            if(!await userRepository.UserExistsByNicknameAsync(userLogin.Nickname))
                 return NotFound($"Not found user with such nickname {userLogin.Nickname}");
 
-            var user = userRepository.GetUserByNickname(userLogin.Nickname);
+            var user = await userRepository.GetUserByNicknameAsync(userLogin.Nickname);
 
             if(!BCrypt.Net.BCrypt.Verify(userLogin.Password, user.Password))
                 return BadRequest("Wrong Password");
@@ -93,24 +90,21 @@ namespace GameLibraryV2.Controllers
             var refreshToken = GenerateRefreshToken();
             SetRefreshToken(refreshToken, user);
 
-            if (!userRepository.UpdateUser(user))
-            {
-                ModelState.AddModelError("", "Something went wrong");
-                return StatusCode(500, ModelState);
-            }
+            userRepository.UpdateUser(user);
+            await userRepository.SaveUserAsync();
 
             return Ok(token);
         }
 
         [HttpPost("/refreshToken")]
-        public IActionResult RefreshToken(JustIdDto userId)
+        public async Task<IActionResult> RefreshToken(JustIdDto userId)
         {
             var refreshToken = Request.Cookies["refreshToken"];
 
-            if(!userRepository.UserExistsById(userId.Id))
+            if(!await userRepository.UserExistsByIdAsync(userId.Id))
                 return NotFound($"Not found user with such id {userId.Id}");
 
-            var user = userRepository.GetUserById(userId.Id);
+            var user = await userRepository.GetUserByIdAsync(userId.Id);
 
             if (!user.RefreshToken.Equals(refreshToken))
                 return Unauthorized("Invalid Refresh Token");
@@ -121,11 +115,8 @@ namespace GameLibraryV2.Controllers
             var newRefreshToken = GenerateRefreshToken();
             SetRefreshToken(newRefreshToken, user);
 
-            if (!userRepository.UpdateUser(user))
-            {
-                ModelState.AddModelError("", "Something went wrong");
-                return StatusCode(500, ModelState);
-            }
+            userRepository.UpdateUser(user);
+            await userRepository.SaveUserAsync();
 
             return Ok(token);
         }

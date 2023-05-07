@@ -14,42 +14,37 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
-        public DLC GetDLCConnById(int parentGameId, int dlcGame)
+        public async Task<DLC> GetDLCConnByIdAsync(int parentGameId, int dlcGame)
         {
-            return dataContext.DLCs
+            return await dataContext.DLCs
                 .Include(p => p.ParentGame)
                 .Include(d => d.DLCGame)
-                .Where(d => d.ParentGame.Id == parentGameId && d.DLCGame.Id == dlcGame)
-                .FirstOrDefault()!;
+                .FirstOrDefaultAsync(d => d.ParentGame.Id == parentGameId && d.DLCGame.Id == dlcGame);
         }
 
-        public bool DLCExists(int parentGameId, int dlcGameId)
+        public async Task<bool> DLCExistsAsync(int parentGameId, int dlcGameId)
         {
-            return dataContext.DLCs.Any(d => d.ParentGame.Id == parentGameId && d.DLCGame.Id == dlcGameId);
+            return await dataContext.DLCs.AnyAsync(d => d.ParentGame.Id == parentGameId && d.DLCGame.Id == dlcGameId);
         }
 
-        public bool DLCExistsByConnId(int dlc)
+        public async Task<bool> DLCExistsByConnIdAsync(int dlc)
         {
-            return dataContext.DLCs.Any(d => d.Id == dlc);
+            return await dataContext.DLCs.AnyAsync(d => d.Id == dlc);
         }
 
-        public bool DLCCreate(DLC dlc)
+        public void DLCCreate(DLC dlc)
         {
             dataContext.Add(dlc);
-            return Save();
         }
 
-        public bool DLCDelete(DLC dlc)
+        public void DLCDelete(DLC dlc)
         {
             dataContext.Remove(dlc);
-            return Save();
         }
 
-        private bool Save()
+        public async Task SaveDLCAsync()
         {
-            var saved = dataContext.SaveChanges();
-            //var saved = 1;
-            return saved > 0 ? true : false;
+            await dataContext.SaveChangesAsync();
         }
     }
 }

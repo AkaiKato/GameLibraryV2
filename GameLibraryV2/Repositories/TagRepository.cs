@@ -1,6 +1,7 @@
 ﻿using GameLibraryV2.Data;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameLibraryV2.Repositories
 {
@@ -13,56 +14,51 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
-        public Tag GetTagById(int tagId)
+        public async Task<Tag> GetTagByIdAsync(int tagId)
         {
-            return dataContext.Tags.Where(t => t.Id == tagId).FirstOrDefault()!;
+            return await dataContext.Tags.FirstOrDefaultAsync(t => t.Id == tagId)!;
         }
 
-        public Tag GetTagByName(string tagName)
+        public async Task<Tag> GetTagByNameAsync(string tagName)
         {
-            return dataContext.Tags.Where(t => t.Name.ToLower() == tagName.ToLower()).FirstOrDefault()!;
+            return await dataContext.Tags.FirstOrDefaultAsync(t => t.Name.ToLower() == tagName.ToLower())!;
         }
 
-        public IList<Tag> GetTags()
+        public async Task<IList<Tag>> GetTagsAsync()
         {
-            return dataContext.Tags.OrderBy(t => t.Id).ToList();
+            return await dataContext.Tags.OrderBy(t => t.Id).ToListAsync();
         }
 
-        public bool TagExists(int tagId)
+        public async Task<bool> TagExistsAsync(int tagId)
         {
-            return dataContext.Tags.Any(t => t.Id == tagId);
+            return await dataContext.Tags.AnyAsync(t => t.Id == tagId);
         }
 
-        public bool TagNameAlreadyInUse(int tagId, string tagName)
+        public async Task<bool> TagNameAlreadyInUseAsync(int tagId, string tagName)
         {
-            return dataContext.Tags.Any(t => t.Name.Trim().ToLower() == tagName.Trim().ToLower() && t.Id != tagId);
+            return await dataContext.Tags.AnyAsync(t => t.Name.Trim().ToLower() == tagName.Trim().ToLower() && t.Id != tagId);
         }
 
         //--------------------------------------------
 
-        public bool CreateTag(Tag tag)
+        public void CreateTag(Tag tag)
         {
             dataContext.Add(tag);
-            return Save();
         }
 
-        public bool UpdateTag(Tag tag)
+        public void UpdateTag(Tag tag)
         {
             dataContext.Update(tag);
-            return Save();
         }
 
-        public bool DeleteTag(Tag tag)
+        public void DeleteTag(Tag tag)
         {
             dataContext.Remove(tag);
-            return Save();
         }
 
-        private bool Save()
+        public async Task SaveTagAsync()
         {
-            var saved = dataContext.SaveChanges();
-            //var saved = 1;
-            return saved > 0 ? true : false;
+            await dataContext.SaveChangesAsync();
         }
     }
 }

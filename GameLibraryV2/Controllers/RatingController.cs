@@ -29,9 +29,9 @@ namespace GameLibraryV2.Controllers
         [HttpGet("ratings")]
         [ProducesResponseType(200, Type = typeof(IList<Rating>))]
         [ProducesResponseType(400)]
-        public IActionResult GetAllRatings()
+        public async Task<IActionResult> GetAllRatings()
         {
-            var ratings = ratingRepository.GetRatings();
+            var ratings = await ratingRepository.GetRatingsAsync();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -47,20 +47,20 @@ namespace GameLibraryV2.Controllers
         [HttpGet("gameRating")]
         [ProducesResponseType(200, Type = typeof(Rating))]
         [ProducesResponseType(400)]
-        public IActionResult GetGameRating(int gameId)
+        public async Task<IActionResult> GetGameRating(int gameId)
         {
-            if (!gameRepository.GameExists(gameId))
+            if (!await gameRepository.GameExistsAsync(gameId))
                 return NotFound($"Not found game with such id {gameId}");
 
-            var game = gameRepository.GetGameById(gameId);
+            var game = await gameRepository.GetGameByIdAsync(gameId);
 
-            if (!ratingRepository.RatingExists(game.Rating.Id))
+            if (!await ratingRepository.RatingExistsAsync(game.Rating.Id))
                 return NotFound($"Not found rating with such id {game.Rating.Id}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var rating = ratingRepository.GetRatingById(game.Rating.Id);
+            var rating = await ratingRepository.GetRatingByIdAsync(game.Rating.Id);
 
             return Ok(rating);
         }
@@ -73,26 +73,23 @@ namespace GameLibraryV2.Controllers
         [HttpPut("gameRatingAdd")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult UpdateGameRating(RatingUpdate ratingUpdate)
+        public async Task<IActionResult> UpdateGameRating(RatingUpdate ratingUpdate)
         {
             if (ratingUpdate == null)
                 return BadRequest(ModelState);
 
-            if(!ratingRepository.RatingExists(ratingUpdate.RatingId))
+            if(!await ratingRepository.RatingExistsAsync(ratingUpdate.RatingId))
                 return NotFound($"Not found rating with such id {ratingUpdate.RatingId}");
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var rating = ratingRepository.GetRatingById(ratingUpdate.RatingId);
+            var rating = await ratingRepository.GetRatingByIdAsync(ratingUpdate.RatingId);
 
             ratingRepository.Add(rating, ratingUpdate.Rating%10);
 
-            if (!ratingRepository.UpdateRating(rating))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            ratingRepository.UpdateRating(rating);
+            await ratingRepository.SaveRatingAsync();
 
             return Ok("Successfully updated");
         }
@@ -105,18 +102,18 @@ namespace GameLibraryV2.Controllers
         [HttpPut("gameRatingNulling")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult DeleteGameRating(JustIdDto ratingId)
+        public async Task<IActionResult> DeleteGameRating(JustIdDto ratingId)
         {
             if (ratingId == null)
                 return BadRequest(ModelState);
 
-            if(!ratingRepository.RatingExists(ratingId.Id))
+            if(!await ratingRepository.RatingExistsAsync(ratingId.Id))
                 return NotFound($"Not found rating with such id {ratingId.Id}");
 
             if(!ModelState.IsValid) 
                 return BadRequest(ModelState);
 
-            var rating = ratingRepository.GetRatingById(ratingId.Id);
+            var rating = await ratingRepository.GetRatingByIdAsync(ratingId.Id);
 
             rating.TotalRating = 0;
             rating.NumberOfOne = 0;
@@ -130,19 +127,16 @@ namespace GameLibraryV2.Controllers
             rating.NumberOfNine = 0;
             rating.NumberOfTen = 0;
 
-            if (!ratingRepository.UpdateRating(rating))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            ratingRepository.UpdateRating(rating);
+            await ratingRepository.SaveRatingAsync();
 
             return Ok("Successfully nulled");
         }
 
         [HttpGet("/tr")]
-        public IActionResult TotalRatingCalculation()
+        public async Task<IActionResult> TotalRatingCalculation()
         {
-            var gamesRatings = ratingRepository.GetRatings();
+            var gamesRatings = await ratingRepository.GetRatingsAsync();
 
             double avg = Math.Round((double)gamesRatings.Average(x =>
             {
@@ -168,12 +162,10 @@ namespace GameLibraryV2.Controllers
                 gR.TotalRating = Math.Round(currentNumbers / (currentNumbers + numberOfScores) * cR + 
                     numberOfScores / (currentNumbers + numberOfScores) * avg,2);
 
-                if (!ratingRepository.UpdateRating(gR))
-                {
-                    ModelState.AddModelError("", "Something went wrong while saving");
-                    return StatusCode(500, ModelState);
-                }
+                ratingRepository.UpdateRating(gR);
             }
+
+            await ratingRepository.SaveRatingAsync();
 
             return Ok(gamesRatings);
         }

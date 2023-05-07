@@ -34,9 +34,9 @@ namespace GameLibraryV2.Controllers
         /// <returns></returns>
         [HttpGet("tagAll")]
         [ProducesResponseType(200, Type = typeof(IList<TagDto>))]
-        public IActionResult GetTags()
+        public async Task<IActionResult> GetTags()
         {
-            var Tags = mapper.Map<List<TagDto>>(tagRepository.GetTags());
+            var Tags = mapper.Map<List<TagDto>>(await tagRepository.GetTagsAsync());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -52,15 +52,15 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{tagId}")]
         [ProducesResponseType(200, Type = typeof(TagDto))]
         [ProducesResponseType(400)]
-        public IActionResult GetTagById(int tagId)
+        public async Task<IActionResult> GetTagById(int tagId)
         {
-            if (!tagRepository.TagExists(tagId))
+            if (!await tagRepository.TagExistsAsync(tagId))
                 return NotFound($"Not found tag with such id {tagId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var Tag = mapper.Map<TagDto>(tagRepository.GetTagById(tagId));
+            var Tag = mapper.Map<TagDto>(await tagRepository.GetTagByIdAsync(tagId));
 
             return Ok(Tag);
         }
@@ -74,9 +74,9 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{tagId}/games")]
         [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetTagGames(int tagId, [FromQuery] FilterParameters filterParameters)
+        public async Task<IActionResult> GetTagGames(int tagId, [FromQuery] FilterParameters filterParameters)
         {
-            if (!tagRepository.TagExists(tagId))
+            if (!await tagRepository.TagExistsAsync(tagId))
                 return NotFound($"Not found tag with such id {tagId}");
 
             if (!filterParameters.ValidYearRange)
@@ -97,7 +97,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = gameRepository.GetGamesByTag(tagId, filterParameters);
+            var games = await gameRepository.GetGamesByTagAsync(tagId, filterParameters);
 
             var metadata = new
             {
@@ -124,12 +124,12 @@ namespace GameLibraryV2.Controllers
         [HttpPost("createTag")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateTag([FromBody] TagCreateDto tagCreate)
+        public async Task<IActionResult> CreateTag([FromBody] TagCreateDto tagCreate)
         {
             if (tagCreate == null)
                 return BadRequest(ModelState);
 
-            var tag = tagRepository.GetTagByName(tagCreate.Name);
+            var tag = await tagRepository.GetTagByNameAsync(tagCreate.Name);
 
             if (tag != null)
                 return BadRequest("Tag already exists");
@@ -139,11 +139,8 @@ namespace GameLibraryV2.Controllers
 
             var tagMap = mapper.Map<Tag>(tagCreate);
 
-            if (!tagRepository.CreateTag(tagMap))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            tagRepository.CreateTag(tagMap);
+            await tagRepository.SaveTagAsync();
 
             return Ok("Successfully created");
         }
@@ -156,30 +153,27 @@ namespace GameLibraryV2.Controllers
         [HttpPut("updateTag")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult UpdateTagInfo([FromBody] CommonUpdate tagUpdate)
+        public async Task<IActionResult> UpdateTagInfo([FromBody] CommonUpdate tagUpdate)
         {
             if (tagUpdate == null)
                 return BadRequest(ModelState);
 
-            if (!tagRepository.TagExists(tagUpdate.Id))
+            if (!await tagRepository.TagExistsAsync(tagUpdate.Id))
                 return NotFound($"Not found tag with such id {tagUpdate.Id}");
 
-            if (tagRepository.TagNameAlreadyInUse(tagUpdate.Id, tagUpdate.Name))
+            if (await tagRepository.TagNameAlreadyInUseAsync(tagUpdate.Id, tagUpdate.Name))
                 return BadRequest("Name already in use");
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var tag = tagRepository.GetTagById(tagUpdate.Id);
+            var tag = await tagRepository.GetTagByIdAsync(tagUpdate.Id);
 
             tag.Name = tagUpdate.Name;
             tag.Description = tagUpdate.Description;
 
-            if (!tagRepository.UpdateTag(tag))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            tagRepository.UpdateTag(tag);
+            await tagRepository.SaveTagAsync();
 
             return Ok("Successfully updated");
         }
@@ -192,21 +186,18 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deleteTag")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult DeleteTag([FromBody] JustIdDto tagDelete)
+        public async Task<IActionResult> DeleteTag([FromBody] JustIdDto tagDelete)
         {
-            if (!tagRepository.TagExists(tagDelete.Id))
+            if (!await tagRepository.TagExistsAsync(tagDelete.Id))
                 return NotFound($"Not found tag with such id {tagDelete.Id}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var platform = tagRepository.GetTagById(tagDelete.Id);
+            var platform = await tagRepository.GetTagByIdAsync(tagDelete.Id);
 
-            if (!tagRepository.DeleteTag(platform))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            tagRepository.DeleteTag(platform);
+            await tagRepository.SaveTagAsync();
 
             return Ok("Successfully deleted");
         }

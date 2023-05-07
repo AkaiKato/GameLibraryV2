@@ -160,82 +160,79 @@ namespace GameLibraryV2.Repositories
                 games = games.OrderBy(x => x.Name);
         }
 
-        public PagedList<Game> GetGames(FilterParameters filterParameters)
+        public async Task<PagedList<Game>> GetGamesAsync(FilterParameters filterParameters)
         {
             var games = dataContext.Games.AsQueryable();
 
             Filter(ref games, filterParameters);
 
-            return PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize);
+            return await PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize);
         }
 
-        public bool GameExists(int gameId)
+        public async Task<bool> GameExistsAsync(int gameId)
         {
-            return dataContext.Games.Any(x => x.Id == gameId);
+            return await dataContext.Games.AnyAsync(x => x.Id == gameId);
         }
 
-        public bool GameNameAlreadyInUse(int gameId, string gameName)
+        public async Task<bool> GameNameAlreadyInUseAsync(int gameId, string gameName)
         {
-            return dataContext.Games.Any(g => g.Name.Trim().ToLower() == gameName.Trim().ToLower() && g.Id != gameId );
+            return await dataContext.Games.AnyAsync(g => g.Name.Trim().ToLower() == gameName.Trim().ToLower() && g.Id != gameId );
         }
 
-        public bool DLCExists(int dlcId)
+        public async Task<bool> DLCExistsAsync(int dlcId)
         {
-            return dataContext.Games.Any(g => g.Id == dlcId && g.Type.ToLower() == "dlc");
+            return await dataContext.Games.AnyAsync(g => g.Id == dlcId && g.Type.ToLower() == "dlc");
         }
 
-        public Game GetGameById(int gameId)
+        public async Task<Game> GetGameByIdAsync(int gameId)
         {
-            return dataContext.Games
+            return await dataContext.Games
                 .Include(d => d.DLCs)!.ThenInclude(dg => dg.DLCGame)
                 .Include(a => a.AgeRating).Include(d => d.Developers)
                 .Include(p => p.Publishers).Include(p => p.Platforms)
                 .Include(g => g.Genres).Include(t => t.Tags)
                 .Include(p => p.ParentGame).Include(s => s.SystemRequirementsMin)
                 .Include(s => s.SystemRequirementsMax).Include(r => r.Rating)
-                .Where(x => x.Id == gameId).FirstOrDefault()!;
+                .FirstOrDefaultAsync(x => x.Id == gameId)!;
         }
 
-        public Game GetGameByName(string gameName)
+        public async Task<Game> GetGameByNameAsync(string gameName)
         {
-            return dataContext.Games
+            return await dataContext.Games
                 .Include(d => d.DLCs)!.ThenInclude(dg => dg.DLCGame)
                 .Include(a => a.AgeRating).Include(d => d.Developers)
                 .Include(p => p.Publishers).Include(p => p.Platforms)
                 .Include(g => g.Genres).Include(t => t.Tags)
                 .Include(p => p.ParentGame).Include(s => s.SystemRequirementsMin)
                 .Include(s => s.SystemRequirementsMax).Include(r => r.Rating)
-                .Where(x => x.Name.Trim().ToLower() == gameName.Trim().ToLower())
-                .FirstOrDefault()!;
+                .FirstOrDefaultAsync(x => x.Name.Trim().ToLower() == gameName.Trim().ToLower())!;
         }
 
-        public Game GetDLCById(int gameId)
+        public async Task<Game> GetDLCByIdAsync(int gameId)
         {
-            return dataContext.Games
+            return await dataContext.Games
                 .Include(a => a.AgeRating).Include(d => d.Developers)
                 .Include(p => p.Publishers).Include(p => p.Platforms)
                 .Include(g => g.Genres).Include(t => t.Tags)
                 .Include(p => p.ParentGame).Include(s => s.SystemRequirementsMin)
                 .Include(s => s.SystemRequirementsMax).Include(r => r.Rating)
-                .Where(x => x.Id == gameId && x.Type.Trim().ToLower() == "dlc".Trim().ToLower())
-                .FirstOrDefault()!;
+                .FirstOrDefaultAsync(x => x.Id == gameId && x.Type.Trim().ToLower() == "dlc".Trim().ToLower())!;
         }
 
-        public Game GetDLCByName(string dlcName)
+        public async Task<Game> GetDLCByNameAsync(string dlcName)
         {
-            return dataContext.Games
+            return await dataContext.Games
                 .Include(a => a.AgeRating).Include(d => d.Developers)
                 .Include(p => p.Publishers).Include(p => p.Platforms)
                 .Include(g => g.Genres).Include(t => t.Tags)
                 .Include(p => p.ParentGame).Include(s => s.SystemRequirementsMin)
                 .Include(s => s.SystemRequirementsMax).Include(r => r.Rating)
-                .Where(g => g.Name == dlcName && g.Type.ToLower() == "dlc")
-                .FirstOrDefault()!;
+                .FirstOrDefaultAsync(g => g.Name == dlcName && g.Type.ToLower() == "dlc");
         }
 
-        public IList<Game> GetDLCs()
+        public async Task<IList<Game>> GetDLCsAsync()
         {
-            return dataContext.Games.Where(d => d.Type == "DLC").Select(g => new Game
+            return await dataContext.Games.Where(d => d.Type == "DLC").Select(g => new Game
             {
                 Id = g.Id,
                 Name = g.Name,
@@ -271,40 +268,40 @@ namespace GameLibraryV2.Repositories
                     Id = t.Id,
                     Name = t.Name,
                 }).ToList(),
-            }).ToList();
+            }).ToListAsync();
         }
 
-        public PagedList<Game> GetGamesByAgeRating(int ageRatingId, FilterParameters filterParameters)
+        public async Task<PagedList<Game>> GetGamesByAgeRatingAsync(int ageRatingId, FilterParameters filterParameters)
         {
             var games = dataContext.Games.Where(g => g.AgeRating.Id == ageRatingId)
                 .AsQueryable();
 
             Filter(ref games, filterParameters);
 
-            return PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize);
+            return await PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize);
         }
 
-        public PagedList<Game> GetGamesByDeveloper(int developerId, FilterParameters filterParameters)
+        public async Task<PagedList<Game>> GetGamesByDeveloperAsync(int developerId, FilterParameters filterParameters)
         {
             var games = dataContext.Games.Where(g => g.Developers.Any(d => d.Id == developerId))
                 .AsQueryable();
 
             Filter(ref games, filterParameters);
 
-            return PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize);
+            return await PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize);
         }
 
-        public PagedList<Game> GetGamesByGenre(int genreId, FilterParameters filterParameters)
+        public async Task<PagedList<Game>> GetGamesByGenreAsync(int genreId, FilterParameters filterParameters)
         {
             var games = dataContext.Games.Where(g => g.Genres.Any(g => g.Id == genreId))
                 .AsQueryable();
 
             Filter(ref games, filterParameters);
 
-            return PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize);
+            return await PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize);
         }
 
-        public PagedList<Game> GetGameByPlatform(int platformId, FilterParameters filterParameters)
+        public async Task<PagedList<Game>> GetGameByPlatformAsync(int platformId, FilterParameters filterParameters)
         {
             var games = dataContext.Games
                 .Where(g => g.Platforms.Any(g => g.Id == platformId))
@@ -312,10 +309,10 @@ namespace GameLibraryV2.Repositories
 
             Filter(ref games, filterParameters);
 
-            return PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize);
+            return await PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize);
         }
 
-        public PagedList<Game> GetGamesByPublisher(int publisherId, FilterParameters filterParameters)
+        public async Task<PagedList<Game>> GetGamesByPublisherAsync(int publisherId, FilterParameters filterParameters)
         {
             var games =  dataContext.Games
                 .Where(g => g.Publishers.Any(p => p.Id == publisherId))
@@ -323,10 +320,10 @@ namespace GameLibraryV2.Repositories
 
             Filter(ref games, filterParameters);
 
-            return PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize);
+            return await PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize);
         }
 
-        public PagedList<Game> GetGamesByTag(int tagId, FilterParameters filterParameters)
+        public async Task<PagedList<Game>> GetGamesByTagAsync(int tagId, FilterParameters filterParameters)
         {
             var games = dataContext.Games
                 .Where(g => g.Tags.Any(g => g.Id == tagId))
@@ -334,33 +331,28 @@ namespace GameLibraryV2.Repositories
 
             Filter(ref games, filterParameters);
 
-            return PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize);
+            return await PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize);
         }
 
 
-        public bool CreateGame(Game game)
+        public void CreateGame(Game game)
         {
             dataContext.Add(game);
-            return Save();
         }
 
-        public bool UpdateGame(Game game)
+        public void UpdateGame(Game game)
         {
             dataContext.Update(game);
-            return Save();
         }
 
-        public bool DeleteGame(Game game)
+        public void DeleteGame(Game game)
         {
             dataContext.Remove(game);
-            return Save();
         }
 
-        private bool Save()
+        public async Task SaveGameAsync()
         {
-            var saved = dataContext.SaveChanges();
-            //var saved = 1;
-            return saved > 0 ? true : false;
+            await dataContext.SaveChangesAsync();
         }
     }
 }

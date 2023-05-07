@@ -1,23 +1,26 @@
-﻿using GameLibraryV2.Models.Common;
+﻿using GameLibraryV2.Data;
+using GameLibraryV2.Models.Common;
 
 namespace GameLibraryV2.Interfaces
 {
     public interface ITagRepository
     {
-        public Tag GetTagById(int tagId);
+        public Task<Tag> GetTagByIdAsync(int tagId);
 
-        public Tag GetTagByName(string tagName);
+        public Task<Tag> GetTagByNameAsync(string tagName);
 
-        public IList<Tag> GetTags();
+        public Task<IList<Tag>> GetTagsAsync();
 
-        public bool TagExists(int tagId);
+        public Task<bool> TagExistsAsync(int tagId);
 
-        public bool TagNameAlreadyInUse(int tagId, string tagName);
+        public Task<bool> TagNameAlreadyInUseAsync(int tagId, string tagName);
 
-        public bool CreateTag(Tag tag);
+        public void CreateTag(Tag tag);
 
-        public bool UpdateTag(Tag tag);
+        public void UpdateTag(Tag tag);
 
-        public bool DeleteTag(Tag tag);
+        public void DeleteTag(Tag tag);
+
+        public Task SaveTagAsync();
     }
 }

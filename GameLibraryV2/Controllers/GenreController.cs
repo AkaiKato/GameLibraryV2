@@ -32,12 +32,12 @@ namespace GameLibraryV2.Controllers
         /// <returns></returns>
         [HttpGet("genreAll")]
         [ProducesResponseType(200, Type = typeof(IList<GenreDto>))]
-        public IActionResult GetGenres()
+        public async Task<IActionResult> GetGenres()
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var Genres = mapper.Map<List<GenreDto>>(genreRepository.GetGenres());
+            var Genres = mapper.Map<List<GenreDto>>(await genreRepository.GetGenresAsync());
 
             return Ok(Genres);
         }
@@ -50,15 +50,15 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{genreId}")]
         [ProducesResponseType(200, Type = typeof(GenreDto))]
         [ProducesResponseType(400)]
-        public IActionResult GetGenreById(int genreId) 
+        public async Task<IActionResult> GetGenreById(int genreId) 
         {
-            if(!genreRepository.GenreExists(genreId))
+            if(!await genreRepository.GenreExistsAsync(genreId))
                 return NotFound($"Not found genre with such id {genreId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var Genre = mapper.Map<GenreDto>(genreRepository.GetGenreById(genreId));
+            var Genre = mapper.Map<GenreDto>(await genreRepository.GetGenreByIdAsync(genreId));
 
             return Ok(Genre);
         }
@@ -72,9 +72,9 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{genreId}/games")]
         [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetGenreGames(int genreId, [FromQuery] FilterParameters filterParameters)
+        public async Task<IActionResult> GetGenreGames(int genreId, [FromQuery] FilterParameters filterParameters)
         {
-            if (!genreRepository.GenreExists(genreId))
+            if (!await genreRepository.GenreExistsAsync(genreId))
                 return NotFound($"Not found genre with such id {genreId}");
 
             if (!filterParameters.ValidYearRange)
@@ -95,7 +95,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = gameRepository.GetGamesByGenre(genreId, filterParameters);
+            var games = await gameRepository.GetGamesByGenreAsync(genreId, filterParameters);
 
             var metadata = new
             {
@@ -122,12 +122,12 @@ namespace GameLibraryV2.Controllers
         [HttpPost("createGenre")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateGenre([FromBody] GenreCreateDto genreCreate)
+        public async Task<IActionResult> CreateGenre([FromBody] GenreCreateDto genreCreate)
         {
             if (genreCreate == null)
                 return BadRequest(ModelState);
 
-            var genre = genreRepository.GetGenreByName(genreCreate.Name);
+            var genre = await genreRepository.GetGenreByNameAsync(genreCreate.Name);
 
             if (genre != null)
                 return BadRequest("Genre already exists");
@@ -137,11 +137,8 @@ namespace GameLibraryV2.Controllers
 
             var genreMap = mapper.Map<Genre>(genreCreate);
 
-            if (!genreRepository.CreateGenre(genreMap))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            genreRepository.CreateGenre(genreMap);
+            await genreRepository.SaveGenreAsync();
 
             return Ok("Successfully created");
         }
@@ -154,30 +151,27 @@ namespace GameLibraryV2.Controllers
         [HttpPut("updateGenre")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult UpdateGenreInfo([FromBody] CommonUpdate genreUpdate)
+        public async Task<IActionResult> UpdateGenreInfo([FromBody] CommonUpdate genreUpdate)
         {
             if (genreUpdate == null)
                 return BadRequest(ModelState);
 
-            if (!genreRepository.GenreExists(genreUpdate.Id))
+            if (!await genreRepository.GenreExistsAsync(genreUpdate.Id))
                 return NotFound($"Not found genre with such id {genreUpdate.Id}");
 
-            if (genreRepository.GenreNameAlredyInUse(genreUpdate.Id, genreUpdate.Name))
+            if (await genreRepository.GenreNameAlredyInUseAsync(genreUpdate.Id, genreUpdate.Name))
                 return BadRequest("Name already in use");
 
             if(!ModelState.IsValid) 
                 return BadRequest(ModelState);
 
-            var genre = genreRepository.GetGenreById(genreUpdate.Id);
+            var genre = await genreRepository.GetGenreByIdAsync(genreUpdate.Id);
 
             genre.Name = genreUpdate.Name;
             genre.Description = genreUpdate.Description;
 
-            if (!genreRepository.UpdateGenre(genre))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            genreRepository.UpdateGenre(genre);
+            await genreRepository.SaveGenreAsync();
 
             return Ok("Successfully updated");
         }
@@ -190,21 +184,18 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deleteGenre")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult DeleteGenre([FromBody] JustIdDto genreDelete)
+        public async Task<IActionResult> DeleteGenre([FromBody] JustIdDto genreDelete)
         {
-            if (!genreRepository.GenreExists(genreDelete.Id))
+            if (!await genreRepository.GenreExistsAsync(genreDelete.Id))
                 return NotFound($"Not found genre with such id {genreDelete.Id}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var genre = genreRepository.GetGenreById(genreDelete.Id);
+            var genre = await genreRepository.GetGenreByIdAsync(genreDelete.Id);
 
-            if (!genreRepository.DeleteGenre(genre))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            genreRepository.DeleteGenre(genre);
+            await genreRepository.SaveGenreAsync();
 
             return Ok("Successfully deleted");
         }

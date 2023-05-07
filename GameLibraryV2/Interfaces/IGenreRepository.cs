@@ -4,20 +4,22 @@ namespace GameLibraryV2.Interfaces
 {
     public interface IGenreRepository
     {
-        public Genre GetGenreById(int genreId);
+        public Task<Genre> GetGenreByIdAsync(int genreId);
 
-        public Genre GetGenreByName(string genreName);
+        public Task<Genre> GetGenreByNameAsync(string genreName);
 
-        public IList<Genre> GetGenres();
+        public Task<IList<Genre>> GetGenresAsync();
 
-        public bool GenreExists(int genreId);
+        public Task<bool> GenreExistsAsync(int genreId);
 
-        public bool GenreNameAlredyInUse(int genreId, string genreName);
+        public Task<bool> GenreNameAlredyInUseAsync(int genreId, string genreName);
 
-        public bool CreateGenre(Genre genre);
+        public void CreateGenre(Genre genre);
 
-        public bool UpdateGenre(Genre genre);
+        public void UpdateGenre(Genre genre);
 
-        public bool DeleteGenre(Genre genre);
+        public void DeleteGenre(Genre genre);
+
+        public Task SaveGenreAsync();
     }
 }

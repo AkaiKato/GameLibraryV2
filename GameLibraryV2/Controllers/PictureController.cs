@@ -34,7 +34,7 @@ namespace GameLibraryV2.Controllers
         [HttpPut("uploadDeveloperPicture")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult UploadDeveloperPicture([FromQuery] int developerId, IFormFile pic)
+        public async Task<IActionResult> UploadDeveloperPicture([FromQuery] int developerId, IFormFile pic)
         {
             if (pic == null)
                 return BadRequest(ModelState);
@@ -43,14 +43,14 @@ namespace GameLibraryV2.Controllers
             if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
                 return BadRequest("Unsupported extension");
 
-            if (!developerRepository.DeveloperExists(developerId))
+            if (!await developerRepository.DeveloperExistsAsync(developerId))
                 return NotFound($"Not found developer with such id {developerId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            var developer = developerRepository.GetDeveloperById(developerId);
+            var developer = await developerRepository.GetDeveloperByIdAsync(developerId);
             var newfilePath = $"\\Images\\developerPicture\\{unique}{ext}";
             var oldfilePath = developer.PicturePath;
 
@@ -59,18 +59,14 @@ namespace GameLibraryV2.Controllers
 
             developer!.PicturePath = newfilePath;
 
-            if (!developerRepository.UpdateDeveloper(developer))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            developerRepository.UpdateDeveloper(developer);
+            await developerRepository.SaveDeveloperAsync();
 
             if (oldfilePath.Trim() != $"\\Images\\developerPicture\\Def.jpg")
             {
                 FileInfo f = new(oldfilePath);
                 f.Delete();
             }
-
 
             return Ok("Successfully updated");
         }
@@ -84,7 +80,7 @@ namespace GameLibraryV2.Controllers
         [HttpPut("uploadDeveloperMiniPicture")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult UploadDeveloperMiniPicture([FromQuery] int developerId, IFormFile pic)
+        public async Task<IActionResult> UploadDeveloperMiniPicture([FromQuery] int developerId, IFormFile pic)
         {
             if (pic == null)
                 return BadRequest(ModelState);
@@ -93,14 +89,14 @@ namespace GameLibraryV2.Controllers
             if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
                 return BadRequest("Unsupported extension");
 
-            if (!developerRepository.DeveloperExists(developerId))
+            if (!await developerRepository.DeveloperExistsAsync(developerId))
                 return NotFound($"Not found developer with such id {developerId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            var developer = developerRepository.GetDeveloperById(developerId);
+            var developer = await developerRepository.GetDeveloperByIdAsync(developerId);
             var newfilePath = $"\\Images\\developerMiniPicture\\{unique}{ext}";
             var oldfilePath = developer.MiniPicturePath;
 
@@ -109,11 +105,8 @@ namespace GameLibraryV2.Controllers
 
             developer!.MiniPicturePath = newfilePath;
 
-            if (!developerRepository.UpdateDeveloper(developer))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            developerRepository.UpdateDeveloper(developer);
+            await developerRepository.SaveDeveloperAsync();
 
             if (oldfilePath.Trim() != $"\\Images\\developerMiniPicture\\Def.jpg")
             {
@@ -133,7 +126,7 @@ namespace GameLibraryV2.Controllers
         [HttpPut("uploadGamePicture")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult UploadGamePicture([FromQuery] int gameId, IFormFile pic)
+        public async Task<IActionResult> UploadGamePicture([FromQuery] int gameId, IFormFile pic)
         {
             if (pic == null)
                 return BadRequest(ModelState);
@@ -143,11 +136,11 @@ namespace GameLibraryV2.Controllers
             if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
                 return BadRequest("Unsupported extension");
 
-            if (!gameRepository.GameExists(gameId))
+            if (!await gameRepository.GameExistsAsync(gameId))
                 return NotFound($"Not found game with such id {gameId}");
 
             var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            var game = gameRepository.GetGameById(gameId);
+            var game = await gameRepository.GetGameByIdAsync(gameId);
             var newfilePath = $"\\Images\\gamePicture\\{unique}{ext}";
             var oldfilePath = game.PicturePath;
 
@@ -156,11 +149,8 @@ namespace GameLibraryV2.Controllers
 
             game!.PicturePath = newfilePath;
 
-            if (!gameRepository.UpdateGame(game))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            gameRepository.UpdateGame(game);
+            await gameRepository.SaveGameAsync();
 
             if (oldfilePath.Trim() != $"\\Images\\gamePicture\\Def.jpg")
             {
@@ -180,7 +170,7 @@ namespace GameLibraryV2.Controllers
         [HttpPut("uploadPublisherPicture")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult UploadPublisherPicture([FromQuery] int publisherId, IFormFile pic)
+        public async Task<IActionResult> UploadPublisherPicture([FromQuery] int publisherId, IFormFile pic)
         {
             if (pic == null)
                 return BadRequest(ModelState);
@@ -189,14 +179,14 @@ namespace GameLibraryV2.Controllers
             if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
                 return BadRequest("Unsupported extension");
 
-            if (!publisherRepository.PublisherExists(publisherId))
+            if (!await publisherRepository.PublisherExistsAsync(publisherId))
                 return NotFound($"Not found publisher with such id {publisherId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            var publisher = publisherRepository.GetPublisherById(publisherId);
+            var publisher = await publisherRepository.GetPublisherByIdAsync(publisherId);
             var newfilePath = $"\\Images\\publisherPicture\\{unique}{ext}";
             var oldfilePath = publisher.PicturePath;
 
@@ -204,11 +194,8 @@ namespace GameLibraryV2.Controllers
             pic.CopyTo(stream);
             publisher!.PicturePath = newfilePath;
 
-            if (!publisherRepository.UpdatePublisher(publisher))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            publisherRepository.UpdatePublisher(publisher);
+            await publisherRepository.SavePublisherAsync();
 
             if (oldfilePath.Trim() != $"\\Images\\publisherPicture\\Def.jpg")
             {
@@ -229,7 +216,7 @@ namespace GameLibraryV2.Controllers
         [HttpPut("uploadPublisherMiniPicture")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult UploadPublihserMiniPicture([FromQuery] int publisherId, IFormFile pic)
+        public async Task<IActionResult> UploadPublihserMiniPicture([FromQuery] int publisherId, IFormFile pic)
         {
             if (pic == null)
                 return BadRequest(ModelState);
@@ -238,14 +225,14 @@ namespace GameLibraryV2.Controllers
             if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
                 return BadRequest("Unsupported extension");
 
-            if (!publisherRepository.PublisherExists(publisherId))
+            if (!await publisherRepository.PublisherExistsAsync(publisherId))
                 return NotFound($"Not found publisher with such id {publisherId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            var publisher = publisherRepository.GetPublisherById(publisherId);
+            var publisher = await publisherRepository.GetPublisherByIdAsync(publisherId);
             var newfilePath = $"\\Images\\publisherMiniPicture\\{unique}{ext}";
             var oldfilePath = publisher.MiniPicturePath;
 
@@ -253,11 +240,8 @@ namespace GameLibraryV2.Controllers
             pic.CopyTo(stream);
             publisher!.MiniPicturePath = newfilePath;
 
-            if (!publisherRepository.UpdatePublisher(publisher))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            publisherRepository.UpdatePublisher(publisher);
+            await publisherRepository.SavePublisherAsync();
 
             if (oldfilePath.Trim() != $"\\Images\\publisherMiniPicture\\Def.jpg")
             {
@@ -278,7 +262,7 @@ namespace GameLibraryV2.Controllers
         [HttpPut("uploadUserPicture")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult UploadUserPicture([FromQuery] int userId, IFormFile pic)
+        public async Task<IActionResult> UploadUserPicture([FromQuery] int userId, IFormFile pic)
         {
             if (pic == null)
                 return BadRequest(ModelState);
@@ -287,14 +271,14 @@ namespace GameLibraryV2.Controllers
             if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
                 return BadRequest("Unsupported extension");
 
-            if (!userRepository.UserExistsById(userId))
+            if (!await userRepository.UserExistsByIdAsync(userId))
                 return NotFound($"Not found user with such id {userId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            var user = userRepository.GetUserById(userId);
+            var user = await userRepository.GetUserByIdAsync(userId);
             var newfilePath = $"\\Images\\userPicture\\{unique}{ext}";
             var oldfilePath = user.PicturePath;
 
@@ -303,11 +287,8 @@ namespace GameLibraryV2.Controllers
 
             user!.PicturePath = newfilePath;
 
-            if (!userRepository.UpdateUser(user))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            userRepository.UpdateUser(user);
+            await userRepository.SaveUserAsync();
 
             if (oldfilePath.Trim() != $"\\Images\\userPicture\\Def.jpg")
             {

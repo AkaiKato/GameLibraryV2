@@ -14,30 +14,34 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
-        public User GetUserById(int userId)
+        public async Task<User> GetUserByIdAsync(int userId)
         {
-            return dataContext.Users.Include(l => l.UserGames).Include(ur => ur.UserRoles).Where(u => u.Id == userId).FirstOrDefault()!;
+            return await dataContext.Users.Include(l => l.UserGames)
+                .Include(ur => ur.UserRoles)
+                .FirstOrDefaultAsync(u => u.Id == userId)!;
         }
 
-        public User GetUserByNickname(string nickname)
+        public async Task<User> GetUserByNicknameAsync(string nickname)
         {
-            return dataContext.Users.Include(l => l.UserGames).Include(ur => ur.UserRoles).Where(u => u.Nickname.Trim() == nickname.Trim()).FirstOrDefault()!;
+            return await dataContext.Users.Include(l => l.UserGames)
+                .Include(ur => ur.UserRoles)
+                .FirstOrDefaultAsync(u => u.Nickname.Trim() == nickname.Trim())!;
         }
 
-        public string GetUserPicturePath(int userId)
+        public async Task<string> GetUserPicturePathAsync(int userId)
         {
-            return dataContext.Users.Where(u => u.Id == userId).Select(u => u.PicturePath).
-                FirstOrDefault()!;
+            return await dataContext.Users.Where(u => u.Id == userId)
+                .Select(u => u.PicturePath).FirstOrDefaultAsync();
         }
 
-        public IList<User> GetUsersByRole(int roleId)
+        public async Task<IList<User>> GetUsersByRoleAsync(int roleId)
         {
-            return dataContext.Users.Where(u => u.UserRoles.Any(u => u.Id == roleId)).ToList();
+            return await dataContext.Users.Where(u => u.UserRoles.Any(u => u.Id == roleId)).ToListAsync();
         }
 
-        public IList<User> GetUsers()
+        public async Task<IList<User>> GetUsersAsync()
         {
-            return dataContext.Users.Select(u => new User
+            return await dataContext.Users.Select(u => new User
             {
                 Id = u.Id,
                 Email = u.Email,
@@ -52,65 +56,59 @@ namespace GameLibraryV2.Repositories
                     Id = t.Id,
                     RoleName = t.RoleName,
                 }).ToList(),
-            }).ToList();
+            }).ToListAsync();
         }
 
-        public bool UserExistsById(int userId)
+        public async Task<bool> UserExistsByIdAsync(int userId)
         {
-            return dataContext.Users.Any(u => u.Id == userId);
+            return await dataContext.Users.AnyAsync(u => u.Id == userId);
         }
 
-        public bool UserExistsByNickname(string nickname)
+        public async Task<bool> UserExistsByNicknameAsync(string nickname)
         {
-            return dataContext.Users.Any(u => u.Nickname.Trim() == nickname.Trim());
+            return await dataContext.Users.AnyAsync(u => u.Nickname.Trim() == nickname.Trim());
         }
 
-        public bool HasNickname(string nickname)
+        public async Task<bool> HasNicknameAsync(string nickname)
         {
-            return dataContext.Users.Any(u => u.Nickname.Trim() == nickname.Trim());
+            return await dataContext.Users.AnyAsync(u => u.Nickname.Trim() == nickname.Trim());
         }
 
-        public bool HasEmail(string email)
+        public async Task<bool> HasEmailAsync(string email)
         {
-            return dataContext.Users.Any(u => u.Email.Trim().ToLower() == email.Trim().ToLower());
+            return await dataContext.Users.AnyAsync(u => u.Email.Trim().ToLower() == email.Trim().ToLower());
         }
 
-        public bool UserNicknameAlreadyInUser(int userId, string nickname)
+        public async Task<bool> UserNicknameAlreadyInUserAsync(int userId, string nickname)
         {
-            return dataContext.Users.Any(u => u.Nickname.Trim() == nickname.Trim() && u.Id != userId);
+            return await dataContext.Users.AnyAsync(u => u.Nickname.Trim() == nickname.Trim() && u.Id != userId);
         }
 
-        public bool UserEmailAlreadyInUse(int userId, string email)
+        public async Task<bool> UserEmailAlreadyInUseAsync(int userId, string email)
         {
-            return dataContext.Users.Any(u => u.Email.Trim().ToLower() == email.Trim().ToLower() && u.Id != userId);
+            return await dataContext.Users.AnyAsync(u => u.Email.Trim().ToLower() == email.Trim().ToLower() && u.Id != userId);
         }
 
-        public bool CreateUser(User user)
+        public void CreateUser(User user)
         {
             user.UserRoles = new List<Role>() { dataContext.Roles.FirstOrDefault(r => r.RoleName.Trim().ToLower() == "user")!};
             dataContext.Add(user);
-            return Save();
         }
 
-        public bool UpdateUser(User user)
+        public void UpdateUser(User user)
         {
             dataContext.Update(user);
-            return Save();
         }
 
-        public bool DeleteUser(User user)
+        public void DeleteUser(User user)
         {
             dataContext.Remove(user);
-            return Save();
         }
 
-        private bool Save()
+        public async Task SaveUserAsync()
         {
-            var saved = dataContext.SaveChanges();
-            //var saved = 1;
-            return saved > 0 ? true : false;
+            await dataContext.SaveChangesAsync();
         }
-
 
     }
 }

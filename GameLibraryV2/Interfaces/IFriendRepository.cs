@@ -4,10 +4,12 @@ namespace GameLibraryV2.Interfaces
 {
     public interface IFriendRepository
     {
-        public IList<Friend> GetUserFriends(int userId);
+        public Task<IList<Friend>> GetUserFriendsAsync(int userId);
 
-        public bool CreateFriend(Friend friend);
+        public void CreateFriend(Friend friend);
 
-        public bool DeleteFriend(Friend friend);
+        public void DeleteFriend(Friend friend);
+
+        public Task SaveFriendAsync();
     }
 }

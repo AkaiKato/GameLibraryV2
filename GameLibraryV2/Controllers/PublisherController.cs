@@ -33,12 +33,12 @@ namespace GameLibraryV2.Controllers
         [HttpGet("publisherAll")]
         [ProducesResponseType(200, Type = typeof(IList<PublisherDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetPublishers()
+        public async Task<IActionResult> GetPublishers()
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var Publisbhers = mapper.Map<List<PublisherDto>>(publisherRepository.GetPublishers());
+            var Publisbhers = mapper.Map<List<PublisherDto>>(await publisherRepository.GetPublishersAsync());
 
             return Ok(Publisbhers);
         }
@@ -51,15 +51,15 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{publisherId}")]
         [ProducesResponseType(200, Type = typeof(PublisherDto))]
         [ProducesResponseType(400)]
-        public IActionResult GetPublisherById(int publisherId)
+        public async Task<IActionResult> GetPublisherById(int publisherId)
         {
-            if (!publisherRepository.PublisherExists(publisherId))
+            if (!await publisherRepository.PublisherExistsAsync(publisherId))
                 return NotFound($"Not found publisher with such id {publisherId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var Publisbher = mapper.Map<PublisherDto>(publisherRepository.GetPublisherById(publisherId));
+            var Publisbher = mapper.Map<PublisherDto>(await publisherRepository.GetPublisherByIdAsync(publisherId));
 
             return Ok(Publisbher);
         }
@@ -73,9 +73,9 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{publisherId}/games")]
         [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetPublisherGames(int publisherId, [FromQuery] FilterParameters filterParameters)
+        public async Task<IActionResult> GetPublisherGames(int publisherId, [FromQuery] FilterParameters filterParameters)
         {
-            if (!publisherRepository.PublisherExists(publisherId))
+            if (!await publisherRepository.PublisherExistsAsync(publisherId))
                 return NotFound($"Not found publisher with such id {publisherId}");
 
             if (!filterParameters.ValidYearRange)
@@ -96,7 +96,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = gameRepository.GetGamesByPublisher(publisherId, filterParameters);
+            var games = await gameRepository.GetGamesByPublisherAsync(publisherId, filterParameters);
 
             var metadata = new
             {
@@ -123,12 +123,12 @@ namespace GameLibraryV2.Controllers
         [HttpPost("createPublisher")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreatePublisher([FromBody] PublisherCreateDto publisherCreate)
+        public async Task<IActionResult> CreatePublisher([FromBody] PublisherCreateDto publisherCreate)
         {
             if (publisherCreate == null)
                 return BadRequest(ModelState);
 
-            var publisher = publisherRepository.GetPublisherByName(publisherCreate.Name);
+            var publisher = await publisherRepository.GetPublisherByNameAsync(publisherCreate.Name);
 
             if (publisher != null)
                 return BadRequest("Publisher already exists");
@@ -138,11 +138,8 @@ namespace GameLibraryV2.Controllers
 
             var publisherMap = mapper.Map<Publisher>(publisherCreate);
 
-            if (!publisherRepository.CreatePublisher(publisherMap))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            publisherRepository.CreatePublisher(publisherMap);
+            await publisherRepository.SavePublisherAsync();
 
             return Ok("Successfully created");
         }
@@ -155,30 +152,27 @@ namespace GameLibraryV2.Controllers
         [HttpPut("updatePublisher")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult UpdatePublisherInfo([FromBody] CommonUpdate publisherUpdate)
+        public async Task<IActionResult> UpdatePublisherInfo([FromBody] CommonUpdate publisherUpdate)
         {
             if (publisherUpdate == null)
                 return BadRequest(ModelState);
 
-            if (!publisherRepository.PublisherExists(publisherUpdate.Id))
+            if (!await publisherRepository.PublisherExistsAsync(publisherUpdate.Id))
                 return NotFound($"Not found publisher with such id {publisherUpdate.Id}");
 
-            if (publisherRepository.PublisherNameAlreadyExists(publisherUpdate.Id, publisherUpdate.Name))
+            if (await publisherRepository.PublisherNameAlreadyExistsAsync(publisherUpdate.Id, publisherUpdate.Name))
                 return BadRequest("Name already in use");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var developer = publisherRepository.GetPublisherById(publisherUpdate.Id);
+            var developer = await publisherRepository.GetPublisherByIdAsync(publisherUpdate.Id);
 
             developer.Name = publisherUpdate.Name;
             developer.Description = publisherUpdate.Description;
 
-            if (!publisherRepository.UpdatePublisher(developer))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            publisherRepository.UpdatePublisher(developer);
+            await publisherRepository.SavePublisherAsync();
 
             return Ok("Successfully updated");
         }
@@ -191,12 +185,12 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deletePublisher")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult DeletePublisher([FromBody] JustIdDto deletePublisher)
+        public async Task<IActionResult> DeletePublisher([FromBody] JustIdDto deletePublisher)
         {
-            if (!publisherRepository.PublisherExists(deletePublisher.Id))
+            if (!await publisherRepository.PublisherExistsAsync(deletePublisher.Id))
                 return NotFound($"Not found publisher with such id {deletePublisher.Id}");
 
-            var publisher = publisherRepository.GetPublisherById(deletePublisher.Id);
+            var publisher = await publisherRepository.GetPublisherByIdAsync(deletePublisher.Id);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -213,11 +207,8 @@ namespace GameLibraryV2.Controllers
                 f.Delete();
             }
 
-            if (!publisherRepository.DeletePublisher(publisher))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            publisherRepository.DeletePublisher(publisher);
+            await publisherRepository.SavePublisherAsync();
 
             return Ok("Successfully deleted");
         }

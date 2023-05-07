@@ -13,28 +13,24 @@ namespace GameLibraryV2.Repositories
         {
             dataContext = context;
         }
-        public IList<Friend> GetUserFriends(int userId)
+        public async Task<IList<Friend>> GetUserFriendsAsync(int userId)
         {
-            return dataContext.Friends.Include(u => u.Friendu).Where(f => f.User.Id == userId).ToList();
+            return await dataContext.Friends.Include(u => u.Friendu).Where(f => f.User.Id == userId).ToListAsync();
         }
 
-        public bool CreateFriend(Friend friend)
+        public void CreateFriend(Friend friend)
         {
             dataContext.Add(friend);
-            return Save();
         }
 
-        public bool DeleteFriend(Friend friend)
+        public void DeleteFriend(Friend friend)
         {
             dataContext.Remove(friend);
-            return Save();
         }
 
-        private bool Save()
+        public async Task SaveFriendAsync()
         {
-            var saved = dataContext.SaveChanges();
-            //var saved = 1;
-            return saved > 0 ? true : false;
+            await dataContext.SaveChangesAsync();
         }
     }
 }

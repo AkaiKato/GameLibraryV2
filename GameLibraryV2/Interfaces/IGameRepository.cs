@@ -6,45 +6,42 @@ namespace GameLibraryV2.Interfaces
 {
     public interface IGameRepository
     {
-        /// <summary>
-        /// Фильтрует по полученным данным.
-        /// </summary>
-        /// <param name="filterParameters"></param>
-        /// <returns></returns>
-        public PagedList<Game> GetGames(FilterParameters filterParameters);
+        public Task<PagedList<Game>> GetGamesAsync(FilterParameters filterParameters);
 
-        public Game GetGameById(int gameId);
+        public Task<Game> GetGameByIdAsync(int gameId);
 
-        public Game GetGameByName(string gameName);
+        public Task<Game> GetGameByNameAsync(string gameName);
 
-        public Game GetDLCById(int dlcId);
+        public Task<Game> GetDLCByIdAsync(int dlcId);
 
-        public Game GetDLCByName(string dlcName);
+        public Task<Game> GetDLCByNameAsync(string dlcName);
 
-        public IList<Game> GetDLCs();
+        public Task<IList<Game>> GetDLCsAsync();
 
-        public PagedList<Game> GetGamesByAgeRating(int ageratingId, FilterParameters filterParameters);
+        public Task<PagedList<Game>> GetGamesByAgeRatingAsync(int ageratingId, FilterParameters filterParameters);
 
-        public PagedList<Game> GetGamesByDeveloper(int developerId, FilterParameters filterParameters);
+        public Task<PagedList<Game>> GetGamesByDeveloperAsync(int developerId, FilterParameters filterParameters);
 
-        public PagedList<Game> GetGamesByGenre(int genreId, FilterParameters filterParameters);
+        public Task<PagedList<Game>> GetGamesByGenreAsync(int genreId, FilterParameters filterParameters);
 
-        public PagedList<Game> GetGameByPlatform(int platformId, FilterParameters filterParameters);
+        public Task<PagedList<Game>> GetGameByPlatformAsync(int platformId, FilterParameters filterParameters);
 
-        public PagedList<Game> GetGamesByPublisher(int publisherId, FilterParameters filterParameters);
+        public Task<PagedList<Game>> GetGamesByPublisherAsync(int publisherId, FilterParameters filterParameters);
 
-        public PagedList<Game> GetGamesByTag(int tagId, FilterParameters filterParameters);
+        public Task<PagedList<Game>> GetGamesByTagAsync(int tagId, FilterParameters filterParameters);
 
-        public bool GameExists(int gameId);
+        public Task<bool> GameExistsAsync(int gameId);
 
-        public bool GameNameAlreadyInUse(int gameId, string gameName);
+        public Task<bool> GameNameAlreadyInUseAsync(int gameId, string gameName);
 
-        public bool DLCExists(int dlcId);
+        public Task<bool> DLCExistsAsync(int dlcId);
 
-        public bool CreateGame(Game game);
+        public void CreateGame(Game game);
 
-        public bool UpdateGame(Game game);
+        public void UpdateGame(Game game);
 
-        public bool DeleteGame(Game game);
+        public void DeleteGame(Game game);
+
+        public Task SaveGameAsync();
     }
 }

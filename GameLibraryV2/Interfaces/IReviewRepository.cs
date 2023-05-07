@@ -4,22 +4,24 @@ namespace GameLibraryV2.Interfaces
 {
     public interface IReviewRepository 
     {
-        public Review GetReviewById(int reviewId);
+        public Task<Review> GetReviewByIdAsync(int reviewId);
 
-        public Review GetReviewByUserIdAndGameId(int userId, int gameId);
+        public Task<Review> GetReviewByUserIdAndGameIdAsync(int userId, int gameId);
 
-        public IList<Review> GetUserReviews(int gameId);
+        public Task<IList<Review>> GetUserReviewsAsync(int gameId);
 
-        public IList<Review> GetGameReviews(int gameId);
+        public Task<IList<Review>> GetGameReviewsAsync(int gameId);
 
-        public bool ReviewExists(int reviewId);
+        public Task<bool> ReviewExistsAsync(int reviewId);
 
-        public bool ReviewExists(int userId, int gameId);
+        public Task<bool> ReviewExistsAsync(int userId, int gameId);
 
-        public bool CreateReview(Review review);
+        public void CreateReview(Review review);
 
-        public bool UpdateReview(Review review);
+        public void UpdateReview(Review review);
 
-        public bool DeleteReview(Review review);
+        public void DeleteReview(Review review);
+
+        public Task SaveReviewAsync();
     }
 }

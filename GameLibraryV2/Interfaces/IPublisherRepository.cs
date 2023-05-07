@@ -4,20 +4,22 @@ namespace GameLibraryV2.Interfaces
 {
     public interface IPublisherRepository
     {
-        public Publisher GetPublisherById(int publisherId);
+        public Task<Publisher> GetPublisherByIdAsync(int publisherId);
 
-        public Publisher GetPublisherByName(string publisherName);
+        public Task<Publisher> GetPublisherByNameAsync(string publisherName);
 
-        public IList<Publisher> GetPublishers();
+        public Task<IList<Publisher>> GetPublishersAsync();
 
-        public bool PublisherExists(int publisherId);
+        public Task<bool> PublisherExistsAsync(int publisherId);
 
-        public bool PublisherNameAlreadyExists(int publisherId, string publisherName);
+        public Task<bool> PublisherNameAlreadyExistsAsync(int publisherId, string publisherName);
 
-        public bool CreatePublisher(Publisher publisher);
+        public void CreatePublisher(Publisher publisher);
 
-        public bool UpdatePublisher(Publisher publisher);
+        public void UpdatePublisher(Publisher publisher);
 
-        public bool DeletePublisher(Publisher publisher);
+        public void DeletePublisher(Publisher publisher);
+
+        public Task SavePublisherAsync();
     }
 }

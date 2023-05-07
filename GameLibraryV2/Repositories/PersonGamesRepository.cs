@@ -15,134 +15,151 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
-        public IList<PersonGame> GetAllPersonGames()
+        public async Task<IList<PersonGame>> GetAllPersonGamesAsync()
         {
-            return dataContext.PersonGames.Include(g => g.Game).ThenInclude(r => r.Rating).Include(g => g.Game).
-                ThenInclude(r => r.Developers).Include(g => g.Game).ThenInclude(r => r.Publishers).Include(g => g.Game).
-                ThenInclude(r => r.Platforms).Include(g => g.Game).ThenInclude(r => r.Genres).Include(g => g.Game).
-                ThenInclude(r => r.Tags).Include(pl => pl.PlayedPlatform).ToList();
+            return await dataContext.PersonGames
+                .Include(g => g.Game).ThenInclude(r => r.Rating)
+                .Include(g => g.Game).ThenInclude(r => r.Developers)
+                .Include(g => g.Game).ThenInclude(r => r.Publishers)
+                .Include(g => g.Game).ThenInclude(r => r.Platforms)
+                .Include(g => g.Game).ThenInclude(r => r.Genres)
+                .Include(g => g.Game).ThenInclude(r => r.Tags)
+                .Include(pl => pl.PlayedPlatform)
+                .ToListAsync();
         }
 
-        public IList<PersonGame> PersonGames(int userId)
+        public async Task<IList<PersonGame>> PersonGamesAsync(int userId)
         {
-            return dataContext.PersonGames.Include(g => g.Game).ThenInclude(r => r.Rating).Include(g => g.Game).
-                ThenInclude(r => r.Developers).Include(g => g.Game).ThenInclude(r => r.Publishers).Include(g => g.Game).
-                ThenInclude(r => r.Platforms).Include(g => g.Game).ThenInclude(r => r.Genres).Include(g => g.Game).
-                ThenInclude(r => r.Tags).Include(pl => pl.PlayedPlatform).Where(pg => pg.User.Id == userId).ToList();
+            return await dataContext.PersonGames
+                .Include(g => g.Game).ThenInclude(r => r.Rating)
+                .Include(g => g.Game).ThenInclude(r => r.Developers)
+                .Include(g => g.Game).ThenInclude(r => r.Publishers)
+                .Include(g => g.Game).ThenInclude(r => r.Platforms)
+                .Include(g => g.Game).ThenInclude(r => r.Genres)
+                .Include(g => g.Game).ThenInclude(r => r.Tags)
+                .Include(pl => pl.PlayedPlatform)
+                .Where(pg => pg.User.Id == userId)
+                .ToListAsync();
         }
 
-        public IList<PersonGame> PersonGamesByList(int userId, string list)
+        public async Task<IList<PersonGame>> PersonGamesByListAsync(int userId, string list)
         {
-            return dataContext.PersonGames.Include(g => g.Game).ThenInclude(r => r.Rating).Include(g => g.Game).
-                ThenInclude(r => r.Developers).Include(g => g.Game).ThenInclude(r => r.Publishers).Include(g => g.Game).
-                ThenInclude(r => r.Platforms).Include(g => g.Game).ThenInclude(r => r.Genres).Include(g => g.Game).
-                ThenInclude(r => r.Tags).Where(pg => pg.User.Id == userId && pg.List.ToLower() == list.ToLower()).
-                OrderBy(pg => pg.Score).ToList();
+            return await dataContext.PersonGames
+                .Include(g => g.Game).ThenInclude(r => r.Rating)
+                .Include(g => g.Game).ThenInclude(r => r.Developers)
+                .Include(g => g.Game).ThenInclude(r => r.Publishers)
+                .Include(g => g.Game).ThenInclude(r => r.Platforms)
+                .Include(g => g.Game).ThenInclude(r => r.Genres)
+                .Include(g => g.Game).ThenInclude(r => r.Tags)
+                .Where(pg => pg.User.Id == userId && pg.List.ToLower() == list.ToLower())
+                .OrderBy(pg => pg.Score)
+                .ToListAsync();
         }
 
-        public PersonGame GetPersonGameById(Guid personGameId)
+        public async Task<PersonGame> GetPersonGameByIdAsync(Guid personGameId)
         {
-            return dataContext.PersonGames.Include(u => u.User).Include(g => g.Game).ThenInclude(r => r.Rating).Where(pg => pg.Id == personGameId).FirstOrDefault()!;
+            return await dataContext.PersonGames.Include(u => u.User)
+                .Include(g => g.Game).ThenInclude(r => r.Rating)
+                .FirstOrDefaultAsync(pg => pg.Id == personGameId)!;
         }
 
-        public PersonGame GetPersonGameByUserIdAndGameId(int userId, int gameId)
+        public async Task<PersonGame> GetPersonGameByUserIdAndGameIdAsync(int userId, int gameId)
         {
-            return dataContext.PersonGames.Where(u => u.User.Id == userId && u.Game.Id == gameId).FirstOrDefault()!;
+            return await dataContext.PersonGames
+                .FirstOrDefaultAsync(u => u.User.Id == userId && u.Game.Id == gameId)!;
         }
 
-        public IList<CountStatistic> GetPersonPublisherStatistic(int userId)
+        public async Task<IList<CountStatistic>> GetPersonPublisherStatisticAsync(int userId)
         {
-            return dataContext.PersonGames.Where(pg => pg.User.Id == userId)
+            return await dataContext.PersonGames.Where(pg => pg.User.Id == userId)
                 .SelectMany(x => x.Game.Publishers)
                 .GroupBy(x => new {x.Id, x.Name})
                 .Select(x => new CountStatistic{ Id = x.Key.Id, Name = x.Key.Name, Count = x.Count()})
                 .OrderByDescending(x => x.Count)
-                .ToList();
+                .ToListAsync();
         }
 
-        public IList<CountStatistic> GetPersonTagStatistic(int userId)
+        public async Task<IList<CountStatistic>> GetPersonTagStatisticAsync(int userId)
         {
-            return dataContext.PersonGames.Where(pg => pg.User.Id == userId)
+            return await dataContext.PersonGames.Where(pg => pg.User.Id == userId)
                 .SelectMany(x => x.Game.Tags)
                 .GroupBy(x => new { x.Id, x.Name })
                 .Select(x => new CountStatistic { Id = x.Key.Id, Name = x.Key.Name, Count = x.Count()})
                 .OrderByDescending(x => x.Count)
-                .ToList();
+                .ToListAsync();
         }
 
-        public IList<CountStatistic> GetPersonDeveloperStatistic(int userId)
+        public async Task<IList<CountStatistic>> GetPersonDeveloperStatisticAsync(int userId)
         {
-            return dataContext.PersonGames.Where(pg => pg.User.Id == userId)
+            return await dataContext.PersonGames.Where(pg => pg.User.Id == userId)
                 .SelectMany(x => x.Game.Developers)
                 .GroupBy(x => new { x.Id, x.Name })
                 .Select(x => new CountStatistic { Id = x.Key.Id, Name = x.Key.Name, Count = x.Count() })
                 .OrderByDescending(x => x.Count)
-                .ToList();
+                .ToListAsync();
         }
 
-        public IList<CountStatistic> GetPersonPlatformStatistic(int userId)
+        public async Task<IList<CountStatistic>> GetPersonPlatformStatisticAsync(int userId)
         {
-            return dataContext.PersonGames.Where(pg => pg.User.Id == userId && pg.PlayedPlatform != null)
+            return await dataContext.PersonGames.Where(pg => pg.User.Id == userId && pg.PlayedPlatform != null)
                 .Select(x => x.PlayedPlatform)
                 .GroupBy(x => new { x!.Id, x.Name })
                 .Select(x => new CountStatistic { Id = x.Key.Id, Name = x.Key.Name, Count = x.Count() })
                 .OrderByDescending(x => x.Count)
-                .ToList();
+                .ToListAsync();
         }
 
-        public IList<CountStatistic> GetPersonGenreStatistic(int userId)
+        public async Task<IList<CountStatistic>> GetPersonGenreStatisticAsync(int userId)
         {
-            return dataContext.PersonGames.Where(pg => pg.User.Id == userId)
+            return await dataContext.PersonGames.Where(pg => pg.User.Id == userId)
                 .SelectMany(x => x.Game.Genres)
                 .GroupBy(x => new { x.Id, x.Name })
                 .Select(x => new CountStatistic { Id = x.Key.Id, Name = x.Key.Name, Count = x.Count() })
                 .OrderByDescending(x => x.Count)
-                .ToList();
+                .ToListAsync();
         }
 
-        public IList<Game> GetPersonFavouriteGame(int userId)
+        public async Task<IList<Game>> GetPersonFavouriteGameAsync(int userId)
         {
-            return dataContext.PersonGames.Where(pg => pg.User.Id == userId && pg.Favourite == true)
-                .Include(g => g.Game).ThenInclude(r => r.Rating).Include(g => g.Game).
-                ThenInclude(r => r.Developers).Include(g => g.Game).ThenInclude(r => r.Publishers).Include(g => g.Game).
-                ThenInclude(r => r.Platforms).Include(g => g.Game).ThenInclude(r => r.Genres).Include(g => g.Game).
-                ThenInclude(r => r.Tags)
-                .Select(x => x.Game).ToList();
+            return await dataContext.PersonGames
+                .Where(pg => pg.User.Id == userId && pg.Favourite == true)
+                .Include(g => g.Game).ThenInclude(r => r.Rating)
+                .Include(g => g.Game).ThenInclude(r => r.Developers)
+                .Include(g => g.Game).ThenInclude(r => r.Publishers)
+                .Include(g => g.Game).ThenInclude(r => r.Platforms)
+                .Include(g => g.Game).ThenInclude(r => r.Genres)
+                .Include(g => g.Game).ThenInclude(r => r.Tags)
+                .Select(x => x.Game).ToListAsync();
         }
 
-        public bool PersonGameExists(Guid personGameId)
+        public async Task<bool> PersonGameExistsAsync(Guid personGameId)
         {
-            return dataContext.PersonGames.Any(pg => pg.Id == personGameId);
+            return await dataContext.PersonGames.AnyAsync(pg => pg.Id == personGameId);
         }
 
-        public bool PersonGameExists(int userId, int gameId)
+        public async Task<bool> PersonGameExistsAsync(int userId, int gameId)
         {
-            return dataContext.PersonGames.Any(u => u.User.Id == userId && u.Game.Id == gameId);
+            return await dataContext.PersonGames.AnyAsync(u => u.User.Id == userId && u.Game.Id == gameId);
         }
 
-        public bool CreatePersonGame(PersonGame personGame)
+        public void CreatePersonGame(PersonGame personGame)
         {
             dataContext.Add(personGame);
-            return Save();
         }
 
-        public bool UpdatePersonGame(PersonGame personGame)
+        public void UpdatePersonGame(PersonGame personGame)
         {
             dataContext.Update(personGame);
-            return Save();
         }
 
-        public bool DeletePersonGame(PersonGame personGame)
+        public void DeletePersonGame(PersonGame personGame)
         {
             dataContext.Remove(personGame);
-            return Save();
         }
 
-        private bool Save()
+        public async Task SavePersonGameAsync()
         {
-            var saved = dataContext.SaveChanges();
-            //var saved = 1;
-            return saved > 0 ? true : false;
+            await dataContext.SaveChangesAsync();
         }
     }
 }

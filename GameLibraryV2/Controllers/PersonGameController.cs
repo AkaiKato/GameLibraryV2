@@ -43,15 +43,15 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{userId}/persongames")]
         [ProducesResponseType(200, Type = typeof(IList<PersonGameDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetPersonGames(int userId)
+        public async Task<IActionResult> GetPersonGames(int userId)
         {
-            if(!userRepository.UserExistsById(userId))
+            if(!await userRepository.UserExistsByIdAsync(userId))
                 return NotFound($"Not found user with such id {userId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var PersonGames = mapper.Map<List<PersonGameDto>>(personGameRepository.PersonGames(userId));
+            var PersonGames = mapper.Map<List<PersonGameDto>>(await personGameRepository.PersonGamesAsync(userId));
 
             return Ok(PersonGames);
         }
@@ -65,15 +65,15 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{userId}/persongamesbylist")]
         [ProducesResponseType(200, Type = typeof(IList<PersonGameDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetPersonGamesByList(int userId, string list) 
+        public async Task<IActionResult> GetPersonGamesByList(int userId, string list) 
         {
-            if(!userRepository.UserExistsById(userId))
+            if(!await userRepository.UserExistsByIdAsync(userId))
                 return NotFound($"Not found user with such id {userId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var PersonGamesByList = mapper.Map<List<PersonGameDto>>(personGameRepository.PersonGamesByList(userId, list));
+            var PersonGamesByList = mapper.Map<List<PersonGameDto>>(await personGameRepository.PersonGamesByListAsync(userId, list));
 
             return Ok(PersonGamesByList);
         }
@@ -86,15 +86,15 @@ namespace GameLibraryV2.Controllers
         [HttpPost("addPersonGame")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult AddPersonGame([FromBody] PersonGameCreate personGameCreate)
+        public async Task<IActionResult> AddPersonGame([FromBody] PersonGameCreate personGameCreate)
         {
             if(personGameCreate == null)
                 return BadRequest(ModelState);
 
-            if(!userRepository.UserExistsById(personGameCreate.UserId))
+            if(!await userRepository.UserExistsByIdAsync(personGameCreate.UserId))
                 return NotFound($"Not found user with such id {personGameCreate.UserId}");
 
-            if(!gameRepository.GameExists(personGameCreate.GameId))
+            if(!await gameRepository.GameExistsAsync(personGameCreate.GameId))
                 return NotFound($"Not found game with such id {personGameCreate.GameId}");
 
             personGameCreate.List = personGameCreate.List;
@@ -107,16 +107,13 @@ namespace GameLibraryV2.Controllers
 
             var personGame = new PersonGame() 
             {
-                User = userRepository.GetUserById(personGameCreate.UserId),
-                Game = gameRepository.GetGameById(personGameCreate.GameId),
+                User = await userRepository.GetUserByIdAsync(personGameCreate.UserId),
+                Game = await gameRepository.GetGameByIdAsync(personGameCreate.GameId),
                 List = personGameCreate.List,
             };
 
-            if (!personGameRepository.CreatePersonGame(personGame))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            personGameRepository.CreatePersonGame(personGame);
+            await personGameRepository.SavePersonGameAsync();
 
             return Ok("Successfully added");
         }
@@ -129,12 +126,12 @@ namespace GameLibraryV2.Controllers
         [HttpPut("updatePersonGame")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult UpdatePersonGame([FromBody] PersonGameUpdate personGameUpdate)
+        public async Task<IActionResult> UpdatePersonGame([FromBody] PersonGameUpdate personGameUpdate)
         {
             if (personGameUpdate == null)
                 return BadRequest(ModelState);
 
-            if (!personGameRepository.PersonGameExists(personGameUpdate.Id))
+            if (!await personGameRepository.PersonGameExistsAsync(personGameUpdate.Id))
                 return NotFound($"Not found persongame with such id {personGameUpdate.Id}");
 
             if (!Enum.GetNames(typeof(Enums.List)).Contains(personGameUpdate.List.Trim().ToLower()))
@@ -146,14 +143,14 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var personGame = personGameRepository.GetPersonGameById(personGameUpdate.Id);
+            var personGame = await personGameRepository.GetPersonGameByIdAsync(personGameUpdate.Id);
 
-            if(personGame.Score != personGameUpdate.Score && reviewRepository.ReviewExists(personGame.User.Id, personGame.Game.Id))
+            if(personGame.Score != personGameUpdate.Score && await reviewRepository.ReviewExistsAsync(personGame.User.Id, personGame.Game.Id))
             {
-                var review = reviewRepository.GetReviewByUserIdAndGameId(personGame.User.Id, personGame.Game.Id);
+                var review = await reviewRepository.GetReviewByUserIdAndGameIdAsync(personGame.User.Id, personGame.Game.Id);
                 review.Rating = personGameUpdate.Score;
-                if (!reviewRepository.UpdateReview(review))
-                    return BadRequest("Something went wrong while saving");
+                reviewRepository.UpdateReview(review);
+                await reviewRepository.SaveReviewAsync();
             }
 
             if(personGame.Score != personGameUpdate.Score)
@@ -167,15 +164,12 @@ namespace GameLibraryV2.Controllers
             personGame.List = personGameUpdate.List.Trim().ToLower();
 
             if (personGameUpdate.PlayedPlatform != null)
-                personGame.PlayedPlatform = platformRepository.GetPlatformById(personGameUpdate.PlayedPlatform.Id);
+                personGame.PlayedPlatform = await platformRepository.GetPlatformByIdAsync(personGameUpdate.PlayedPlatform.Id);
 
             personGame.Favourite = personGameUpdate.Favourite;
 
-            if (!personGameRepository.UpdatePersonGame(personGame))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            personGameRepository.UpdatePersonGame(personGame);
+            await personGameRepository.SavePersonGameAsync();
 
             return Ok("Successfully updated");
         }
@@ -188,37 +182,31 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deletePersonGame")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult DeletePersonGame([FromBody] JustGuIdDto personGameDelete)
+        public async Task<IActionResult> DeletePersonGame([FromBody] JustGuIdDto personGameDelete)
         {
             if (personGameDelete == null)
                 return BadRequest(ModelState);
 
-            if (!personGameRepository.PersonGameExists(personGameDelete.Id))
+            if (!await personGameRepository.PersonGameExistsAsync(personGameDelete.Id))
                 return NotFound($"Not found personGame with such id {personGameDelete.Id}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var personGame = personGameRepository.GetPersonGameById(personGameDelete.Id);
+            var personGame = await personGameRepository.GetPersonGameByIdAsync(personGameDelete.Id);
 
             if(personGame.Score != -1)
                 ratingRepository.Remove(personGame.Game.Rating, personGame.Score % 10);
 
-            if (reviewRepository.ReviewExists(personGame.User.Id, personGame.Game.Id))
+            if (await reviewRepository.ReviewExistsAsync(personGame.User.Id, personGame.Game.Id))
             {
-                var review = reviewRepository.GetReviewByUserIdAndGameId(personGame.User.Id, personGame.Game.Id);
-                if (!reviewRepository.DeleteReview(review))
-                {
-                    ModelState.AddModelError("", "Something went wrong while saving");
-                    return StatusCode(500, ModelState);
-                }
+                var review = await reviewRepository.GetReviewByUserIdAndGameIdAsync(personGame.User.Id, personGame.Game.Id);
+                reviewRepository.DeleteReview(review);
+                await reviewRepository.SaveReviewAsync();
             }
 
-            if (!personGameRepository.DeletePersonGame(personGame))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            personGameRepository.DeletePersonGame(personGame);
+            await personGameRepository.SavePersonGameAsync();
 
             return Ok("Successfully deleted");
         }

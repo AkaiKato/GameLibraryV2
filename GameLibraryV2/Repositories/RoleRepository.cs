@@ -1,6 +1,7 @@
 ﻿using GameLibraryV2.Data;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameLibraryV2.Repositories
 {
@@ -13,43 +14,40 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
-        public Role GetRoleById(int roleId)
+        public async Task<Role> GetRoleByIdAsync(int roleId)
         {
-            return dataContext.Roles.Where(r => r.Id == roleId).FirstOrDefault()!;
+            return await dataContext.Roles.FirstOrDefaultAsync(r => r.Id == roleId)!;
         }
 
-        public Role GetRoleByName(string roleName)
+        public async Task<Role> GetRoleByNameAsync(string roleName)
         {
-            return dataContext.Roles.Where(r => r.RoleName.Trim().ToLower() == roleName.Trim().ToLower()).FirstOrDefault()!;
+            return await dataContext.Roles.FirstOrDefaultAsync(r => r.RoleName.Trim().ToLower() == roleName.Trim().ToLower());
         }
 
-        public IList<Role> GetRoles()
+        public async Task<IList<Role>> GetRolesAsync()
         {
-            return dataContext.Roles.OrderBy(r => r.Id).ToList();
+            return await dataContext.Roles.OrderBy(r => r.Id).ToListAsync();
         }
-        public IList<Role> GetUserRole(int userId)
+        public async Task<IList<Role>> GetUserRoleAsync(int userId)
         {
-            return dataContext.Roles.Where(u => u.RoleUsers!.Any(u => u.Id == userId)).ToList();
+            return await dataContext.Roles.Where(u => u.RoleUsers!.Any(u => u.Id == userId)).ToListAsync();
         }
 
-        public bool RoleExists(int roleId)
+        public async Task<bool> RoleExistsAsync(int roleId)
         {
-            return dataContext.Roles.Any(r => r.Id == roleId);
+            return await dataContext.Roles.AnyAsync(r => r.Id == roleId);
         }
 
         //--------------------------------------------
 
-        public bool CreateRole(Role role)
+        public void CreateRole(Role role)
         {
             dataContext.Add(role);
-            return Save();
         }
 
-        private bool Save()
+        public async Task SaveRoleAsync()
         {
-            var saved = dataContext.SaveChanges();
-            //var saved = 1;
-            return saved > 0 ? true : false;
+            await dataContext.SaveChangesAsync();
         }
     }
 }

@@ -39,12 +39,12 @@ namespace GameLibraryV2.Controllers
         [HttpGet("platfrormAll")]
         [ProducesResponseType(200, Type = typeof(IList<PlatformDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetPlatforms()
+        public async Task<IActionResult> GetPlatforms()
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var Platforms = mapper.Map<List<PlatformDto>>(platformRepository.GetPlatforms());
+            var Platforms = mapper.Map<List<PlatformDto>>(await platformRepository.GetPlatformsAsync());
 
             return Ok(Platforms);
         }
@@ -57,15 +57,15 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{platformId}")]
         [ProducesResponseType(200, Type = typeof(PlatformDto))]
         [ProducesResponseType(400)]
-        public IActionResult GetPersonGamesByList(int platformId)
+        public async Task<IActionResult> GetPersonGamesByList(int platformId)
         {
-            if (!platformRepository.PlatformExist(platformId))
+            if (!await platformRepository.PlatformExistAsync(platformId))
                 return NotFound($"Not found platform with such id {platformId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var Platform = mapper.Map<PlatformDto>(platformRepository.GetPlatformById(platformId));
+            var Platform = mapper.Map<PlatformDto>(await platformRepository.GetPlatformByIdAsync(platformId));
 
             return Ok(Platform);
         }
@@ -79,9 +79,9 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{platformId}/games")]
         [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetPlatformGameOrderByRating(int platformId, [FromQuery] FilterParameters filterParameters)
+        public async Task<IActionResult> GetPlatformGameOrderByRating(int platformId, [FromQuery] FilterParameters filterParameters)
         {
-            if (!platformRepository.PlatformExist(platformId))
+            if (!await platformRepository.PlatformExistAsync(platformId))
                 return NotFound($"Not found platform with such id {platformId}");
 
             if (!filterParameters.ValidYearRange)
@@ -102,7 +102,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = gameRepository.GetGameByPlatform(platformId, filterParameters);
+            var games = await gameRepository.GetGameByPlatformAsync(platformId, filterParameters);
 
             var metadata = new
             {
@@ -129,12 +129,12 @@ namespace GameLibraryV2.Controllers
         [HttpPost("createPlatform")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreatePLatform([FromBody] PlatformCreateDto platformCreate)
+        public async Task<IActionResult> CreatePLatform([FromBody] PlatformCreateDto platformCreate)
         {
             if (platformCreate == null)
                 return BadRequest(ModelState);
 
-            var platform = platformRepository.GetPlatformByName(platformCreate.Name);
+            var platform = await platformRepository.GetPlatformByNameAsync(platformCreate.Name);
 
             if (platform != null)
                 return BadRequest("Platform already exists");
@@ -144,11 +144,8 @@ namespace GameLibraryV2.Controllers
 
             var platformMap = mapper.Map<Platform>(platformCreate);
 
-            if (!platformRepository.CreatePlatform(platformMap))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            platformRepository.CreatePlatform(platformMap);
+            await platformRepository.SavePlatformAsync();
 
             return Ok("Successfully created");
         }
@@ -161,30 +158,27 @@ namespace GameLibraryV2.Controllers
         [HttpPut("updatePlatform")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult UpdatePlatformInfo([FromBody] CommonUpdate platformUpdate)
+        public async Task<IActionResult> UpdatePlatformInfo([FromBody] CommonUpdate platformUpdate)
         {
             if (platformUpdate == null)
                 return BadRequest(ModelState);
 
-            if (!platformRepository.PlatformExist(platformUpdate.Id))
+            if (!await platformRepository.PlatformExistAsync(platformUpdate.Id))
                 return NotFound($"Not found platform with such id {platformUpdate.Id}");
 
-            if (platformRepository.PlatformNameAlredyInUse(platformUpdate.Id, platformUpdate.Name))
+            if (await platformRepository.PlatformNameAlredyInUseAsync(platformUpdate.Id, platformUpdate.Name))
                 return BadRequest("Name already in use");
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var platform = platformRepository.GetPlatformById(platformUpdate.Id);
+            var platform = await platformRepository.GetPlatformByIdAsync(platformUpdate.Id);
 
             platform.Name = platformUpdate.Name;
             platform.Description = platformUpdate.Description;
 
-            if (!platformRepository.UpdatePlatfrom(platform))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            platformRepository.UpdatePlatfrom(platform);
+            await platformRepository.SavePlatformAsync();
 
             return Ok("Successfully updated");
         }
@@ -197,33 +191,28 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deletePlatform")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult DeletePlatform([FromBody] JustIdDto platfromDelete)
+        public async Task<IActionResult> DeletePlatform([FromBody] JustIdDto platfromDelete)
         {
-            if (!platformRepository.PlatformExist(platfromDelete.Id))
+            if (!await platformRepository.PlatformExistAsync(platfromDelete.Id))
                 return NotFound($"Not found platform with such id {platfromDelete.Id}");
 
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var platform = platformRepository.GetPlatformById(platfromDelete.Id);
+            var platform = await platformRepository.GetPlatformByIdAsync(platfromDelete.Id);
 
-            var pg = personGameRepository.GetAllPersonGames().Where(pg => pg.PlayedPlatform!.Id == platform.Id).ToList();
+            var pg = await personGameRepository.GetAllPersonGamesAsync();
+            var personGames = pg.Where(pg => pg.PlayedPlatform!.Id == platform.Id).ToList();
 
-            foreach (var item in pg)
+            foreach (var item in personGames)
             {
                 item.PlayedPlatform = null;
-                if (!personGameRepository.UpdatePersonGame(item))
-                {
-                    ModelState.AddModelError("", "Something went wrong while saving");
-                    return StatusCode(500, ModelState);
-                }
+                personGameRepository.UpdatePersonGame(item);
             }
+            await personGameRepository.SavePersonGameAsync();
 
-            if (!platformRepository.DeletePlatform(platform))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            platformRepository.DeletePlatform(platform);
+            await platformRepository.SavePlatformAsync();
 
             return Ok("Successfully deleted");
         }

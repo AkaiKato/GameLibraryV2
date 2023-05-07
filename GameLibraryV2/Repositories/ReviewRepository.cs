@@ -14,19 +14,19 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
-        public Review GetReviewById(int reviewId) 
+        public async Task<Review> GetReviewByIdAsync(int reviewId) 
         {
-            return dataContext.Reviews.Where(r => r.Id == reviewId).FirstOrDefault()!;
+            return await dataContext.Reviews.FirstOrDefaultAsync(r => r.Id == reviewId)!;
         }
 
-        public Review GetReviewByUserIdAndGameId(int userId, int gameId)
+        public async Task<Review> GetReviewByUserIdAndGameIdAsync(int userId, int gameId)
         {
-            return dataContext.Reviews.Where(r => r.User.Id == userId && r.Game.Id == gameId).FirstOrDefault()!;
+            return await dataContext.Reviews.FirstOrDefaultAsync(r => r.User.Id == userId && r.Game.Id == gameId)!;
         }
 
-        public IList<Review> GetUserReviews(int userId)
+        public async Task<IList<Review>> GetUserReviewsAsync(int userId)
         {
-            return dataContext.Reviews.Where(r => r.User.Id == userId).Select(x => new Review
+            return await dataContext.Reviews.Where(r => r.User.Id == userId).Select(x => new Review
             {
                 Id = x.Id,
                 User = new User
@@ -44,47 +44,42 @@ namespace GameLibraryV2.Repositories
                 Text = x.Text,
                 PublishDate = x.PublishDate,
                 ReviewRating = x.ReviewRating,
-            }).ToList();
+            }).ToListAsync();
         }
 
-        public IList<Review> GetGameReviews(int gameId)
+        public async Task<IList<Review>> GetGameReviewsAsync(int gameId)
         {
-            return dataContext.Reviews.Include(u => u.User).Where(d => d.Game.Id == gameId).ToList();
+            return await dataContext.Reviews.Include(u => u.User).Where(d => d.Game.Id == gameId).ToListAsync();
         }
 
-        public bool ReviewExists(int reviewId)
+        public async Task<bool> ReviewExistsAsync(int reviewId)
         {
-            return dataContext.Reviews.Any(r => r.Id == reviewId);
+            return await dataContext.Reviews.AnyAsync(r => r.Id == reviewId);
         }
 
-        public bool ReviewExists(int userId, int gameId)
+        public async Task<bool> ReviewExistsAsync(int userId, int gameId)
         {
-            return dataContext.Reviews.Any(r => r.User.Id == userId && r.Game.Id == gameId);
+            return await dataContext.Reviews.AnyAsync(r => r.User.Id == userId && r.Game.Id == gameId);
         }
 
-        public bool CreateReview(Review review)
+        public void CreateReview(Review review)
         {
             dataContext.Add(review);
-            return Save();
         }
 
-        public bool UpdateReview(Review review)
+        public void UpdateReview(Review review)
         {
             dataContext.Update(review);
-            return Save();
         }
 
-        public bool DeleteReview(Review review)
+        public void DeleteReview(Review review)
         {
             dataContext.Remove(review);
-            return Save();
         }
 
-        private bool Save()
+        public async Task SaveReviewAsync()
         {
-            var saved = dataContext.SaveChanges();
-            //var saved = 1;
-            return saved > 0 ? true : false;
+            await dataContext.SaveChangesAsync();
         }
     }
 }

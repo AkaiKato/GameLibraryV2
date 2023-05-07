@@ -1,19 +1,22 @@
-﻿using GameLibraryV2.Models.Common;
+﻿using GameLibraryV2.Data;
+using GameLibraryV2.Models.Common;
 
 namespace GameLibraryV2.Interfaces
 {
     public interface IRoleRepository
     {
-        public Role GetRoleById(int roleId);
+        public Task<Role> GetRoleByIdAsync(int roleId);
 
-        public Role GetRoleByName(string roleName);
+        public Task<Role> GetRoleByNameAsync(string roleName);
 
-        public IList<Role> GetRoles();
+        public Task<IList<Role>> GetRolesAsync();
 
-        public IList<Role> GetUserRole(int userId);
+        public Task<IList<Role>> GetUserRoleAsync(int userId);
 
-        public bool RoleExists(int roleId);
+        public Task<bool> RoleExistsAsync(int roleId);
 
-        public bool CreateRole(Role role);
+        public void CreateRole(Role role);
+
+        public Task SaveRoleAsync();
     }
 }

@@ -4,20 +4,22 @@ namespace GameLibraryV2.Interfaces
 {
     public interface IPlatformRepository
     {
-        public Platform GetPlatformById(int platformId);
+        public Task<Platform> GetPlatformByIdAsync(int platformId);
 
-        public Platform GetPlatformByName(string name);
+        public Task<Platform> GetPlatformByNameAsync(string name);
 
-        public IList<Platform> GetPlatforms();
+        public Task<IList<Platform>> GetPlatformsAsync();
 
-        public bool PlatformExist(int platformId);
+        public Task<bool> PlatformExistAsync(int platformId);
 
-        public bool PlatformNameAlredyInUse(int platformId, string platformName);
+        public Task<bool> PlatformNameAlredyInUseAsync(int platformId, string platformName);
 
-        public bool CreatePlatform(Platform platform);
+        public void CreatePlatform(Platform platform);
 
-        public bool UpdatePlatfrom(Platform platform);
+        public void UpdatePlatfrom(Platform platform);
 
-        public bool DeletePlatform(Platform platform);
+        public void DeletePlatform(Platform platform);
+
+        public Task SavePlatformAsync();
     }
 }

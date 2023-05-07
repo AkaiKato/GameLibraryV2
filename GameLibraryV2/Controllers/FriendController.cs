@@ -31,15 +31,15 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{userId}/friends")]
         [ProducesResponseType(200, Type = typeof(IList<FriendDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetUserFriends(int userId)
+        public async Task<IActionResult> GetUserFriends(int userId)
         {
-            if (!userRepository.UserExistsById(userId))
+            if (!await userRepository.UserExistsByIdAsync(userId))
                 return NotFound($"Not found user with such id {userId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var UserFriends = mapper.Map<List<FriendDto>>(friendRepository.GetUserFriends(userId));
+            var UserFriends = mapper.Map<List<FriendDto>>(await friendRepository.GetUserFriendsAsync(userId));
 
             return Ok(UserFriends);
         }
@@ -52,30 +52,27 @@ namespace GameLibraryV2.Controllers
         [HttpPut("addFriend")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult AddFriend([FromBody] FriendUpdate addFriend)
+        public async Task<IActionResult> AddFriend([FromBody] FriendUpdate addFriend)
         {
-            if (!userRepository.UserExistsById(addFriend.UserId))
+            if (!await userRepository.UserExistsByIdAsync(addFriend.UserId))
                 return NotFound($"Not found user with such id {addFriend.UserId}");
 
-            if (!userRepository.UserExistsById(addFriend.FriendId))
+            if (!await userRepository.UserExistsByIdAsync(addFriend.FriendId))
                 return NotFound($"Not found user with such id {addFriend.FriendId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = userRepository.GetUserById(addFriend.UserId);
-            var fusers = friendRepository.GetUserFriends(addFriend.UserId);
+            var user = await userRepository.GetUserByIdAsync(addFriend.UserId);
+            var fusers = await friendRepository.GetUserFriendsAsync(addFriend.UserId);
 
             if (fusers.Any(u => u.Friendu.Id == addFriend.FriendId))
                 return BadRequest("Already friends");
 
-            var friend = userRepository.GetUserById(addFriend.FriendId);
+            var friend = await userRepository.GetUserByIdAsync(addFriend.FriendId);
 
-            if (!friendRepository.CreateFriend(new Friend { Friendu = friend, User = user }))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            friendRepository.CreateFriend(new Friend { Friendu = friend, User = user });
+            await friendRepository.SaveFriendAsync();
 
             return Ok("Successfully added");
         }
@@ -88,28 +85,26 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deleteFriend")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult DeleteFriend([FromBody] FriendUpdate deleteFriend)
+        public async Task<IActionResult> DeleteFriend([FromBody] FriendUpdate deleteFriend)
         {
-            if (!userRepository.UserExistsById(deleteFriend.UserId))
+            if (!await userRepository.UserExistsByIdAsync(deleteFriend.UserId))
                 return NotFound($"Not found user with such id {deleteFriend.UserId}");
 
-            if (!userRepository.UserExistsById(deleteFriend.FriendId))
+            if (!await userRepository.UserExistsByIdAsync(deleteFriend.FriendId))
                 return NotFound($"Not found user with such id {deleteFriend.FriendId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var fusers = friendRepository.GetUserFriends(deleteFriend.UserId).
-                Where(u => u.Friendu.Id == deleteFriend.FriendId).FirstOrDefault();
+            var fusers = await friendRepository.GetUserFriendsAsync(deleteFriend.UserId);
+                
+            var friend =  fusers.FirstOrDefault(u => u.Friendu.Id == deleteFriend.FriendId);
 
-            if (fusers == null)
+            if (friend == null)
                 return BadRequest("No such friend");
 
-            if (!friendRepository.DeleteFriend(fusers))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            friendRepository.DeleteFriend(friend);
+            await friendRepository.SaveFriendAsync();
 
             return Ok("Successfully deleted");
         }

@@ -1,6 +1,7 @@
 ﻿using GameLibraryV2.Data;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameLibraryV2.Repositories
 {
@@ -13,56 +14,51 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
-        public Publisher GetPublisherById(int publisherId)
+        public async Task<Publisher> GetPublisherByIdAsync(int publisherId)
         {
-            return dataContext.Publishers.Where(p => p.Id == publisherId).FirstOrDefault()!;
+            return await dataContext.Publishers.FirstOrDefaultAsync(p => p.Id == publisherId)!;
         }
 
-        public Publisher GetPublisherByName(string publisherName)
+        public async Task<Publisher> GetPublisherByNameAsync(string publisherName)
         {
-            return dataContext.Publishers.Where(p => p.Name.Trim().ToLower() == publisherName.Trim().ToLower()).FirstOrDefault()!;
+            return await dataContext.Publishers.FirstOrDefaultAsync(p => p.Name.Trim().ToLower() == publisherName.Trim().ToLower())!;
         }
         
-        public IList<Publisher> GetPublishers()
+        public async Task<IList<Publisher>> GetPublishersAsync()
         {
-            return dataContext.Publishers.OrderBy(p => p.Id).ToList();
+            return await dataContext.Publishers.OrderBy(p => p.Id).ToListAsync();
         }
 
-        public bool PublisherExists(int publisherId)
+        public async Task<bool> PublisherExistsAsync(int publisherId)
         {
-            return dataContext.Publishers.Any(p => p.Id == publisherId);
+            return await dataContext.Publishers.AnyAsync(p => p.Id == publisherId);
         }
 
-        public bool PublisherNameAlreadyExists(int publisherId, string publisherName)
+        public async Task<bool> PublisherNameAlreadyExistsAsync(int publisherId, string publisherName)
         {
-            return dataContext.Publishers.Any(d => d.Name.Trim().ToLower() == publisherName.Trim().ToLower() && d.Id != publisherId);
+            return await dataContext.Publishers.AnyAsync(d => d.Name.Trim().ToLower() == publisherName.Trim().ToLower() && d.Id != publisherId);
         }
 
         //--------------------------------------------
 
-        public bool CreatePublisher(Publisher publisher)
+        public void CreatePublisher(Publisher publisher)
         {
             dataContext.Add(publisher);
-            return Save();
         }
 
-        public bool UpdatePublisher(Publisher publisher)
+        public void UpdatePublisher(Publisher publisher)
         {
             dataContext.Update(publisher);
-            return Save();
         }
 
-        public bool DeletePublisher(Publisher publisher) 
+        public void DeletePublisher(Publisher publisher) 
         {
             dataContext.Remove(publisher);
-            return Save();
         }
 
-        private bool Save()
+        public async Task SavePublisherAsync()
         {
-            var saved = dataContext.SaveChanges();
-            //var saved = 1;
-            return saved > 0 ? true : false;
+            await dataContext.SaveChangesAsync();
         }
     }
 }

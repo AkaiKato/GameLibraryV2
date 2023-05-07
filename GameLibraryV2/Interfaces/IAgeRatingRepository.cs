@@ -4,20 +4,22 @@ namespace GameLibraryV2.Interfaces
 {
     public interface IAgeRatingRepository
     {
-        public AgeRating GetAgeRatingById(int ageRatingId);
+        public Task<AgeRating> GetAgeRatingByIdAsync(int ageRatingId);
 
-        public AgeRating GetAgeRatingByName(string ageRatingName);
+        public Task<AgeRating> GetAgeRatingByNameAsync(string ageRatingName);
 
-        public IList<AgeRating> GetAgeRatings();
+        public Task<IList<AgeRating>> GetAgeRatingsAsync();
 
-        public bool AgeRatingExists(int ageRatingId);
+        public Task<bool> AgeRatingExistsAsync(int ageRatingId);
 
-        public bool AgeRatingAlreadyExists(int ageRatingId, string ageRatingName);
+        public Task<bool> AgeRatingAlreadyExistsAsync(int ageRatingId, string ageRatingName);
 
-        public bool CreateAgeRating(AgeRating ageRating);
+        public void CreateAgeRating(AgeRating ageRating);
 
-        public bool UpdateAgeRating(AgeRating ageRating);
+        public void UpdateAgeRating(AgeRating ageRating);
 
-        public bool DeleteAgeRating(AgeRating ageRating);
+        public void DeleteAgeRating(AgeRating ageRating);
+
+        public Task SaveAgeRatingAsync();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using GameLibraryV2.Data;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameLibraryV2.Repositories
 {
@@ -13,56 +14,51 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
-        public bool GenreExists(int genreId)
+        public async Task<bool> GenreExistsAsync(int genreId)
         {
-            return dataContext.Genres.Any(g => g.Id == genreId);
+            return await dataContext.Genres.AnyAsync(g => g.Id == genreId);
         }
 
-        public bool GenreNameAlredyInUse(int genreId, string genreName)
+        public async Task<bool> GenreNameAlredyInUseAsync(int genreId, string genreName)
         {
-            return dataContext.Genres.Any(g => g.Name.Trim().ToLower() == genreName.Trim().ToLower() && g.Id != genreId);
+            return await dataContext.Genres.AnyAsync(g => g.Name.Trim().ToLower() == genreName.Trim().ToLower() && g.Id != genreId);
         }
 
-        public Genre GetGenreById(int genreId)
+        public async Task<Genre> GetGenreByIdAsync(int genreId)
         {
-            return dataContext.Genres.Where(g => g.Id == genreId).FirstOrDefault()!;
+            return await dataContext.Genres.FirstOrDefaultAsync(g => g.Id == genreId);
         }
 
-        public Genre GetGenreByName(string genreName)
+        public async Task<Genre> GetGenreByNameAsync(string genreName)
         {
-            return dataContext.Genres.Where(g => g.Name.Trim().ToLower() == genreName.Trim().ToLower()).FirstOrDefault()!;
+            return await dataContext.Genres.FirstOrDefaultAsync(g => g.Name.Trim().ToLower() == genreName.Trim().ToLower());
         }
 
-        public IList<Genre> GetGenres()
+        public async Task<IList<Genre>> GetGenresAsync()
         {
-            return dataContext.Genres.OrderBy(g => g.Id).ToList();
+            return await dataContext.Genres.OrderBy(g => g.Id).ToListAsync();
         }
 
         //--------------------------------------------
 
-        public bool CreateGenre(Genre genre)
+        public void CreateGenre(Genre genre)
         {
             dataContext.Add(genre);
-            return Save();
         }
 
-        public bool UpdateGenre(Genre genre)
+        public void UpdateGenre(Genre genre)
         {
             dataContext.Update(genre);
-            return Save();
         }
 
-        public bool DeleteGenre(Genre genre)
+        public void DeleteGenre(Genre genre)
         {
             dataContext.Remove(genre);
-            return Save();
         }
 
-        private bool Save()
+        public async Task SaveGenreAsync()
         {
-            var saved = dataContext.SaveChanges();
-            //var saved = 1;
-            return saved > 0;
+            await dataContext.SaveChangesAsync();
         }
     }
 }

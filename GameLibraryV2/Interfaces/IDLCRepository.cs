@@ -4,14 +4,16 @@ namespace GameLibraryV2.Interfaces
 {
     public interface IDLCRepository
     {
-        public bool DLCExists(int parentGameId, int dlcGame);
+        public Task<bool> DLCExistsAsync(int parentGameId, int dlcGame);
 
-        public bool DLCExistsByConnId(int dlc);
+        public Task<bool> DLCExistsByConnIdAsync(int dlc);
 
-        public DLC GetDLCConnById(int parentGameId, int dlcGame);
+        public Task<DLC> GetDLCConnByIdAsync(int parentGameId, int dlcGame);
 
-        public bool DLCCreate(DLC dlc);
+        public void DLCCreate(DLC dlc);
 
-        public bool DLCDelete(DLC dlc);
+        public void DLCDelete(DLC dlc);
+
+        public Task SaveDLCAsync();
     }
 }

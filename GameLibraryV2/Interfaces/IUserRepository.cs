@@ -4,32 +4,34 @@ namespace GameLibraryV2.Interfaces
 {
     public interface IUserRepository
     {
-        public User GetUserById(int userId);
+        public Task<User> GetUserByIdAsync(int userId);
 
-        public User GetUserByNickname(string nickename);
+        public Task<User> GetUserByNicknameAsync(string nickename);
 
-        public IList<User> GetUsers();
+        public Task<IList<User>> GetUsersAsync();
 
-        public IList<User> GetUsersByRole(int roleId);
+        public Task<IList<User>> GetUsersByRoleAsync(int roleId);
 
-        public string GetUserPicturePath(int userId);
+        public Task<string> GetUserPicturePathAsync(int userId);
 
-        public bool UserExistsById(int userId);
+        public Task<bool> UserExistsByIdAsync(int userId);
 
-        public bool UserExistsByNickname(string Nickname);
+        public Task<bool> UserExistsByNicknameAsync(string Nickname);
 
-        public bool HasNickname(string nickname);
+        public Task<bool> HasNicknameAsync(string nickname);
 
-        public bool HasEmail(string email);
+        public Task<bool> HasEmailAsync(string email);
 
-        public bool UserNicknameAlreadyInUser(int userId, string nickname);
+        public Task<bool> UserNicknameAlreadyInUserAsync(int userId, string nickname);
 
-        public bool UserEmailAlreadyInUse(int userId, string email);
+        public Task<bool> UserEmailAlreadyInUseAsync(int userId, string email);
 
-        public bool CreateUser(User user);
+        public void CreateUser(User user);
 
-        public bool UpdateUser(User user);
+        public void UpdateUser(User user);
 
-        public bool DeleteUser(User user);
+        public void DeleteUser(User user);
+
+        public Task SaveUserAsync();
     }
 }

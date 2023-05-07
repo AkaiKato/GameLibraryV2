@@ -1,6 +1,7 @@
 ﻿using GameLibraryV2.Data;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameLibraryV2.Repositories
 {
@@ -13,57 +14,52 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
-        public bool DeveloperExists(int developerId)
+        public async Task<bool> DeveloperExistsAsync(int developerId)
         {
-            return dataContext.Developers.Any(d => d.Id == developerId);
+            return await dataContext.Developers.AnyAsync(d => d.Id == developerId);
         }
 
-        public bool DeveloperNameAlreadyExists(int developerId, string developerName)
+        public async Task<bool> DeveloperNameAlreadyExistsAsync(int developerId, string developerName)
         {
-            return dataContext.Developers.Any(d => d.Name.Trim().ToLower() == developerName.Trim().ToLower() 
-            && d.Id != developerId);
+            return await dataContext.Developers
+                .AnyAsync(d => d.Name.Trim().ToLower() == developerName.Trim().ToLower() && d.Id != developerId);
         }
 
-        public Developer GetDeveloperById(int developerId)
+        public async Task<Developer> GetDeveloperByIdAsync(int developerId)
         {
-            return dataContext.Developers.FirstOrDefault(d => d.Id == developerId)!;    
+            return await dataContext.Developers.FirstOrDefaultAsync(d => d.Id == developerId)!;    
         }
 
-        public Developer GetDeveloperByName(string developerName)
+        public async Task<Developer> GetDeveloperByNameAsync(string developerName)
         {
-            return dataContext.Developers.FirstOrDefault(d => d.Name.Trim().ToLower() == developerName.Trim().ToLower())!;
+            return await dataContext.Developers.FirstOrDefaultAsync(d => d.Name.Trim().ToLower() == developerName.Trim().ToLower())!;
         }
 
-        public IList<Developer> GetDevelopers()
+        public async Task<IList<Developer>> GetDevelopersAsync()
         {
-            return dataContext.Developers.OrderBy(d => d.Id).ToList();
+            return await dataContext.Developers.OrderBy(d => d.Id).ToListAsync();
         }
 
         //------------------------------------------------------------------
 
-        public bool CreateDeveloper(Developer developer)
+        public void CreateDeveloper(Developer developer)
         {
             dataContext.Add(developer);
-            return Save();
         }
 
-        public bool UpdateDeveloper(Developer developer)
+        public void UpdateDeveloper(Developer developer)
         {
             dataContext.Update(developer);
-            return Save();
         }
 
-        public bool DeleteDeveloper(Developer developer)
+        public void DeleteDeveloper(Developer developer)
         {
             dataContext.Remove(developer);
-            return Save();
         }
 
-        private bool Save()
+        public async Task SaveDeveloperAsync()
         {
-            var saved = dataContext.SaveChanges();
-            //var saved = 1;
-            return saved > 0 ? true : false;
+            await dataContext.SaveChangesAsync();
         }
     }
 }

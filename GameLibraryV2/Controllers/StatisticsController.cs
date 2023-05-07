@@ -25,15 +25,15 @@ namespace GameLibraryV2.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet("{userId}/publishers")]
-        public IActionResult GetUserPublisherStatistics(int userId) 
+        public async Task<IActionResult> GetUserPublisherStatistics(int userId) 
         {
-            if(userRepository.GetUserById(userId) == null)
+            if(await userRepository.GetUserByIdAsync(userId) == null)
                 return NotFound($"Not found user with such id {userId}");
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = personGamesRepository.GetPersonPublisherStatistic(userId);
+            var games = await personGamesRepository.GetPersonPublisherStatisticAsync(userId);
 
             return Ok(games);
         }
@@ -44,15 +44,15 @@ namespace GameLibraryV2.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet("{userId}/tags")]
-        public IActionResult GetUserTagStatistics(int userId)
+        public async Task<IActionResult> GetUserTagStatistics(int userId)
         {
-            if (userRepository.GetUserById(userId) == null)
+            if (await userRepository.GetUserByIdAsync(userId) == null)
                 return NotFound($"Not found user with such id {userId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = personGamesRepository.GetPersonTagStatistic(userId);
+            var games = await personGamesRepository.GetPersonTagStatisticAsync(userId);
 
             return Ok(games);
         }
@@ -63,15 +63,15 @@ namespace GameLibraryV2.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet("{userId}/developer")]
-        public IActionResult GetUserDeveloperStatistics(int userId)
+        public async Task<IActionResult> GetUserDeveloperStatistics(int userId)
         {
-            if (userRepository.GetUserById(userId) == null)
+            if (await userRepository.GetUserByIdAsync(userId) == null)
                 return NotFound($"Not found user with such id {userId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = personGamesRepository.GetPersonDeveloperStatistic(userId);
+            var games = await personGamesRepository.GetPersonDeveloperStatisticAsync(userId);
 
             return Ok(games);
         }
@@ -82,15 +82,15 @@ namespace GameLibraryV2.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet("{userId}/platforms")]
-        public IActionResult GetUserPlatformStatistics(int userId)
+        public async Task<IActionResult> GetUserPlatformStatistics(int userId)
         {
-            if (userRepository.GetUserById(userId) == null)
+            if (await userRepository.GetUserByIdAsync(userId) == null)
                 return NotFound($"Not found user with such id {userId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = personGamesRepository.GetPersonPlatformStatistic(userId);
+            var games = await personGamesRepository.GetPersonPlatformStatisticAsync(userId);
 
             return Ok(games);
         }
@@ -101,15 +101,15 @@ namespace GameLibraryV2.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet("{userId}/genres")]
-        public IActionResult GetUserGenreStatistics(int userId)
+        public async Task<IActionResult> GetUserGenreStatistics(int userId)
         {
-            if (userRepository.GetUserById(userId) == null)
+            if (await userRepository.GetUserByIdAsync(userId) == null)
                 return NotFound($"Not found user with such id {userId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = personGamesRepository.GetPersonGenreStatistic(userId);
+            var games = await personGamesRepository.GetPersonGenreStatisticAsync(userId);
 
             return Ok(games);
 

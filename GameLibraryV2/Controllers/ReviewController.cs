@@ -38,18 +38,18 @@ namespace GameLibraryV2.Controllers
         [HttpPost("createReview")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateGameReview([FromBody] ReviewCreateDto reviewCreate)
+        public async Task<IActionResult> CreateGameReview([FromBody] ReviewCreateDto reviewCreate)
         {
             if (reviewCreate == null)
                 return BadRequest(ModelState);
 
-            if (!gameRepository.GameExists(reviewCreate.GameId))
+            if (!await gameRepository.GameExistsAsync(reviewCreate.GameId))
                 return NotFound($"Not found game with such id {reviewCreate.GameId}");
 
-            if (!userRepository.UserExistsById(reviewCreate.UserId))
+            if (!await userRepository.UserExistsByIdAsync(reviewCreate.UserId))
                 return NotFound($"Not found user with such id {reviewCreate.UserId}");
 
-            if (!personGamesRepository.PersonGameExists(reviewCreate.UserId, reviewCreate.GameId))
+            if (!await personGamesRepository.PersonGameExistsAsync(reviewCreate.UserId, reviewCreate.GameId))
                 return NotFound($"Not found in person Game");
 
             if (!ModelState.IsValid)
@@ -57,15 +57,12 @@ namespace GameLibraryV2.Controllers
 
             var reviewMap = mapper.Map<Review>(reviewCreate);
 
-            reviewMap.Rating = personGamesRepository.GetPersonGameByUserIdAndGameId(reviewCreate.UserId, reviewCreate.GameId).Score;
-            reviewMap.User = userRepository.GetUserById(reviewCreate.UserId);
-            reviewMap.Game = gameRepository.GetGameById(reviewCreate.GameId);
+            reviewMap.Rating = (await personGamesRepository.GetPersonGameByUserIdAndGameIdAsync(reviewCreate.UserId, reviewCreate.GameId)).Score;
+            reviewMap.User = await userRepository.GetUserByIdAsync(reviewCreate.UserId);
+            reviewMap.Game = await gameRepository.GetGameByIdAsync(reviewCreate.GameId);
 
-            if (!reviewRepository.CreateReview(reviewMap))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            reviewRepository.CreateReview(reviewMap);
+            await reviewRepository.SaveReviewAsync();
 
             return Ok("Successfully created");
         }
@@ -78,26 +75,23 @@ namespace GameLibraryV2.Controllers
         [HttpPut("updateReview")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult UpdateGameReview([FromBody] ReviewUpdate reviewUpdate)
+        public async Task<IActionResult> UpdateGameReview([FromBody] ReviewUpdate reviewUpdate)
         {
-            if(reviewUpdate == null)
+            if (reviewUpdate == null)
                 return BadRequest(ModelState);
 
-            if (!reviewRepository.ReviewExists(reviewUpdate.Id))
+            if (!await reviewRepository.ReviewExistsAsync(reviewUpdate.Id))
                 return NotFound($"Not found review with such id {reviewUpdate.Id}");
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);  
 
-            var review = reviewRepository.GetReviewById(reviewUpdate.Id);
+            var review = await reviewRepository.GetReviewByIdAsync(reviewUpdate.Id);
 
             review.Text = reviewUpdate.Text;
 
-            if (!reviewRepository.UpdateReview(review))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            reviewRepository.UpdateReview(review);
+            await reviewRepository.SaveReviewAsync();
 
             return Ok("Successfully updated");
         }
@@ -110,26 +104,23 @@ namespace GameLibraryV2.Controllers
         [HttpPut("updateReviewRating")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult UpdateRaviewRatingGameReview([FromBody] ReviewRatingUpdate reviewRatingUpdate)
+        public async Task<IActionResult> UpdateRaviewRatingGameReview([FromBody] ReviewRatingUpdate reviewRatingUpdate)
         {
             if (reviewRatingUpdate == null)
                 return BadRequest(ModelState);
 
-            if (!reviewRepository.ReviewExists(reviewRatingUpdate.Id))
+            if (!await reviewRepository.ReviewExistsAsync(reviewRatingUpdate.Id))
                 return NotFound($"Not found review with such id {reviewRatingUpdate.Id}");
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var review = reviewRepository.GetReviewById(reviewRatingUpdate.Id);
+            var review = await reviewRepository.GetReviewByIdAsync(reviewRatingUpdate.Id);
 
             review.ReviewRating += reviewRatingUpdate.ReviewRating;
 
-            if (!reviewRepository.UpdateReview(review))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            reviewRepository.UpdateReview(review);
+            await reviewRepository.SaveReviewAsync();
 
             return Ok("Successfully updated");
         }
@@ -142,24 +133,21 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deleteReview")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult DeleteGameReview([FromBody] JustIdDto reviewDelete)
+        public async Task<IActionResult> DeleteGameReview([FromBody] JustIdDto reviewDelete)
         {
             if (reviewDelete == null)
                 return BadRequest(ModelState);
 
-            if (!reviewRepository.ReviewExists(reviewDelete.Id))
+            if (!await reviewRepository.ReviewExistsAsync(reviewDelete.Id))
                 return NotFound($"Not found review with such id {reviewDelete.Id}");
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var review = reviewRepository.GetReviewById(reviewDelete.Id);
+            var review = await reviewRepository.GetReviewByIdAsync(reviewDelete.Id);
 
-            if (!reviewRepository.DeleteReview(review))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            reviewRepository.DeleteReview(review);
+            await reviewRepository.SaveReviewAsync();
 
             return Ok("Successfully deleted");
         }

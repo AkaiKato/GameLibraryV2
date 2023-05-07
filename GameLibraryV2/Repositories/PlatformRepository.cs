@@ -1,6 +1,7 @@
 ﻿using GameLibraryV2.Data;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameLibraryV2.Repositories
 {
@@ -13,56 +14,51 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
-        public Platform GetPlatformById(int platformId)
+        public async Task<Platform> GetPlatformByIdAsync(int platformId)
         {
-            return dataContext.Platforms.Where(p => p.Id == platformId).FirstOrDefault()!;
+            return await dataContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId)!;
         }
 
-        public Platform GetPlatformByName(string name)
+        public async Task<Platform> GetPlatformByNameAsync(string name)
         {
-            return dataContext.Platforms.Where(p => p.Name.Trim().ToLower() == name.Trim().ToLower()).FirstOrDefault()!;
+            return await dataContext.Platforms.FirstOrDefaultAsync(p => p.Name.Trim().ToLower() == name.Trim().ToLower())!;
         }
 
-        public IList<Platform> GetPlatforms()
+        public async Task<IList<Platform>> GetPlatformsAsync()
         {
-            return dataContext.Platforms.OrderBy(p => p.Id).ToList();
+            return await dataContext.Platforms.OrderBy(p => p.Id).ToListAsync();
         }
 
-        public bool PlatformExist(int platformId)
+        public async Task<bool> PlatformExistAsync(int platformId)
         {
-            return dataContext.Platforms.Any(p => p.Id == platformId);
+            return await dataContext.Platforms.AnyAsync(p => p.Id == platformId);
         }
 
-        public bool PlatformNameAlredyInUse(int platformId, string platformName)
+        public async Task<bool> PlatformNameAlredyInUseAsync(int platformId, string platformName)
         {
-            return dataContext.Platforms.Any(p => p.Name.Trim().ToLower() == platformName.Trim().ToLower() && p.Id == platformId);
+            return await dataContext.Platforms.AnyAsync(p => p.Name.Trim().ToLower() == platformName.Trim().ToLower() && p.Id == platformId);
         }
 
         //--------------------------------------------
 
-        public bool CreatePlatform(Platform platform)
+        public void CreatePlatform(Platform platform)
         {
             dataContext.Add(platform);
-            return Save();
         }
 
-        public bool UpdatePlatfrom(Platform platform)
+        public void UpdatePlatfrom(Platform platform)
         {
             dataContext.Update(platform);
-            return Save();
         }
 
-        public bool DeletePlatform(Platform platform)
+        public void DeletePlatform(Platform platform)
         {
             dataContext.Remove(platform);
-            return Save();
         }
 
-        private bool Save()
+        public async Task SavePlatformAsync()
         {
-            var saved = dataContext.SaveChanges();
-            //var saved = 1;
-            return saved > 0 ? true : false;
+            await dataContext.SaveChangesAsync();
         }
     }
 }

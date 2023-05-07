@@ -1,6 +1,7 @@
 ﻿using GameLibraryV2.Data;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameLibraryV2.Repositories
 {
@@ -13,14 +14,14 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
-        public Rating GetRatingById(int ratingId)
+        public Task<Rating> GetRatingByIdAsync(int ratingId)
         {
-            return dataContext.Ratings.Where(r => r.Id == ratingId).FirstOrDefault()!;
+            return dataContext.Ratings.FirstOrDefaultAsync(r => r.Id == ratingId)!;
         }
 
-        public IList<Rating> GetRatings()
+        public async Task<IList<Rating>> GetRatingsAsync()
         {
-            return dataContext.Ratings.ToList();
+            return await dataContext.Ratings.ToListAsync();
         }
 
         public void Remove(Rating rating, int number)
@@ -97,34 +98,29 @@ namespace GameLibraryV2.Repositories
             }
         }
 
-        public bool RatingExists(int ratingId)
+        public async Task<bool> RatingExistsAsync(int ratingId)
         {
-            return dataContext.Ratings.Any(r => r.Id == ratingId);
+            return await dataContext.Ratings.AnyAsync(r => r.Id == ratingId);
         }
 
-        public bool SaveRating(Rating rating)
+        public void SaveRating(Rating rating)
         {
             dataContext.Add(rating);
-            return Save();
         }
 
-        public bool UpdateRating(Rating rating)
+        public void UpdateRating(Rating rating)
         {
             dataContext.Update(rating);
-            return Save();
         }
 
-        public bool DeleteRating(Rating rating)
+        public void DeleteRating(Rating rating)
         {
             dataContext.Remove(rating);
-            return Save();
         }
 
-        private bool Save()
+        public async Task SaveRatingAsync()
         {
-            var saved = dataContext.SaveChanges();
-            //var saved = 1;
-            return saved > 0 ? true : false;
+            await dataContext.SaveChangesAsync();
         }
     }
 }

@@ -30,12 +30,12 @@ namespace GameLibraryV2.Controllers
         /// <returns></returns>
         [HttpGet("dlcAll")]
         [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
-        public IActionResult GetDLCs()
+        public async Task<IActionResult> GetDLCs()
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var DLC = mapper.Map<List<GameSmallListDto>>(gameRepository.GetDLCs());
+            var DLC = mapper.Map<List<GameSmallListDto>>(await gameRepository.GetDLCsAsync());
 
             return Ok(DLC);
         }
@@ -48,15 +48,15 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{dlcId}")]
         [ProducesResponseType(200, Type = typeof(GameDto))]
         [ProducesResponseType(400)]
-        public IActionResult GetDLCById(int dlcId)
+        public async Task<IActionResult> GetDLCById(int dlcId)
         {
-            if(!gameRepository.DLCExists(dlcId))
+            if(!await gameRepository.DLCExistsAsync(dlcId))
                 return NotFound($"Not found dlc with such id {dlcId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var DLC = mapper.Map<GameDto>(gameRepository.GetDLCById(dlcId));
+            var DLC = mapper.Map<GameDto>(await gameRepository.GetDLCByIdAsync(dlcId));
 
             return Ok(DLC);
         }
@@ -69,34 +69,31 @@ namespace GameLibraryV2.Controllers
         [HttpPost("createDlc")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateGameDlc([FromBody] DlcUpdate addDlc)
+        public async Task<IActionResult> CreateGameDlc([FromBody] DlcUpdate addDlc)
         {
             if (addDlc == null)
                 return BadRequest(ModelState);
 
-            if (!gameRepository.GameExists(addDlc.ParentGameId))
+            if (!await gameRepository.GameExistsAsync(addDlc.ParentGameId))
                 return NotFound($"Not found game with such id {addDlc.ParentGameId}");
 
-            if (!gameRepository.DLCExists(addDlc.DLCGameId))
+            if (!await gameRepository.DLCExistsAsync(addDlc.DLCGameId))
                 return NotFound($"Not found dlc with such id {addDlc.ParentGameId}");
 
-            if (dlcRepository.DLCExists(addDlc.ParentGameId, addDlc.DLCGameId))
+            if (await dlcRepository.DLCExistsAsync(addDlc.ParentGameId, addDlc.DLCGameId))
                 return BadRequest("DLC already have parent Game");
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var dlcGame = gameRepository.GetDLCById(addDlc.DLCGameId);
-            var parGame = gameRepository.GetGameById(addDlc.ParentGameId);
+            var dlcGame = await gameRepository.GetDLCByIdAsync(addDlc.DLCGameId);
+            var parGame = await gameRepository.GetGameByIdAsync(addDlc.ParentGameId);
             var dlc = new DLC() { ParentGame = parGame, DLCGame = dlcGame };
 
             dlcGame.ParentGame = parGame;
 
-            if (!dlcRepository.DLCCreate(dlc))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            dlcRepository.DLCCreate(dlc);
+            await dlcRepository.SaveDLCAsync();
 
             return Ok("Successfully created");
         }
@@ -109,29 +106,26 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deleteDlc")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult DeleteGameDlc([FromBody] DlcUpdate deleteDlc)
+        public async Task<IActionResult> DeleteGameDlc([FromBody] DlcUpdate deleteDlc)
         {
             if (deleteDlc == null)
                 return BadRequest(ModelState);
 
-            if (!gameRepository.GameExists(deleteDlc.ParentGameId))
+            if (!await gameRepository.GameExistsAsync(deleteDlc.ParentGameId))
                 return NotFound($"Not found game with such id {deleteDlc.ParentGameId}");
 
-            if (!gameRepository.DLCExists(deleteDlc.DLCGameId))
+            if (!await gameRepository.DLCExistsAsync(deleteDlc.DLCGameId))
                 return NotFound($"Not found dlc with such id {deleteDlc.DLCGameId}");
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var dlc = dlcRepository.GetDLCConnById(deleteDlc.ParentGameId, deleteDlc.DLCGameId);
+            var dlc = await dlcRepository.GetDLCConnByIdAsync(deleteDlc.ParentGameId, deleteDlc.DLCGameId);
 
             dlc.DLCGame.ParentGame = null;
 
-            if (!dlcRepository.DLCDelete(dlc))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            dlcRepository.DLCDelete(dlc);
+            await dlcRepository.SaveDLCAsync();
 
             return Ok("Successfully deleted");
         }

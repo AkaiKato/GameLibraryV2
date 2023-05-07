@@ -34,12 +34,12 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("ageRatingAll")]
-        public IActionResult GetAgeRatings()
+        public async Task<IActionResult> GetAgeRatings()
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var AgeRatings = ageRatingRepository.GetAgeRatings();
+            var AgeRatings = await ageRatingRepository.GetAgeRatingsAsync();
 
             return Ok(AgeRatings);
         }
@@ -50,15 +50,15 @@ namespace GameLibraryV2.Controllers
         /// <param name="ageRatingId"></param>
         /// <returns></returns>
         [HttpGet("{ageRatingId}")]
-        public IActionResult GetAgeRatingById(int ageRatingId)
+        public async Task<IActionResult> GetAgeRatingById(int ageRatingId)
         {
-            if(!ageRatingRepository.AgeRatingExists(ageRatingId))
+            if(!await ageRatingRepository.AgeRatingExistsAsync(ageRatingId))
                 return NotFound($"Not found AgeRating with such id {ageRatingId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var AgeRating = ageRatingRepository.GetAgeRatingById(ageRatingId);
+            var AgeRating = await ageRatingRepository.GetAgeRatingByIdAsync(ageRatingId);
 
             return Ok(AgeRating);
         }
@@ -70,9 +70,9 @@ namespace GameLibraryV2.Controllers
         /// <param name="filterParameters"></param>
         /// <returns></returns>
         [HttpGet("{ageRatingId}/games")]
-        public IActionResult GetAgeRatingGames(int ageRatingId, [FromQuery] FilterParameters filterParameters)
+        public async Task<IActionResult> GetAgeRatingGames(int ageRatingId, [FromQuery] FilterParameters filterParameters)
         {
-            if(!ageRatingRepository.AgeRatingExists(ageRatingId))
+            if(!await ageRatingRepository.AgeRatingExistsAsync(ageRatingId))
                 return NotFound($"Not found game with such id {ageRatingId}");
 
             if (!filterParameters.ValidYearRange)
@@ -93,7 +93,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = gameRepository.GetGamesByAgeRating(ageRatingId, filterParameters);
+            var games = await gameRepository.GetGamesByAgeRatingAsync(ageRatingId, filterParameters);
 
             var metadata = new
             {
@@ -118,12 +118,12 @@ namespace GameLibraryV2.Controllers
         /// <param name="ageRatingCreate"></param>
         /// <returns></returns>
         [HttpPost("createAgeRating")]
-        public IActionResult CreateAgeRating([FromBody] AgeRatingCreateDto ageRatingCreate) 
+        public async Task<IActionResult> CreateAgeRating([FromBody] AgeRatingCreateDto ageRatingCreate) 
         {
             if(ageRatingCreate == null)
                 return BadRequest(ModelState);
 
-            var ageRating = ageRatingRepository.GetAgeRatingByName(ageRatingCreate.Name);
+            var ageRating = await ageRatingRepository.GetAgeRatingByNameAsync(ageRatingCreate.Name);
 
             if (ageRating != null)
                 return BadRequest("AgeRating already exists");
@@ -133,11 +133,8 @@ namespace GameLibraryV2.Controllers
 
             var ageRatingMap = mapper.Map<AgeRating>(ageRatingCreate);
 
-            if(!ageRatingRepository.CreateAgeRating(ageRatingMap))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            ageRatingRepository.CreateAgeRating(ageRatingMap);
+            await ageRatingRepository.SaveAgeRatingAsync();
 
             return Ok("Successfully created");
         }
@@ -148,27 +145,24 @@ namespace GameLibraryV2.Controllers
         /// <param name="ageRatingUpdate"></param>
         /// <returns></returns>
         [HttpPut("updateAgeRating")]
-        public IActionResult UpdateAgeRating([FromBody] CommonUpdate ageRatingUpdate)
+        public async Task<IActionResult> UpdateAgeRating([FromBody] CommonUpdate ageRatingUpdate)
         {
             if(ageRatingUpdate == null)
                 return BadRequest(ModelState);
 
-            if(!ageRatingRepository.AgeRatingExists(ageRatingUpdate.Id))
+            if(!await ageRatingRepository.AgeRatingExistsAsync(ageRatingUpdate.Id))
                 return NotFound($"Not found game with such id {ageRatingUpdate.Id}");
 
-            if(ageRatingRepository.AgeRatingAlreadyExists(ageRatingUpdate.Id, ageRatingUpdate.Name))
+            if(await ageRatingRepository.AgeRatingAlreadyExistsAsync(ageRatingUpdate.Id, ageRatingUpdate.Name))
                 return BadRequest("Age Rating Name already in use");
 
-            var ageRating = ageRatingRepository.GetAgeRatingById(ageRatingUpdate.Id);
+            var ageRating = await ageRatingRepository.GetAgeRatingByIdAsync(ageRatingUpdate.Id);
 
             ageRating.Name = ageRatingUpdate.Name;
             ageRating.Description = ageRatingUpdate.Description;
 
-            if(!ageRatingRepository.UpdateAgeRating(ageRating))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            ageRatingRepository.UpdateAgeRating(ageRating);
+            await ageRatingRepository.SaveAgeRatingAsync();
 
             return Ok("successfully updated");
         }
@@ -179,21 +173,18 @@ namespace GameLibraryV2.Controllers
         /// <param name="ageRatingDelete"></param>
         /// <returns></returns>
         [HttpDelete("deleteAgeRating")]
-        public IActionResult DeleteAgeRating([FromBody] JustIdDto ageRatingDelete)
+        public async Task<IActionResult> DeleteAgeRating([FromBody] JustIdDto ageRatingDelete)
         {
-            if (!ageRatingRepository.AgeRatingExists(ageRatingDelete.Id))
+            if (!await ageRatingRepository.AgeRatingExistsAsync(ageRatingDelete.Id))
                 return NotFound($"Not found game with such id {ageRatingDelete.Id}");
 
-            var ageRating = ageRatingRepository.GetAgeRatingById(ageRatingDelete.Id);
+            var ageRating = await ageRatingRepository.GetAgeRatingByIdAsync(ageRatingDelete.Id);
 
             if(!ModelState.IsValid) 
                 return BadRequest(ModelState);
 
-            if (!ageRatingRepository.DeleteAgeRating(ageRating))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            ageRatingRepository.DeleteAgeRating(ageRating);
+            await ageRatingRepository.SaveAgeRatingAsync();
 
             return Ok("Successfully deleted");
         }

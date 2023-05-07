@@ -1,4 +1,6 @@
-﻿namespace GameLibraryV2.Helper
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace GameLibraryV2.Helper
 {
     public class PagedList<T> : List<T>
     {
@@ -16,16 +18,15 @@
             PageSize = pageSize;
             CurrentPage = pageNumber;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-
             AddRange(item);
         }
 
-        public static PagedList<T> ToPagedList(IQueryable<T> source, int pageNumber, int pageSize) 
+        public static async Task<PagedList<T>> ToPagedList(IQueryable<T> source, int pageNumber, int pageSize) 
         { 
             var count = source.Count();
             var items = source.Skip((pageNumber - 1) * pageSize).Take(pageSize);
 
-            return new PagedList<T>(items.ToList(), count, pageNumber, pageSize);
+            return new PagedList<T>(await items.ToListAsync(), count, pageNumber, pageSize);
         }
     }
 }

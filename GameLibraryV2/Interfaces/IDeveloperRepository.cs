@@ -4,20 +4,22 @@ namespace GameLibraryV2.Interfaces
 {
     public interface IDeveloperRepository
     {
-        public Developer GetDeveloperById(int developerId);
+        public Task<Developer> GetDeveloperByIdAsync(int developerId);
 
-        public Developer GetDeveloperByName(string developerName);
+        public Task<Developer> GetDeveloperByNameAsync(string developerName);
 
-        public IList<Developer> GetDevelopers();
+        public Task<IList<Developer>> GetDevelopersAsync();
         
-        public bool DeveloperExists(int developerId);
+        public Task<bool> DeveloperExistsAsync(int developerId);
 
-        public bool DeveloperNameAlreadyExists(int developerId, string developerName);
+        public Task<bool> DeveloperNameAlreadyExistsAsync(int developerId, string developerName);
 
-        public bool CreateDeveloper(Developer developer);
+        public void CreateDeveloper(Developer developer);
 
-        public bool UpdateDeveloper(Developer developer);
+        public void UpdateDeveloper(Developer developer);
 
-        public bool DeleteDeveloper(Developer developer);
+        public void DeleteDeveloper(Developer developer);
+
+        public Task SaveDeveloperAsync();
     }
 }

@@ -1,40 +1,44 @@
-﻿using GameLibraryV2.Dto.Statistic;
+﻿using GameLibraryV2.Data;
+using GameLibraryV2.Dto.Statistic;
 using GameLibraryV2.Models.Common;
+using System.Threading.Tasks;
 
 namespace GameLibraryV2.Interfaces
 {
     public interface IPersonGamesRepository
     {
-        public IList<PersonGame> GetAllPersonGames();
+        public Task<IList<PersonGame>> GetAllPersonGamesAsync();
 
-        public IList<PersonGame> PersonGames(int userId);
+        public Task<IList<PersonGame>> PersonGamesAsync(int userId);
 
-        public IList<PersonGame> PersonGamesByList(int userId, string list);
+        public Task<IList<PersonGame>> PersonGamesByListAsync(int userId, string list);
 
-        public PersonGame GetPersonGameById(Guid personGameId);
+        public Task<PersonGame> GetPersonGameByIdAsync(Guid personGameId);
 
-        public PersonGame GetPersonGameByUserIdAndGameId(int userId, int gameId);
+        public Task<PersonGame> GetPersonGameByUserIdAndGameIdAsync(int userId, int gameId);
 
-        public IList<CountStatistic> GetPersonPublisherStatistic(int userId);
+        public Task<IList<CountStatistic>> GetPersonPublisherStatisticAsync(int userId);
 
-        public IList<CountStatistic> GetPersonTagStatistic(int userId);
+        public Task<IList<CountStatistic>> GetPersonTagStatisticAsync(int userId);
 
-        public IList<CountStatistic> GetPersonDeveloperStatistic(int userId);
+        public Task<IList<CountStatistic>> GetPersonDeveloperStatisticAsync(int userId);
 
-        public IList<CountStatistic> GetPersonPlatformStatistic(int userId);
+        public Task<IList<CountStatistic>> GetPersonPlatformStatisticAsync(int userId);
 
-        public IList<CountStatistic> GetPersonGenreStatistic(int userId);
+        public Task<IList<CountStatistic>> GetPersonGenreStatisticAsync(int userId);
 
-        public IList<Game> GetPersonFavouriteGame(int userId);
+        public Task<IList<Game>> GetPersonFavouriteGameAsync(int userId);
 
-        public bool PersonGameExists(Guid personGameId);
+        public Task<bool> PersonGameExistsAsync(Guid personGameId);
 
-        public bool PersonGameExists(int userId, int gameId);
+        public Task<bool> PersonGameExistsAsync(int userId, int gameId);
 
-        public bool CreatePersonGame(PersonGame game);
+        public void CreatePersonGame(PersonGame game);
 
-        public bool UpdatePersonGame(PersonGame game);
+        public void UpdatePersonGame(PersonGame game);
 
-        public bool DeletePersonGame(PersonGame game);
+        public void DeletePersonGame(PersonGame game);
+
+        public Task SavePersonGameAsync();
     }
 }

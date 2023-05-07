@@ -1,6 +1,7 @@
 ﻿using GameLibraryV2.Data;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameLibraryV2.Repositories
 {
@@ -14,56 +15,51 @@ namespace GameLibraryV2.Repositories
             dataContext = _dataContext;
         }
 
-        public AgeRating GetAgeRatingById(int ageRatingId)
+        public async Task<AgeRating> GetAgeRatingByIdAsync(int ageRatingId)
         {
-            return dataContext.AgeRating.FirstOrDefault(a => a.Id == ageRatingId)!;
+            return await dataContext.AgeRating.FirstOrDefaultAsync(a => a.Id == ageRatingId);
         }
 
-        public AgeRating GetAgeRatingByName(string ageRatingName)
+        public async Task<AgeRating> GetAgeRatingByNameAsync(string ageRatingName)
         {
-            return dataContext.AgeRating.FirstOrDefault(a => a.Name == ageRatingName)!;
+            return await dataContext.AgeRating.FirstOrDefaultAsync(a => a.Name == ageRatingName);
         }
 
-        public IList<AgeRating> GetAgeRatings()
+        public async Task<IList<AgeRating>> GetAgeRatingsAsync()
         {
-            return dataContext.AgeRating.OrderBy(a => a.Id).ToList();
+            return await dataContext.AgeRating.OrderBy(a => a.Id).ToListAsync();
         }
 
-        public bool AgeRatingExists(int ageRatingId)
+        public async Task<bool> AgeRatingExistsAsync(int ageRatingId)
         {
-            return dataContext.AgeRating.Any(a => a.Id == ageRatingId);
+            return await dataContext.AgeRating.AnyAsync(a => a.Id == ageRatingId);
         }
 
-        public bool AgeRatingAlreadyExists(int ageRatingId, string ageRatingName)
+        public async Task<bool> AgeRatingAlreadyExistsAsync(int ageRatingId, string ageRatingName)
         {
-            return dataContext.AgeRating.Any(a => a.Name.Trim().ToLower() == ageRatingName.Trim().ToLower()
-            && a.Id != ageRatingId);
+            return await dataContext.AgeRating.
+                AnyAsync(a => a.Name.Trim().ToLower() == ageRatingName.Trim().ToLower() && a.Id != ageRatingId);
         }
 
         //-------------------------------------------------------------------
-        public bool CreateAgeRating(AgeRating ageRating)
+        public void CreateAgeRating(AgeRating ageRating)
         {
             dataContext.Add(ageRating);
-            return Save();
         }
 
-        public bool UpdateAgeRating(AgeRating ageRating)
+        public void UpdateAgeRating(AgeRating ageRating)
         {
             dataContext.Update(ageRating);
-            return Save();
         }
 
-        public bool DeleteAgeRating(AgeRating ageRating)
+        public void DeleteAgeRating(AgeRating ageRating)
         {
             dataContext.Remove(ageRating); 
-            return Save();
         }
 
-        private bool Save()
+        public async Task SaveAgeRatingAsync()
         {
-            var saved = dataContext.SaveChanges();
-            //var saved = 1;
-            return saved > 0 ? true : false;
+            await dataContext.SaveChangesAsync();
         }
     }
 }

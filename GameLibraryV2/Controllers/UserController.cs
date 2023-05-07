@@ -42,12 +42,12 @@ namespace GameLibraryV2.Controllers
         [Authorize(Roles = "admin")]
         [ProducesResponseType(200, Type = typeof(IList<UserDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetUsers()
+        public async Task<IActionResult> GetUsers()
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var Users = mapper.Map<List<UserDto>>(userRepository.GetUsers());
+            var Users = mapper.Map<List<UserDto>>(await userRepository.GetUsersAsync());
 
             return Ok(Users);
         }
@@ -60,27 +60,27 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{userId}")]
         [ProducesResponseType(200, Type = typeof(UserDto))]
         [ProducesResponseType(400)]
-        public IActionResult GetUserById(int userId)
+        public async Task<IActionResult> GetUserById(int userId)
         {
-            if (!userRepository.UserExistsById(userId))
+            if (!await userRepository.UserExistsByIdAsync(userId))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var User = mapper.Map<UserDto>(userRepository.GetUserById(userId));
+            var User = mapper.Map<UserDto>(await userRepository.GetUserByIdAsync(userId));
 
-            var FavouriteGames = personGamesRepository.GetPersonFavouriteGame(userId).Take(5);
+            var FavouriteGames = (await personGamesRepository.GetPersonFavouriteGameAsync(userId)).Take(5);
 
-            var PublisherStatistic = personGamesRepository.GetPersonPublisherStatistic(userId).Take(5);
+            var PublisherStatistic = (await personGamesRepository.GetPersonPublisherStatisticAsync(userId)).Take(5);
 
-            var TagStatistic = personGamesRepository.GetPersonTagStatistic(userId).Take(5);
+            var TagStatistic = (await personGamesRepository.GetPersonTagStatisticAsync(userId)).Take(5);
 
-            var DeveloperStatistic = personGamesRepository.GetPersonDeveloperStatistic(userId).Take(5);
+            var DeveloperStatistic = (await personGamesRepository.GetPersonDeveloperStatisticAsync(userId)).Take(5);
 
-            var PlatformStatistic = personGamesRepository.GetPersonPlatformStatistic(userId);
+            var PlatformStatistic = await personGamesRepository.GetPersonPlatformStatisticAsync(userId);
 
-            var UserReviews = mapper.Map<List<ReviewDto>>(reviewRepository.GetUserReviews(userId));
+            var UserReviews = mapper.Map<List<ReviewDto>>(await reviewRepository.GetUserReviewsAsync(userId));
 
             var userPage = new
             {
@@ -104,15 +104,15 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{userId}/role")]
         [ProducesResponseType(200, Type = typeof(IList<RoleDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetUserRole(int userId)
+        public async Task<IActionResult> GetUserRole(int userId)
         {
-            if (!userRepository.UserExistsById(userId))
+            if (!await userRepository.UserExistsByIdAsync(userId))
                 return NotFound($"Not found user with such id {userId}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var UserRole = mapper.Map<List<RoleDto>>(roleRepository.GetUserRole(userId));
+            var UserRole = mapper.Map<List<RoleDto>>(await roleRepository.GetUserRoleAsync(userId));
 
             return Ok(UserRole);
         }
@@ -125,27 +125,27 @@ namespace GameLibraryV2.Controllers
         [HttpPut("updateUser")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult UpdateUserInfo([FromBody] UserUpdate userUpdate)
+        public async Task<IActionResult> UpdateUserInfo([FromBody] UserUpdate userUpdate)
         {
             if (userUpdate == null)
                 return BadRequest(ModelState);
 
-            if (!userRepository.UserExistsById(userUpdate.Id))
+            if (!await userRepository.UserExistsByIdAsync(userUpdate.Id))
                 return NotFound($"Not found user with such id {userUpdate.Id}");
 
-            if(userRepository.UserEmailAlreadyInUse(userUpdate.Id, userUpdate.Email))
+            if (await userRepository.UserEmailAlreadyInUseAsync(userUpdate.Id, userUpdate.Email))
                 return BadRequest("Email already in use");
 
-            if(userRepository.UserNicknameAlreadyInUser(userUpdate.Id, userUpdate.Nickname))
+            if (await userRepository.UserNicknameAlreadyInUserAsync(userUpdate.Id, userUpdate.Nickname))
                 return BadRequest("Nickname already in use");
 
-            if(!Enum.GetNames(typeof(Genders)).Contains(userUpdate.Gender))
+            if (!Enum.GetNames(typeof(Genders)).Contains(userUpdate.Gender))
                 return BadRequest("Unsupported Gender");
 
-            if(!ModelState.IsValid) 
+            if (!ModelState.IsValid) 
                 return BadRequest(ModelState);
 
-            var user = userRepository.GetUserById(userUpdate.Id);
+            var user = await userRepository.GetUserByIdAsync(userUpdate.Id);
 
             user.Email = userUpdate.Email;
             user.Password = BCrypt.Net.BCrypt.HashPassword(userUpdate.Password);
@@ -153,11 +153,8 @@ namespace GameLibraryV2.Controllers
             user.Age = userUpdate.Age;
             user.Gender = userUpdate.Gender;
 
-            if (!userRepository.UpdateUser(user))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            userRepository.UpdateUser(user);
+            await userRepository.SaveUserAsync();
 
             return Ok("Successfully updated");
         }
@@ -170,28 +167,25 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deleteUser")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult DeleteUser([FromBody] JustIdDto userDelete) 
+        public async Task<IActionResult> DeleteUser([FromBody] JustIdDto userDelete) 
         {
-            if (!userRepository.UserExistsById(userDelete.Id))
+            if (!await userRepository.UserExistsByIdAsync(userDelete.Id))
                 return NotFound($"Not found user with such id {userDelete.Id}");
 
-            var user = userRepository.GetUserById(userDelete.Id);
+            var user = await userRepository.GetUserByIdAsync(userDelete.Id);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var fusers = friendRepository.GetUserFriends(userDelete.Id).ToList();
+            var fusers = await friendRepository.GetUserFriendsAsync(userDelete.Id);
 
             if (fusers.Count > 0)
             {
                 foreach (var item in fusers)
                 {
-                    if (!friendRepository.DeleteFriend(item))
-                    {
-                        ModelState.AddModelError("", "Something went wrong while saving");
-                        return StatusCode(500, ModelState);
-                    }
+                    friendRepository.DeleteFriend(item);
                 }
+                await friendRepository.SaveFriendAsync();
             }
 
             if (user.PicturePath != $"\\Images\\userPicture\\Def.jpg")
@@ -200,11 +194,8 @@ namespace GameLibraryV2.Controllers
                 f.Delete();
             }
 
-            if (!userRepository.DeleteUser(user))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            userRepository.DeleteUser(user);
+            await userRepository.SaveUserAsync();
 
             return Ok("Successfully deleted");
         }

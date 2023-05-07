@@ -32,12 +32,12 @@ namespace GameLibraryV2.Controllers
         /// <returns></returns>
         [HttpGet("developerAll")]
         [ProducesResponseType(200, Type = typeof(IList<DeveloperDto>))]
-        public IActionResult GetDevelopers()
+        public async Task<IActionResult> GetDevelopers()
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var Developers = mapper.Map<List<DeveloperDto>>(developerRepository.GetDevelopers());
+            var Developers = mapper.Map<List<DeveloperDto>>(await developerRepository.GetDevelopersAsync());
 
             return Ok(Developers);
         }
@@ -50,15 +50,15 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{developerId}")]
         [ProducesResponseType(200, Type = typeof(DeveloperDto))]
         [ProducesResponseType(400)]
-        public IActionResult GetDeveloperById(int developerId) 
+        public async Task<IActionResult> GetDeveloperById(int developerId) 
         {
-            if(!developerRepository.DeveloperExists(developerId))
+            if(!await developerRepository.DeveloperExistsAsync(developerId))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var Developer = mapper.Map<DeveloperDto>(developerRepository.GetDeveloperById(developerId));
+            var Developer = mapper.Map<DeveloperDto>(await developerRepository.GetDeveloperByIdAsync(developerId));
 
             return Ok(Developer);
         }
@@ -72,9 +72,9 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{developerId}/games")]
         [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public IActionResult GetDeveloperGames(int developerId, [FromQuery] FilterParameters filterParameters)
+        public async Task<IActionResult> GetDeveloperGames(int developerId, [FromQuery] FilterParameters filterParameters)
         {
-            if (!developerRepository.DeveloperExists(developerId))
+            if (!await developerRepository.DeveloperExistsAsync(developerId))
                 return NotFound();
 
             if (!filterParameters.ValidYearRange)
@@ -95,7 +95,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = gameRepository.GetGamesByDeveloper(developerId, filterParameters);
+            var games = await gameRepository.GetGamesByDeveloperAsync(developerId, filterParameters);
 
             var metadata = new
             {
@@ -122,29 +122,23 @@ namespace GameLibraryV2.Controllers
         [HttpPost("createDeveloper")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateDeveloper([FromBody] DeveloperCreateDto developerCreate)
+        public async Task<IActionResult> CreateDeveloper([FromBody] DeveloperCreateDto developerCreate)
         {
             if (developerCreate == null)
                 return BadRequest(ModelState);
 
-            var developer = developerRepository.GetDeveloperByName(developerCreate.Name);
+            var developer = await developerRepository.GetDeveloperByNameAsync(developerCreate.Name);
 
             if(developer != null)
-            {
-                ModelState.AddModelError("", "Developer already exists");
-                return StatusCode(422, ModelState);
-            }
+                return BadRequest("Developer already exists");
 
             if(!ModelState.IsValid) 
                 return BadRequest(ModelState);
 
             var developerMap = mapper.Map<Developer>(developerCreate);
 
-            if (!developerRepository.CreateDeveloper(developerMap))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            developerRepository.CreateDeveloper(developerMap);
+            await developerRepository.SaveDeveloperAsync();
 
             return Ok("Successfully created");
         }
@@ -157,30 +151,27 @@ namespace GameLibraryV2.Controllers
         [HttpPut("updateDeveloper")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult UpdateDeveloperInfo([FromBody] CommonUpdate developerUpdate)
+        public async Task<IActionResult> UpdateDeveloperInfo([FromBody] CommonUpdate developerUpdate)
         {
             if (developerUpdate == null)
                 return BadRequest(ModelState);
 
-            if (!developerRepository.DeveloperExists(developerUpdate.Id))
+            if (!await developerRepository.DeveloperExistsAsync(developerUpdate.Id))
                 return NotFound($"Not found developer with such id {developerUpdate.Id}");
 
-            if (developerRepository.DeveloperNameAlreadyExists(developerUpdate.Id, developerUpdate.Name))
+            if (await developerRepository.DeveloperNameAlreadyExistsAsync(developerUpdate.Id, developerUpdate.Name))
                 return BadRequest($"Name already in use");
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var developer = developerRepository.GetDeveloperById(developerUpdate.Id);
+            var developer = await developerRepository.GetDeveloperByIdAsync(developerUpdate.Id);
 
             developer.Name = developerUpdate.Name;
             developer.Description = developerUpdate.Description;
 
-            if (!developerRepository.UpdateDeveloper(developer))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            developerRepository.UpdateDeveloper(developer);
+            await developerRepository.SaveDeveloperAsync();
 
             return Ok("Successfully updated");
         }
@@ -193,15 +184,15 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deleteDeveloper")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult DeleteUser([FromBody] JustIdDto developerDelete)
+        public async Task<IActionResult> DeleteUser([FromBody] JustIdDto developerDelete)
         {
-            if (!developerRepository.DeveloperExists(developerDelete.Id))
+            if (!await developerRepository.DeveloperExistsAsync(developerDelete.Id))
                 return NotFound($"Not found developer with such id {developerDelete.Id}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var developer = developerRepository.GetDeveloperById(developerDelete.Id);
+            var developer = await developerRepository.GetDeveloperByIdAsync(developerDelete.Id);
 
             if (developer.PicturePath != $"\\Images\\developerPicture\\Def.jpg")
             {
@@ -215,11 +206,8 @@ namespace GameLibraryV2.Controllers
                 f.Delete();
             }
 
-            if (!developerRepository.DeleteDeveloper(developer))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+            developerRepository.DeleteDeveloper(developer);
+            await developerRepository.SaveDeveloperAsync();
 
             return Ok("Successfully deleted");
         }
