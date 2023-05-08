@@ -5,7 +5,6 @@ using GameLibraryV2.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Quartz;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -89,12 +88,6 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
-
-builder.Services.AddQuartz();
-builder.Services.AddQuartzServer(o =>
-{
-    o.WaitForJobsToComplete = true;
 });
 
 var app = builder.Build();
