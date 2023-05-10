@@ -8,6 +8,8 @@ namespace GameLibraryV2.Interfaces
     {
         public Task<PagedList<Game>> GetGamesAsync(FilterParameters filterParameters);
 
+        public Task<IList<Game>> GetGamesThatContainsStringAsync(string searchString);
+
         public Task<Game> GetGameByIdAsync(int gameId);
 
         public Task<Game> GetGameByNameAsync(string gameName);

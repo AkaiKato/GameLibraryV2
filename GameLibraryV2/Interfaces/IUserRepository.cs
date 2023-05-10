@@ -10,6 +10,8 @@ namespace GameLibraryV2.Interfaces
 
         public Task<IList<User>> GetUsersAsync();
 
+        public Task<IList<User>> GetDevelopersThatContainsStringAsync(string searchString);
+
         public Task<IList<User>> GetUsersByRoleAsync(int roleId);
 
         public Task<string> GetUserPicturePathAsync(int userId);

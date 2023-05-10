@@ -23,7 +23,14 @@ namespace GameLibraryV2.Repositories
         {
             return await dataContext.Publishers.FirstOrDefaultAsync(p => p.Name.Trim().ToLower() == publisherName.Trim().ToLower())!;
         }
-        
+
+        public async Task<IList<Publisher>> GetDevelopersThatContainsStringAsync(string searchString)
+        {
+            return await dataContext.Publishers
+                .Where(p => p.Name.ToLower().Contains(searchString.Trim().ToLower().ToString()))
+                .ToListAsync();
+        }
+
         public async Task<IList<Publisher>> GetPublishersAsync()
         {
             return await dataContext.Publishers.OrderBy(p => p.Id).ToListAsync();

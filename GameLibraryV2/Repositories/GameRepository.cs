@@ -169,6 +169,51 @@ namespace GameLibraryV2.Repositories
             return await PagedList<Game>.ToPagedList(games.AsQueryable(), filterParameters.PageNumber, filterParameters.PageSize);
         }
 
+        public async Task<IList<Game>> GetGamesThatContainsStringAsync(string searchString)
+        {
+            return await dataContext.Games.Where(g => g.Name.ToLower().Contains(searchString.ToLower().Trim().ToString()))
+                .Select(p => new Game
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    PicturePath = p.PicturePath,
+                    Status = p.Status,
+                    ReleaseDate = p.ReleaseDate,
+                    Description = p.Description,
+                    AgeRating = p.AgeRating,
+                    NSFW = p.NSFW,
+                    Type = p.Type,
+                    AveragePlayTime = p.AveragePlayTime,
+                    Rating = p.Rating,
+                    Developers = p.Developers.Select(t => new Developer
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                    Publishers = p.Publishers.Select(t => new Publisher
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                    Platforms = p.Platforms.Select(t => new Platform
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                    Genres = p.Genres.Select(t => new Genre
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                    Tags = p.Tags.Select(t => new Tag
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                    }).ToList(),
+                })
+                .ToListAsync();
+        }
+
         public async Task<bool> GameExistsAsync(int gameId)
         {
             return await dataContext.Games.AnyAsync(x => x.Id == gameId);
@@ -354,5 +399,6 @@ namespace GameLibraryV2.Repositories
         {
             await dataContext.SaveChangesAsync();
         }
+
     }
 }

@@ -8,6 +8,8 @@ namespace GameLibraryV2.Interfaces
 
         public Task<Developer> GetDeveloperByNameAsync(string developerName);
 
+        public Task<IList<Developer>> GetDevelopersThatContainsStringAsync(string searchString);
+
         public Task<IList<Developer>> GetDevelopersAsync();
         
         public Task<bool> DeveloperExistsAsync(int developerId);

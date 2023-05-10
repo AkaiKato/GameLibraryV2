@@ -39,6 +39,13 @@ namespace GameLibraryV2.Repositories
             return await dataContext.Users.Where(u => u.UserRoles.Any(u => u.Id == roleId)).ToListAsync();
         }
 
+        public async Task<IList<User>> GetDevelopersThatContainsStringAsync(string searchString)
+        {
+            return await dataContext.Users.Include(u => u.UserRoles)
+                .Where(u => u.Nickname.ToLower().Contains(searchString.Trim().ToLower()))
+                .ToListAsync();
+        }
+
         public async Task<IList<User>> GetUsersAsync()
         {
             return await dataContext.Users.Select(u => new User
@@ -109,6 +116,5 @@ namespace GameLibraryV2.Repositories
         {
             await dataContext.SaveChangesAsync();
         }
-
     }
 }

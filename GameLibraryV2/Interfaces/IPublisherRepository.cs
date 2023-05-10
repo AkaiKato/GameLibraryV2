@@ -8,6 +8,8 @@ namespace GameLibraryV2.Interfaces
 
         public Task<Publisher> GetPublisherByNameAsync(string publisherName);
 
+        public Task<IList<Publisher>> GetDevelopersThatContainsStringAsync(string searchString);
+
         public Task<IList<Publisher>> GetPublishersAsync();
 
         public Task<bool> PublisherExistsAsync(int publisherId);

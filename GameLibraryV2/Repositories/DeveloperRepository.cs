@@ -25,6 +25,13 @@ namespace GameLibraryV2.Repositories
                 .AnyAsync(d => d.Name.Trim().ToLower() == developerName.Trim().ToLower() && d.Id != developerId);
         }
 
+        public async Task<IList<Developer>> GetDevelopersThatContainsStringAsync(string searchString)
+        {
+            return await dataContext.Developers
+                .Where(d => d.Name.ToLower().Contains(searchString.ToLower().Trim().ToString()))
+                .ToListAsync();
+        }
+
         public async Task<Developer> GetDeveloperByIdAsync(int developerId)
         {
             return await dataContext.Developers.FirstOrDefaultAsync(d => d.Id == developerId)!;    
