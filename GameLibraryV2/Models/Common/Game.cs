@@ -24,11 +24,9 @@
 
         public Game? ParentGame { get; set; }
 
-        public SystemRequirementsMin SystemRequirementsMin { get; set; } = null!;
-
-        public SystemRequirementsMax SystemRequirementsMax { get; set; } = null!;
-
         public Rating Rating { get; set; } = null!;
+
+        public IList<SystemRequirements>? SystemRequirements { get; set; }
 
         public IList<Review>? Reviews { get; set; }
 

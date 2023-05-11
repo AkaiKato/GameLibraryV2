@@ -49,13 +49,18 @@ namespace GameLibraryV2.Helper
             CreateMap<AgeRatingCreateDto, AgeRating>();
             CreateMap<DeveloperCreateDto, Developer>();
             CreateMap<GameCreateDto, Game>();
+            CreateMap<int, AgeRating>();
+            CreateMap<int, Developer>();
+            CreateMap<int, Publisher>();
+            CreateMap<int, Platform>();
+            CreateMap<int, Tag>();
+            CreateMap<int, Genre>();
+            CreateMap<SystemRequirementsCreateDto,  SystemRequirements>();
             CreateMap<GenreCreateDto, Genre>();
             CreateMap<PlatformCreateDto, Platform>();
             CreateMap<PublisherCreateDto, Publisher>();
             CreateMap<ReviewCreateDto, Review>();
             CreateMap<RoleCreateDto, Role>();
-            CreateMap<SystemRequirementsMaxCreateDto, SystemRequirementsMax>();
-            CreateMap<SystemRequirementsMinCreateDto, SystemRequirementsMin>();
             CreateMap<TagCreateDto, Tag>();
             CreateMap<UserCreateDto, User>();
 

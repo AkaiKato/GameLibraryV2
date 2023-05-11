@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameLibraryV2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230502140955_init")]
+    [Migration("20230511161619_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -191,12 +191,6 @@ namespace GameLibraryV2.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SystemRequirementsMaxId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SystemRequirementsMinId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -208,10 +202,6 @@ namespace GameLibraryV2.Migrations
                     b.HasIndex("ParentGameId");
 
                     b.HasIndex("RatingId");
-
-                    b.HasIndex("SystemRequirementsMaxId");
-
-                    b.HasIndex("SystemRequirementsMinId");
 
                     b.ToTable("Games");
                 });
@@ -422,7 +412,7 @@ namespace GameLibraryV2.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("GameLibraryV2.Models.Common.SystemRequirementsMax", b =>
+            modelBuilder.Entity("GameLibraryV2.Models.Common.SystemRequirements", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -439,43 +429,9 @@ namespace GameLibraryV2.Migrations
                     b.Property<string>("Ethernet")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HardDriveSpace")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OC")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Processor")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RAM")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VideoCard")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SystemRequirementsMax");
-                });
-
-            modelBuilder.Entity("GameLibraryV2.Models.Common.SystemRequirementsMin", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int?>("GameId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Additional")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DirectX")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Ethernet")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("HardDriveSpace")
                         .HasColumnType("nvarchar(max)");
 
@@ -488,12 +444,18 @@ namespace GameLibraryV2.Migrations
                     b.Property<string>("RAM")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("VideoCard")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("SystemRequirementsMin");
+                    b.HasIndex("GameId");
+
+                    b.ToTable("SystemRequirements");
                 });
 
             modelBuilder.Entity("GameLibraryV2.Models.Common.Tag", b =>
@@ -711,27 +673,11 @@ namespace GameLibraryV2.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameLibraryV2.Models.Common.SystemRequirementsMax", "SystemRequirementsMax")
-                        .WithMany()
-                        .HasForeignKey("SystemRequirementsMaxId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GameLibraryV2.Models.Common.SystemRequirementsMin", "SystemRequirementsMin")
-                        .WithMany()
-                        .HasForeignKey("SystemRequirementsMinId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("AgeRating");
 
                     b.Navigation("ParentGame");
 
                     b.Navigation("Rating");
-
-                    b.Navigation("SystemRequirementsMax");
-
-                    b.Navigation("SystemRequirementsMin");
                 });
 
             modelBuilder.Entity("GameLibraryV2.Models.Common.PersonGame", b =>
@@ -776,6 +722,13 @@ namespace GameLibraryV2.Migrations
                     b.Navigation("Game");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GameLibraryV2.Models.Common.SystemRequirements", b =>
+                {
+                    b.HasOne("GameLibraryV2.Models.Common.Game", null)
+                        .WithMany("SystemRequirements")
+                        .HasForeignKey("GameId");
                 });
 
             modelBuilder.Entity("GamePlatform", b =>
@@ -843,6 +796,8 @@ namespace GameLibraryV2.Migrations
                     b.Navigation("DLCs");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("SystemRequirements");
                 });
 
             modelBuilder.Entity("GameLibraryV2.Models.Common.User", b =>

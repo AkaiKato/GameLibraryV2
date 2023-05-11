@@ -14,8 +14,6 @@ namespace GameLibraryV2.Interfaces
 
         public Task<bool> RatingExistsAsync(int ratingId);
 
-        public void SaveRating(Rating rating);
-
         public void UpdateRating(Rating rating);
         
         public void DeleteRating(Rating rating);

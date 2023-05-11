@@ -1,7 +1,11 @@
-﻿namespace GameLibraryV2.Dto.create
+﻿namespace GameLibraryV2.Models.Common
 {
-    public class SystemRequirementsMaxCreateDto
+    public class SystemRequirements
     {
+        public int Id { get; set; }
+
+        public string Type { get; set; } = null!;
+
         public string? OC { get; set; }
 
         public string? Processor { get; set; }

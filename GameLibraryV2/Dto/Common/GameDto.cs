@@ -27,11 +27,9 @@ namespace GameLibraryV2.Dto.Common
 
         public GameSmallDto? ParentGame { get; set; }
 
-        public SystemRequirementsMin SystemRequirementsMin { get; set; } = null!;
-
-        public SystemRequirementsMax SystemRequirementsMax { get; set; } = null!;
-
         public Rating Rating { get; set; } = null!;
+
+        public IList<SystemRequirements>? SystemRequirements { get; set; }
 
         public IList<DLCDto>? DLCs { get; set; }
 

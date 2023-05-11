@@ -103,11 +103,6 @@ namespace GameLibraryV2.Repositories
             return await dataContext.Ratings.AnyAsync(r => r.Id == ratingId);
         }
 
-        public void SaveRating(Rating rating)
-        {
-            dataContext.Add(rating);
-        }
-
         public void UpdateRating(Rating rating)
         {
             dataContext.Update(rating);

@@ -376,21 +376,26 @@ namespace GameLibraryV2
                     AveragePlayTime = 44.5,
                     NSFW = false,
                     Type = "Game",
-                    SystemRequirementsMin = new SystemRequirementsMin
+                    SystemRequirements = new List<SystemRequirements>
                     {
-                        OC = "Windows 7",
-                        Processor = "Dual core CPU 2.4 GHz",
-                        RAM = "4 GB RAM",
-                        VideoCard = "GeForce GTS 450-class (Intel HD 4000)",
-                        HardDriveSpace = "12 GB available space",
-                    },
-                    SystemRequirementsMax = new SystemRequirementsMax
-                    {
-                        OC = "Windows 7/8.1/10 64-bit",
-                        Processor = "Quad core CPU 3.0 GHz",
-                        RAM = "6 GB RAM",
-                        VideoCard = "GeForce GTX 760-class (2 GB)",
-                        HardDriveSpace = "12 GB available space",
+                        new SystemRequirements
+                        {
+                            Type = "min",
+                            OC = "Windows 7",
+                            Processor = "Dual core CPU 2.4 GHz",
+                            RAM = "4 GB RAM",
+                            VideoCard = "GeForce GTS 450-class (Intel HD 4000)",
+                            HardDriveSpace = "12 GB available space",
+                        },
+                        new SystemRequirements
+                        {
+                            Type = "max",
+                            OC = "Windows 7/8.1/10 64-bit",
+                            Processor = "Quad core CPU 3.0 GHz",
+                            RAM = "6 GB RAM",
+                            VideoCard = "GeForce GTX 760-class (2 GB)",
+                            HardDriveSpace = "12 GB available space",
+                        },
                     },
                     Rating = new Rating
                     {
@@ -419,21 +424,26 @@ namespace GameLibraryV2
                     NSFW = false,
                     Type = "DLC",
                     ParentGame = euroTruck,
-                    SystemRequirementsMin = new SystemRequirementsMin
+                    SystemRequirements = new List<SystemRequirements>
                     {
-                        OC = "Windows 7",
-                        Processor = "Dual core CPU 2.4 GHz",
-                        RAM = "4 GB RAM",
-                        VideoCard = "GeForce GTS 450-class (Intel HD 4000)",
-                        HardDriveSpace = "50 MB",
-                    },
-                    SystemRequirementsMax = new SystemRequirementsMax
-                    {
-                        OC = "Windows 7/8.1/10 64-bit",
-                        Processor = "Quad core CPU 3.0 GHz",
-                        RAM = "6 GB RAM",
-                        VideoCard = "GeForce GTX 760-class (2 GB)",
-                        HardDriveSpace = "50 MB",
+                        new SystemRequirements
+                        {
+                            Type = "min",
+                            OC = "Windows 7",
+                            Processor = "Dual core CPU 2.4 GHz",
+                            RAM = "4 GB RAM",
+                            VideoCard = "GeForce GTS 450-class (Intel HD 4000)",
+                            HardDriveSpace = "50 MB",
+                        },
+                        new SystemRequirements
+                        {
+                            Type = "max",
+                            OC = "Windows 7/8.1/10 64-bit",
+                            Processor = "Quad core CPU 3.0 GHz",
+                            RAM = "6 GB RAM",
+                            VideoCard = "GeForce GTX 760-class (2 GB)",
+                            HardDriveSpace = "50 MB",
+                        },
                     },
                     Rating = new Rating
                     {
@@ -462,21 +472,26 @@ namespace GameLibraryV2
                     NSFW = false,
                     Type = "DLC",
                     ParentGame = euroTruck,
-                    SystemRequirementsMin = new SystemRequirementsMin
+                    SystemRequirements = new List<SystemRequirements>
                     {
-                        OC = "Windows 7",
-                        Processor = "Dual core CPU 2.4 GHz",
-                        RAM = "4 GB RAM",
-                        VideoCard = "GeForce GTS 450-class (Intel HD 4000)",
-                        HardDriveSpace = "200 MB",
-                    },
-                    SystemRequirementsMax = new SystemRequirementsMax
-                    {
-                        OC = "Windows 7/8.1/10 64-bit",
-                        Processor = "Quad core CPU 3.0 GHz",
-                        RAM = "6 GB RAM",
-                        VideoCard = "GeForce GTX 760-class (2 GB)",
-                        HardDriveSpace = "200 MB",
+                        new SystemRequirements
+                        {
+                            Type = "min",
+                            OC = "Windows 7",
+                            Processor = "Dual core CPU 2.4 GHz",
+                            RAM = "4 GB RAM",
+                            VideoCard = "GeForce GTS 450-class (Intel HD 4000)",
+                            HardDriveSpace = "200 MB",
+                        },
+                        new SystemRequirements
+                        {
+                            Type = "max",
+                            OC = "Windows 7/8.1/10 64-bit",
+                            Processor = "Quad core CPU 3.0 GHz",
+                            RAM = "6 GB RAM",
+                            VideoCard = "GeForce GTX 760-class (2 GB)",
+                            HardDriveSpace = "200 MB",
+                        },
                     },
                     Rating = new Rating
                     {
@@ -505,21 +520,26 @@ namespace GameLibraryV2
                     NSFW = false,
                     Type = "DLC",
                     ParentGame = euroTruck,
-                    SystemRequirementsMin = new SystemRequirementsMin
+                    SystemRequirements = new List<SystemRequirements>
                     {
-                        OC = "Windows 7",
-                        Processor = "Dual core CPU 2.4 GHz",
-                        RAM = "4 GB RAM",
-                        VideoCard = "GeForce GTS 450-class (Intel HD 4000)",
-                        HardDriveSpace = "20 MB",
-                    },
-                    SystemRequirementsMax = new SystemRequirementsMax
-                    {
-                        OC = "Windows 7/8.1/10 64-bit",
-                        Processor = "Quad core CPU 3.0 GHz",
-                        RAM = "6 GB RAM",
-                        VideoCard = "GeForce GTX 760-class (2 GB)",
-                        HardDriveSpace = "20 MB",
+                        new SystemRequirements
+                        {
+                            Type = "min",
+                            OC = "Windows 7",
+                            Processor = "Dual core CPU 2.4 GHz",
+                            RAM = "4 GB RAM",
+                            VideoCard = "GeForce GTS 450-class (Intel HD 4000)",
+                            HardDriveSpace = "20 MB",
+                        },
+                        new SystemRequirements
+                        {
+                            Type = "max",
+                            OC = "Windows 7/8.1/10 64-bit",
+                            Processor = "Quad core CPU 3.0 GHz",
+                            RAM = "6 GB RAM",
+                            VideoCard = "GeForce GTX 760-class (2 GB)",
+                            HardDriveSpace = "20 MB",   
+                        },
                     },
                     Rating = new Rating
                     {
@@ -586,25 +606,30 @@ namespace GameLibraryV2
                     AveragePlayTime = 26.5,
                     NSFW = false,
                     Type = "Game",
-                    SystemRequirementsMin = new SystemRequirementsMin
+                    SystemRequirements = new List<SystemRequirements>
                     {
-                        OC = "Windows 7 (64bit)",
-                        Processor = "Intel Core 2 Duo E5200",
-                        RAM = "4 GB RAM",
-                        VideoCard = "GeForce 9800GTX+ (1GB)",
-                        DirectX = "Version 10",
-                        HardDriveSpace = "9 GB",
-                        Additional = "1080p, 16:9 recommended",
-                    },
-                    SystemRequirementsMax = new SystemRequirementsMax
-                    {
-                        OC = "Windows 10 (64bit)",
-                        Processor = "Intel Core i5",
-                        RAM = "8 GB RAM",
-                        VideoCard = "GeForce GTX 560",
-                        DirectX = "Version 11",
-                        HardDriveSpace = "9 GB",
-                        Additional = "1080p, 16:9 recommended",
+                        new SystemRequirements
+                        {
+                            Type = "min",
+                            OC = "Windows 7 (64bit)",
+                            Processor = "Intel Core 2 Duo E5200",
+                            RAM = "4 GB RAM",
+                            VideoCard = "GeForce 9800GTX+ (1GB)",
+                            DirectX = "Version 10",
+                            HardDriveSpace = "9 GB",
+                            Additional = "1080p, 16:9 recommended",
+                        },
+                        new SystemRequirements
+                        {
+                            Type = "max",
+                            OC = "Windows 10 (64bit)",
+                            Processor = "Intel Core i5",
+                            RAM = "8 GB RAM",
+                            VideoCard = "GeForce GTX 560",
+                            DirectX = "Version 11",
+                            HardDriveSpace = "9 GB",
+                            Additional = "1080p, 16:9 recommended",
+                        },
                     },
                     Rating = new Rating
                     {
@@ -633,25 +658,30 @@ namespace GameLibraryV2
                     NSFW = false,
                     Type = "DLC",
                     ParentGame = hollowKnight,
-                    SystemRequirementsMin = new SystemRequirementsMin
+                    SystemRequirements = new List<SystemRequirements>
                     {
-                        OC = "Windows 7 (64bit)",
-                        Processor = "Intel Core 2 Duo E5200",
-                        RAM = "4 GB RAM",
-                        VideoCard = "GeForce 9800GTX+ (1GB)",
-                        DirectX = "Version 10",
-                        HardDriveSpace = "9 GB",
-                        Additional = "1080p, 16:9 recommended",
-                    },
-                    SystemRequirementsMax = new SystemRequirementsMax
-                    {
-                        OC = "Windows 10 (64bit)",
-                        Processor = "Intel Core i5",
-                        RAM = "8 GB RAM",
-                        VideoCard = "GeForce GTX 560",
-                        DirectX = "Version 11",
-                        HardDriveSpace = "9 GB",
-                        Additional = "1080p, 16:9 recommended",
+                        new SystemRequirements
+                        {
+                            Type = "min",
+                            OC = "Windows 7 (64bit)",
+                            Processor = "Intel Core 2 Duo E5200",
+                            RAM = "4 GB RAM",
+                            VideoCard = "GeForce 9800GTX+ (1GB)",
+                            DirectX = "Version 10",
+                            HardDriveSpace = "9 GB",
+                            Additional = "1080p, 16:9 recommended",
+                        },
+                        new SystemRequirements
+                        {
+                            Type = "max",
+                             OC = "Windows 10 (64bit)",
+                            Processor = "Intel Core i5",
+                            RAM = "8 GB RAM",
+                            VideoCard = "GeForce GTX 560",
+                            DirectX = "Version 11",
+                            HardDriveSpace = "9 GB",
+                            Additional = "1080p, 16:9 recommended",
+                        },
                     },
                     Rating = new Rating
                     {
@@ -680,25 +710,30 @@ namespace GameLibraryV2
                     NSFW = false,
                     Type = "DLC",
                     ParentGame = hollowKnight,
-                    SystemRequirementsMin = new SystemRequirementsMin
+                    SystemRequirements = new List<SystemRequirements>
                     {
-                        OC = "Windows 7 (64bit)",
-                        Processor = "Intel Core 2 Duo E5200",
-                        RAM = "4 GB RAM",
-                        VideoCard = "GeForce 9800GTX+ (1GB)",
-                        DirectX = "Version 10",
-                        HardDriveSpace = "9 GB",
-                        Additional = "1080p, 16:9 recommended",
-                    },
-                    SystemRequirementsMax = new SystemRequirementsMax
-                    {
-                        OC = "Windows 10 (64bit)",
-                        Processor = "Intel Core i5",
-                        RAM = "8 GB RAM",
-                        VideoCard = "GeForce GTX 560",
-                        DirectX = "Version 11",
-                        HardDriveSpace = "9 GB",
-                        Additional = "1080p, 16:9 recommended",
+                        new SystemRequirements
+                        {
+                            Type = "min",
+                            OC = "Windows 7 (64bit)",
+                            Processor = "Intel Core 2 Duo E5200",
+                            RAM = "4 GB RAM",
+                            VideoCard = "GeForce 9800GTX+ (1GB)",
+                            DirectX = "Version 10",
+                            HardDriveSpace = "9 GB",
+                            Additional = "1080p, 16:9 recommended",
+                        },
+                        new SystemRequirements
+                        {
+                            Type = "max",
+                            OC = "Windows 10 (64bit)",
+                            Processor = "Intel Core i5",
+                            RAM = "8 GB RAM",
+                            VideoCard = "GeForce GTX 560",
+                            DirectX = "Version 11",
+                            HardDriveSpace = "9 GB",
+                            Additional = "1080p, 16:9 recommended",
+                        },
                     },
                     Rating = new Rating
                     {
@@ -727,25 +762,30 @@ namespace GameLibraryV2
                     NSFW = false,
                     Type = "DLC",
                     ParentGame = hollowKnight,
-                    SystemRequirementsMin = new SystemRequirementsMin
+                    SystemRequirements = new List<SystemRequirements>
                     {
-                        OC = "Windows 7 (64bit)",
-                        Processor = "Intel Core 2 Duo E5200",
-                        RAM = "4 GB RAM",
-                        VideoCard = "GeForce 9800GTX+ (1GB)",
-                        DirectX = "Version 10",
-                        HardDriveSpace = "9 GB",
-                        Additional = "1080p, 16:9 recommended",
-                    },
-                    SystemRequirementsMax = new SystemRequirementsMax
-                    {
-                        OC = "Windows 10 (64bit)",
-                        Processor = "Intel Core i5",
-                        RAM = "8 GB RAM",
-                        VideoCard = "GeForce GTX 560",
-                        DirectX = "Version 11",
-                        HardDriveSpace = "9 GB",
-                        Additional = "1080p, 16:9 recommended",
+                        new SystemRequirements
+                        {
+                            Type = "min",
+                            OC = "Windows 7 (64bit)",
+                            Processor = "Intel Core 2 Duo E5200",
+                            RAM = "4 GB RAM",
+                            VideoCard = "GeForce 9800GTX+ (1GB)",
+                            DirectX = "Version 10",
+                            HardDriveSpace = "9 GB",
+                            Additional = "1080p, 16:9 recommended",
+                        },
+                        new SystemRequirements
+                        {
+                            Type = "max",
+                            OC = "Windows 10 (64bit)",
+                            Processor = "Intel Core i5",
+                            RAM = "8 GB RAM",
+                            VideoCard = "GeForce GTX 560",
+                            DirectX = "Version 11",
+                            HardDriveSpace = "9 GB",
+                            Additional = "1080p, 16:9 recommended",
+                        },
                     },
                     Rating = new Rating
                     {
@@ -819,13 +859,18 @@ namespace GameLibraryV2
                     AveragePlayTime = 1,
                     NSFW = false,
                     Type = "Game",
-                    SystemRequirementsMin = new SystemRequirementsMin
+                    SystemRequirements = new List<SystemRequirements>
                     {
-                        OC = "Windows 7 (64bit)",
-                    },
-                    SystemRequirementsMax = new SystemRequirementsMax
-                    {
-                        OC = "Windows 10 (64bit)",
+                        new SystemRequirements
+                        {
+                            Type = "min",
+                            OC = "Windows 7 (64bit)",
+                        },
+                        new SystemRequirements
+                        {
+                            Type = "max",
+                            OC = "Windows 10 (64bit)",
+                        },
                     },
                     Rating = new Rating
                     {
@@ -855,21 +900,26 @@ namespace GameLibraryV2
                     AveragePlayTime = 22.5,
                     NSFW = false,
                     Type = "Game",
-                    SystemRequirementsMin = new SystemRequirementsMin
+                    SystemRequirements = new List<SystemRequirements>
                     {
-                        OC = "Windows 7 or later",
-                        Processor = "Intel Core 2 Duo E6320 (2*1866) or equivalent",
-                        RAM = "2 GB RAM",
-                        VideoCard = "GeForce 7600 GS (512 MB) or equivalent",
-                        HardDriveSpace = "2 GB",
-                    },
-                    SystemRequirementsMax = new SystemRequirementsMax
-                    {
-                        OC = "Windows 7 or later",
-                        Processor = "Intel Core 2 Duo E6320 (2*1866) or equivalent",
-                        RAM = "2 GB RAM",
-                        VideoCard = "GeForce 7600 GS (512 MB) or equivalent",
-                        HardDriveSpace = "2 GB",
+                        new SystemRequirements
+                        {
+                            Type = "min",
+                            OC = "Windows 7 or later",
+                            Processor = "Intel Core 2 Duo E6320 (2*1866) or equivalent",
+                            RAM = "2 GB RAM",
+                            VideoCard = "GeForce 7600 GS (512 MB) or equivalent",
+                            HardDriveSpace = "2 GB",
+                        },
+                        new SystemRequirements
+                        {
+                            Type = "max",
+                            OC = "Windows 7 or later",
+                            Processor = "Intel Core 2 Duo E6320 (2*1866) or equivalent",
+                            RAM = "2 GB RAM",
+                            VideoCard = "GeForce 7600 GS (512 MB) or equivalent",
+                            HardDriveSpace = "2 GB",
+                        },
                     },
                     Rating = new Rating
                     {
@@ -899,21 +949,26 @@ namespace GameLibraryV2
                     AveragePlayTime = 14,
                     NSFW = false,
                     Type = "Game",
-                    SystemRequirementsMin = new SystemRequirementsMin
+                    SystemRequirements = new List<SystemRequirements>
                     {
-                        OC = "Windows 7 or later",
-                        Processor = "Intel Core i3-3240 (2 * 3400); AMD FX-4300 (4 * 3800)",
-                        RAM = "4 GB RAM",
-                        VideoCard = "GeForce GTX 560 Ti (1024 VRAM); Radeon HD 7750 (1024 VRAM)",
-                        HardDriveSpace = "4 GB",
-                    },
-                    SystemRequirementsMax = new SystemRequirementsMax
-                    {
-                        OC = "Windows 10",
-                        Processor = "Intel Core i5-3470",
-                        RAM = "8 GB RAM",
-                        VideoCard = "GeForce GTX 1050 (2048 VRAM); Radeon R9 380 (2048 VRAM)",
-                        HardDriveSpace = "4 GB",
+                        new SystemRequirements
+                        {
+                            Type = "min",
+                            OC = "Windows 7 or later",
+                            Processor = "Intel Core i3-3240 (2 * 3400); AMD FX-4300 (4 * 3800)",
+                            RAM = "4 GB RAM",
+                            VideoCard = "GeForce GTX 560 Ti (1024 VRAM); Radeon HD 7750 (1024 VRAM)",
+                            HardDriveSpace = "4 GB",
+                        },
+                        new SystemRequirements
+                        {
+                            Type = "max",
+                            OC = "Windows 10",
+                            Processor = "Intel Core i5-3470",
+                            RAM = "8 GB RAM",
+                            VideoCard = "GeForce GTX 1050 (2048 VRAM); Radeon R9 380 (2048 VRAM)",
+                            HardDriveSpace = "4 GB",
+                        },
                     },
                     Rating = new Rating
                     {
@@ -943,27 +998,32 @@ namespace GameLibraryV2
                     AveragePlayTime = 35.5,
                     NSFW = false,
                     Type = "Game",
-                    SystemRequirementsMin = new SystemRequirementsMin
+                    SystemRequirements = new List<SystemRequirements>
                     {
-                        OC = "Windows Vista/Windows 7/Windows 8",
-                        Processor = "1.7+ GHz or better",
-                        RAM = "1 GB RAM",
-                        VideoCard = "Radeon HD5450 or better; 256 MB or higher",
-                        DirectX = "Version 9.0c",
-                        Ethernet = "connection to the Ethernet",
-                        HardDriveSpace = "3 GB",
-                        Additional = "100% DirectX9.0c compatible sound card and drivers",
-                    },
-                    SystemRequirementsMax = new SystemRequirementsMax
-                    {
-                        OC = "Windows Vista/Windows 7/Windows 8",
-                        Processor = "1.7+ GHz or better",
-                        RAM = "1 GB RAM",
-                        VideoCard = "Radeon HD5450 or better; 256 MB or higher",
-                        DirectX = "Version 9.0c",
-                        Ethernet = "connection to the Ethernet",
-                        HardDriveSpace = "3 GB",
-                        Additional = "100% DirectX9.0c compatible sound card and drivers",
+                        new SystemRequirements
+                        {
+                            Type = "min",
+                             OC = "Windows Vista/Windows 7/Windows 8",
+                            Processor = "1.7+ GHz or better",
+                            RAM = "1 GB RAM",
+                            VideoCard = "Radeon HD5450 or better; 256 MB or higher",
+                            DirectX = "Version 9.0c",
+                            Ethernet = "connection to the Ethernet",
+                            HardDriveSpace = "3 GB",
+                            Additional = "100% DirectX9.0c compatible sound card and drivers",
+                        },
+                        new SystemRequirements
+                        {
+                            Type = "max",
+                            OC = "Windows Vista/Windows 7/Windows 8",
+                            Processor = "1.7+ GHz or better",
+                            RAM = "1 GB RAM",
+                            VideoCard = "Radeon HD5450 or better; 256 MB or higher",
+                            DirectX = "Version 9.0c",
+                            Ethernet = "connection to the Ethernet",
+                            HardDriveSpace = "3 GB",
+                            Additional = "100% DirectX9.0c compatible sound card and drivers",
+                        },
                     },
                     Rating = new Rating
                     {

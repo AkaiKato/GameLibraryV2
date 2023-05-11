@@ -122,46 +122,6 @@ namespace GameLibraryV2.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SystemRequirementsMax",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OC = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Processor = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RAM = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    VideoCard = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DirectX = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Ethernet = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HardDriveSpace = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Additional = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SystemRequirementsMax", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SystemRequirementsMin",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OC = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Processor = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RAM = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    VideoCard = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DirectX = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Ethernet = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HardDriveSpace = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Additional = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SystemRequirementsMin", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Tags",
                 columns: table => new
                 {
@@ -213,8 +173,6 @@ namespace GameLibraryV2.Migrations
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AveragePlayTime = table.Column<double>(type: "float", nullable: true),
                     ParentGameId = table.Column<int>(type: "int", nullable: true),
-                    SystemRequirementsMinId = table.Column<int>(type: "int", nullable: false),
-                    SystemRequirementsMaxId = table.Column<int>(type: "int", nullable: false),
                     RatingId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -235,18 +193,6 @@ namespace GameLibraryV2.Migrations
                         name: "FK_Games_Ratings_RatingId",
                         column: x => x.RatingId,
                         principalTable: "Ratings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Games_SystemRequirementsMax_SystemRequirementsMaxId",
-                        column: x => x.SystemRequirementsMaxId,
-                        principalTable: "SystemRequirementsMax",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Games_SystemRequirementsMin_SystemRequirementsMinId",
-                        column: x => x.SystemRequirementsMinId,
-                        principalTable: "SystemRequirementsMin",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -510,6 +456,33 @@ namespace GameLibraryV2.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "SystemRequirements",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OC = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Processor = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RAM = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VideoCard = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DirectX = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Ethernet = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HardDriveSpace = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Additional = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GameId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SystemRequirements", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SystemRequirements_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_DeveloperGame_DevelopersId",
                 table: "DeveloperGame",
@@ -566,16 +539,6 @@ namespace GameLibraryV2.Migrations
                 column: "RatingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Games_SystemRequirementsMaxId",
-                table: "Games",
-                column: "SystemRequirementsMaxId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Games_SystemRequirementsMinId",
-                table: "Games",
-                column: "SystemRequirementsMinId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_GameTag_TagsId",
                 table: "GameTag",
                 column: "TagsId");
@@ -609,6 +572,11 @@ namespace GameLibraryV2.Migrations
                 name: "IX_RoleUser_UserRolesId",
                 table: "RoleUser",
                 column: "UserRolesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SystemRequirements_GameId",
+                table: "SystemRequirements",
+                column: "GameId");
         }
 
         /// <inheritdoc />
@@ -645,6 +613,9 @@ namespace GameLibraryV2.Migrations
                 name: "RoleUser");
 
             migrationBuilder.DropTable(
+                name: "SystemRequirements");
+
+            migrationBuilder.DropTable(
                 name: "Developers");
 
             migrationBuilder.DropTable(
@@ -660,25 +631,19 @@ namespace GameLibraryV2.Migrations
                 name: "Platforms");
 
             migrationBuilder.DropTable(
-                name: "Games");
-
-            migrationBuilder.DropTable(
                 name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
+                name: "Games");
+
+            migrationBuilder.DropTable(
                 name: "AgeRating");
 
             migrationBuilder.DropTable(
                 name: "Ratings");
-
-            migrationBuilder.DropTable(
-                name: "SystemRequirementsMax");
-
-            migrationBuilder.DropTable(
-                name: "SystemRequirementsMin");
         }
     }
 }

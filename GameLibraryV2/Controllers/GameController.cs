@@ -27,6 +27,7 @@ namespace GameLibraryV2.Controllers
         private readonly IRatingRepository ratingRepository;
         private readonly IDLCRepository dlcRepository;
         private readonly IAgeRatingRepository ageRatingRepository;
+        private readonly ISystemRequirements systemRequirements;
         private readonly IUserRepository userRepository;
         private readonly ILogger<Game> logger;
         private readonly IMapper mapper;
@@ -42,6 +43,7 @@ namespace GameLibraryV2.Controllers
             IRatingRepository _ratingRepository,
             IDLCRepository _dlcRepository,
             IAgeRatingRepository _ageRatingRepository,
+            ISystemRequirements _systemRequirements,
             IUserRepository _userRepository,
             ILogger<Game> _logger,
             IMapper _mapper)
@@ -57,6 +59,7 @@ namespace GameLibraryV2.Controllers
             ratingRepository = _ratingRepository;
             dlcRepository = _dlcRepository;
             ageRatingRepository = _ageRatingRepository;
+            systemRequirements = _systemRequirements;
             userRepository = _userRepository;
             logger = _logger;
             mapper = _mapper;
@@ -176,57 +179,61 @@ namespace GameLibraryV2.Controllers
             if (!Enum.GetNames(typeof(Enums.Status)).Contains(gameCreate.Status.Trim().ToLower()))
                 return BadRequest("Unsupported status");
 
+            if (!await ageRatingRepository.AgeRatingExistsAsync(gameCreate.AgeRating))
+                return NotFound($"Not found age rating with such id {gameCreate.AgeRating}");
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var devS = new List<Developer>();
             foreach (var item in gameCreate.Developers) 
             {
-                var dev = await developerRepository.GetDeveloperByIdAsync(item.Id);
+                var dev = await developerRepository.GetDeveloperByIdAsync(item);
                 if (dev == null)
-                    return BadRequest($"Not found developer with such id {item.Id}");
+                    return NotFound($"Not found developer with such id {item}");
                 devS.Add(dev);
             }
 
             var pubS = new List<Publisher>();
             foreach (var item in gameCreate.Publishers)
             {
-                var pub = await publisherRepository.GetPublisherByIdAsync(item.Id);
+                var pub = await publisherRepository.GetPublisherByIdAsync(item);
                 if (pub == null)
-                    return BadRequest($"Not found publisher with such id {item}");
+                    return NotFound($"Not found publisher with such id {item}");
                 pubS.Add(pub);
             }
 
             var platS = new List<Platform>();
             foreach (var item in gameCreate.Platforms)
             {
-                var plat = await platformRepository.GetPlatformByIdAsync(item.Id);
+                var plat = await platformRepository.GetPlatformByIdAsync(item);
                 if (plat == null)
-                    return BadRequest($"Not found platform with such id {item.Id}");
+                    return NotFound($"Not found platform with such id {item}");
                 platS.Add(plat);
             }
 
             var genrS = new List<Genre>();
             foreach (var item in gameCreate.Genres)
             {
-                var genr = await genreRepository.GetGenreByIdAsync(item.Id);
+                var genr = await genreRepository.GetGenreByIdAsync(item);
                 if (genr == null)
-                    return BadRequest($"Not found genre with such id {item.Id}");
+                    return NotFound($"Not found genre with such id {item}");
                 genrS.Add(genr);
             }
 
             var tagS = new List<Tag>();
             foreach (var item in gameCreate.Tags)
             {
-                var tag = await tagRepository.GetTagByIdAsync(item.Id);
+                var tag = await tagRepository.GetTagByIdAsync(item);
                 if (tag == null)
-                    return BadRequest($"Not found tag with such id {item.Id}");
+                    return NotFound($"Not found tag with such id {item}");
                 tagS.Add(tag);
             }
 
+
             var gameMap = mapper.Map<Game>(gameCreate);
 
-            gameMap.AgeRating = gameCreate.AgeRating;
+            gameMap.AgeRating = await ageRatingRepository.GetAgeRatingByIdAsync(gameCreate.AgeRating);
             gameMap.PicturePath = $"\\Images\\gamePicture\\Def.jpg";
             gameMap.Reviews = new List<Review>();
             gameMap.DLCs = new List<DLC>();
@@ -327,24 +334,6 @@ namespace GameLibraryV2.Controllers
 
             game.AgeRating = await ageRatingRepository.GetAgeRatingByIdAsync(gameUpdate.AgeRating.Id);
 
-            game.SystemRequirementsMin.OC = gameUpdate.SystemRequirementsMin.OC;
-            game.SystemRequirementsMin.Processor = gameUpdate.SystemRequirementsMin.Processor;
-            game.SystemRequirementsMin.RAM = gameUpdate.SystemRequirementsMin.OC;
-            game.SystemRequirementsMin.VideoCard = gameUpdate.SystemRequirementsMin.VideoCard;
-            game.SystemRequirementsMin.DirectX = gameUpdate.SystemRequirementsMin.DirectX;
-            game.SystemRequirementsMin.Ethernet = gameUpdate.SystemRequirementsMin.Ethernet;
-            game.SystemRequirementsMin.HardDriveSpace = gameUpdate.SystemRequirementsMin.HardDriveSpace;
-            game.SystemRequirementsMin.Additional = gameUpdate.SystemRequirementsMin.Additional;
-
-            game.SystemRequirementsMax.OC = gameUpdate.SystemRequirementsMax.OC;
-            game.SystemRequirementsMax.Processor = gameUpdate.SystemRequirementsMax.Processor;
-            game.SystemRequirementsMax.RAM = gameUpdate.SystemRequirementsMax.OC;
-            game.SystemRequirementsMax.VideoCard = gameUpdate.SystemRequirementsMax.VideoCard;
-            game.SystemRequirementsMax.DirectX = gameUpdate.SystemRequirementsMax.DirectX;
-            game.SystemRequirementsMax.Ethernet = gameUpdate.SystemRequirementsMax.Ethernet;
-            game.SystemRequirementsMax.HardDriveSpace = gameUpdate.SystemRequirementsMax.HardDriveSpace;
-            game.SystemRequirementsMax.Additional = gameUpdate.SystemRequirementsMax.Additional;
-
             game.Developers = devS;
             game.Publishers = pubS;
             game.Platforms = platS;
@@ -396,6 +385,13 @@ namespace GameLibraryV2.Controllers
 
             ratingRepository.DeleteRating(game.Rating);
             await ratingRepository.SaveRatingAsync();
+
+            if (game.SystemRequirements != null)
+            {
+                foreach (var item in game.SystemRequirements)
+                    systemRequirements.DeleteSystemRequirements(item);
+                await systemRequirements.SaveSystemRequirementsAsync();
+            }
 
             return Ok("Successfully Deleted");
         }

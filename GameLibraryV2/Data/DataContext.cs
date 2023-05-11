@@ -35,9 +35,7 @@ namespace GameLibraryV2.Data
 
         public DbSet<Role> Roles { get; set; }
 
-        public DbSet<SystemRequirementsMin> SystemRequirementsMin { get; set; }
-
-        public DbSet<SystemRequirementsMax> SystemRequirementsMax { get; set; }
+        public DbSet<SystemRequirements> SystemRequirements { get; set; }
 
         public DbSet<Tag> Tags { get; set; }
 

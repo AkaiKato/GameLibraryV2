@@ -1,5 +1,6 @@
 ﻿using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.create;
+using GameLibraryV2.Models.Common;
 
 namespace GameLibraryV2.Dto.Update
 {
@@ -20,10 +21,6 @@ namespace GameLibraryV2.Dto.Update
         public bool NSFW { get; set; }
 
         public float? AveragePlayTime { get; set; }
-
-        public SystemRequirementsMinCreateDto SystemRequirementsMin { get; set; } = null!;
-
-        public SystemRequirementsMaxCreateDto SystemRequirementsMax { get; set; } = null!;
 
         public virtual IList<JustIdDto> Developers { get; set; } = null!;
 

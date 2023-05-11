@@ -236,8 +236,8 @@ namespace GameLibraryV2.Repositories
                 .Include(a => a.AgeRating).Include(d => d.Developers)
                 .Include(p => p.Publishers).Include(p => p.Platforms)
                 .Include(g => g.Genres).Include(t => t.Tags)
-                .Include(p => p.ParentGame).Include(s => s.SystemRequirementsMin)
-                .Include(s => s.SystemRequirementsMax).Include(r => r.Rating)
+                .Include(p => p.ParentGame).Include(s => s.SystemRequirements)
+                .Include(r => r.Rating)
                 .FirstOrDefaultAsync(x => x.Id == gameId)!;
         }
 
@@ -248,8 +248,8 @@ namespace GameLibraryV2.Repositories
                 .Include(a => a.AgeRating).Include(d => d.Developers)
                 .Include(p => p.Publishers).Include(p => p.Platforms)
                 .Include(g => g.Genres).Include(t => t.Tags)
-                .Include(p => p.ParentGame).Include(s => s.SystemRequirementsMin)
-                .Include(s => s.SystemRequirementsMax).Include(r => r.Rating)
+                .Include(p => p.ParentGame).Include(s => s.SystemRequirements)
+                .Include(r => r.Rating)
                 .FirstOrDefaultAsync(x => x.Name.Trim().ToLower() == gameName.Trim().ToLower())!;
         }
 
@@ -259,8 +259,8 @@ namespace GameLibraryV2.Repositories
                 .Include(a => a.AgeRating).Include(d => d.Developers)
                 .Include(p => p.Publishers).Include(p => p.Platforms)
                 .Include(g => g.Genres).Include(t => t.Tags)
-                .Include(p => p.ParentGame).Include(s => s.SystemRequirementsMin)
-                .Include(s => s.SystemRequirementsMax).Include(r => r.Rating)
+                .Include(p => p.ParentGame).Include(s => s.SystemRequirements)
+                .Include(r => r.Rating)
                 .FirstOrDefaultAsync(x => x.Id == gameId && x.Type.Trim().ToLower() == "dlc".Trim().ToLower())!;
         }
 
@@ -270,8 +270,8 @@ namespace GameLibraryV2.Repositories
                 .Include(a => a.AgeRating).Include(d => d.Developers)
                 .Include(p => p.Publishers).Include(p => p.Platforms)
                 .Include(g => g.Genres).Include(t => t.Tags)
-                .Include(p => p.ParentGame).Include(s => s.SystemRequirementsMin)
-                .Include(s => s.SystemRequirementsMax).Include(r => r.Rating)
+                .Include(p => p.ParentGame).Include(s => s.SystemRequirements)
+                .Include(r => r.Rating)
                 .FirstOrDefaultAsync(g => g.Name == dlcName && g.Type.ToLower() == "dlc");
         }
 

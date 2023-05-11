@@ -1,5 +1,4 @@
 ﻿using GameLibraryV2.Dto.Common;
-using GameLibraryV2.Models.Common;
 
 namespace GameLibraryV2.Dto.create
 {
@@ -13,7 +12,7 @@ namespace GameLibraryV2.Dto.create
 
         public string? Description { get; set; }
 
-        public AgeRating AgeRating { get; set; } = null!;
+        public int AgeRating { get; set; }
 
         public bool NSFW { get; set; }
 
@@ -21,19 +20,17 @@ namespace GameLibraryV2.Dto.create
 
         public double? AveragePlayTime { get; set; }
 
-        public SystemRequirementsMinCreateDto SystemRequirementsMin { get; set; } = null!;
+        public IList<SystemRequirementsCreateDto> SystemRequirements { get; set; } = null!;
 
-        public SystemRequirementsMaxCreateDto SystemRequirementsMax { get; set; } = null!;
+        public virtual IList<int> Developers { get; set; } = null!;
 
-        public virtual IList<JustIdDto> Developers { get; set; } = null!;
+        public virtual IList<int> Publishers { get; set; } = null!;
 
-        public virtual IList<JustIdDto> Publishers { get; set; } = null!;
+        public virtual IList<int> Platforms { get; set; } = null!;
 
-        public virtual IList<JustIdDto> Platforms { get; set; } = null!;
+        public virtual IList<int> Genres { get; set; } = null!;
 
-        public virtual IList<JustIdDto> Genres { get; set; } = null!;
-
-        public virtual IList<JustIdDto> Tags { get; set; } = null!;
+        public virtual IList<int> Tags { get; set; } = null!;
 
     }
 }
