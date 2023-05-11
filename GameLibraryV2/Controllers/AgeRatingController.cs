@@ -68,9 +68,10 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="ageRatingId"></param>
         /// <param name="filterParameters"></param>
+        /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("{ageRatingId}/games")]
-        public async Task<IActionResult> GetAgeRatingGames(int ageRatingId, [FromQuery] FilterParameters filterParameters)
+        public async Task<IActionResult> GetAgeRatingGames(int ageRatingId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
             if(!await ageRatingRepository.AgeRatingExistsAsync(ageRatingId))
                 return NotFound($"Not found game with such id {ageRatingId}");
@@ -93,7 +94,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = await gameRepository.GetGamesByAgeRatingAsync(ageRatingId, filterParameters);
+            var games = await gameRepository.GetGamesByAgeRatingAsync(ageRatingId, filterParameters, pagination);
 
             var metadata = new
             {
@@ -173,12 +174,12 @@ namespace GameLibraryV2.Controllers
         /// <param name="ageRatingDelete"></param>
         /// <returns></returns>
         [HttpDelete("deleteAgeRating")]
-        public async Task<IActionResult> DeleteAgeRating([FromBody] JustIdDto ageRatingDelete)
+        public async Task<IActionResult> DeleteAgeRating([FromQuery] int ageRatingDelete)
         {
-            if (!await ageRatingRepository.AgeRatingExistsAsync(ageRatingDelete.Id))
-                return NotFound($"Not found game with such id {ageRatingDelete.Id}");
+            if (!await ageRatingRepository.AgeRatingExistsAsync(ageRatingDelete))
+                return NotFound($"Not found game with such id {ageRatingDelete}");
 
-            var ageRating = await ageRatingRepository.GetAgeRatingByIdAsync(ageRatingDelete.Id);
+            var ageRating = await ageRatingRepository.GetAgeRatingByIdAsync(ageRatingDelete);
 
             if(!ModelState.IsValid) 
                 return BadRequest(ModelState);

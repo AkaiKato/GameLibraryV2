@@ -101,26 +101,20 @@ namespace GameLibraryV2.Controllers
         /// <summary>
         /// Deletes specified dlc connection
         /// </summary>
-        /// <param name="deleteDlc"></param>
+        /// <param name="dlcConnectionId"></param>
         /// <returns></returns>
         [HttpDelete("deleteDlc")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> DeleteGameDlc([FromBody] DlcUpdate deleteDlc)
+        public async Task<IActionResult> DeleteGameDlc([FromQuery] int dlcConnectionId)
         {
-            if (deleteDlc == null)
-                return BadRequest(ModelState);
-
-            if (!await gameRepository.GameExistsAsync(deleteDlc.ParentGameId))
-                return NotFound($"Not found game with such id {deleteDlc.ParentGameId}");
-
-            if (!await gameRepository.DLCExistsAsync(deleteDlc.DLCGameId))
-                return NotFound($"Not found dlc with such id {deleteDlc.DLCGameId}");
-
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var dlc = await dlcRepository.GetDLCConnByIdAsync(deleteDlc.ParentGameId, deleteDlc.DLCGameId);
+            if(! await dlcRepository.DLCExistsByConnIdAsync(dlcConnectionId))
+                return NotFound();
+
+            var dlc = await dlcRepository.GetDLCConnByIdAsync(dlcConnectionId);
 
             dlc.DLCGame.ParentGame = null;
 

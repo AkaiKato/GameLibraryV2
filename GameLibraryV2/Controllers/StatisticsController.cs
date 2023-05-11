@@ -1,5 +1,4 @@
-﻿
-using GameLibraryV2.Interfaces;
+﻿using GameLibraryV2.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers

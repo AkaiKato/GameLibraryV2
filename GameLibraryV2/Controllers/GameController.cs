@@ -24,6 +24,7 @@ namespace GameLibraryV2.Controllers
         private readonly IPlatformRepository platformRepository;
         private readonly IPersonGamesRepository personGamesRepository;
         private readonly IReviewRepository reviewRepository;
+        private readonly IRatingRepository ratingRepository;
         private readonly IDLCRepository dlcRepository;
         private readonly IAgeRatingRepository ageRatingRepository;
         private readonly IUserRepository userRepository;
@@ -38,6 +39,7 @@ namespace GameLibraryV2.Controllers
             IPlatformRepository _platformRepository,
             IPersonGamesRepository _personGamesRepository,
             IReviewRepository _reviewRepository,
+            IRatingRepository _ratingRepository,
             IDLCRepository _dlcRepository,
             IAgeRatingRepository _ageRatingRepository,
             IUserRepository _userRepository,
@@ -52,6 +54,7 @@ namespace GameLibraryV2.Controllers
             genreRepository = _genreRepository;
             tagRepository = _tagRepository;
             reviewRepository = _reviewRepository;
+            ratingRepository = _ratingRepository;
             dlcRepository = _dlcRepository;
             ageRatingRepository = _ageRatingRepository;
             userRepository = _userRepository;
@@ -65,7 +68,7 @@ namespace GameLibraryV2.Controllers
         /// <returns></returns>
         [HttpGet("games")]
         [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
-        public async Task<IActionResult> GetGames([FromQuery] FilterParameters filterParameters)
+        public async Task<IActionResult> GetGames([FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
             if(!filterParameters.ValidYearRange)
                 return BadRequest("Max release year cannot be less than min year");
@@ -85,7 +88,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = await gameRepository.GetGamesAsync(filterParameters);
+            var games = await gameRepository.GetGamesAsync(filterParameters, pagination);
 
             logger.Log(LogLevel.Information, $"Requested Path: {Request.Path}");
             logger.LogInformation(filterParameters.ToString());
@@ -362,15 +365,15 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deleteGame")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> DeleteGame([FromBody] JustIdDto gameDelete)
+        public async Task<IActionResult> DeleteGame([FromQuery] int gameDelete)
         {
-            if(!await gameRepository.GameExistsAsync(gameDelete.Id))
-                return NotFound($"Not found game with such id {gameDelete.Id}");
+            if(!await gameRepository.GameExistsAsync(gameDelete))
+                return NotFound($"Not found game with such id {gameDelete}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var game = await gameRepository.GetGameByIdAsync(gameDelete.Id);
+            var game = await gameRepository.GetGameByIdAsync(gameDelete);
 
             if (game.DLCs != null)
             {
@@ -387,9 +390,12 @@ namespace GameLibraryV2.Controllers
                 FileInfo f = new(game.PicturePath);
                 f.Delete();
             }
-
+            
             gameRepository.DeleteGame(game);
             await gameRepository.SaveGameAsync();
+
+            ratingRepository.DeleteRating(game.Rating);
+            await ratingRepository.SaveRatingAsync();
 
             return Ok("Successfully Deleted");
         }

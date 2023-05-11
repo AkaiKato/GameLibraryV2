@@ -68,11 +68,12 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="developerId"></param>
         /// <param name="filterParameters"></param>
+        /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("{developerId}/games")]
         [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetDeveloperGames(int developerId, [FromQuery] FilterParameters filterParameters)
+        public async Task<IActionResult> GetDeveloperGames(int developerId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
             if (!await developerRepository.DeveloperExistsAsync(developerId))
                 return NotFound();
@@ -95,7 +96,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = await gameRepository.GetGamesByDeveloperAsync(developerId, filterParameters);
+            var games = await gameRepository.GetGamesByDeveloperAsync(developerId, filterParameters, pagination);
 
             var metadata = new
             {
@@ -184,15 +185,15 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deleteDeveloper")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> DeleteUser([FromBody] JustIdDto developerDelete)
+        public async Task<IActionResult> DeleteUser([FromQuery] int developerDelete)
         {
-            if (!await developerRepository.DeveloperExistsAsync(developerDelete.Id))
-                return NotFound($"Not found developer with such id {developerDelete.Id}");
+            if (!await developerRepository.DeveloperExistsAsync(developerDelete))
+                return NotFound($"Not found developer with such id {developerDelete}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var developer = await developerRepository.GetDeveloperByIdAsync(developerDelete.Id);
+            var developer = await developerRepository.GetDeveloperByIdAsync(developerDelete);
 
             if (developer.PicturePath != $"\\Images\\developerPicture\\Def.jpg")
             {

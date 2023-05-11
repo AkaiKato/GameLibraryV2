@@ -13,9 +13,20 @@ namespace GameLibraryV2.Repositories
         {
             dataContext = context;
         }
+
         public async Task<IList<Friend>> GetUserFriendsAsync(int userId)
         {
             return await dataContext.Friends.Include(u => u.Friendu).Where(f => f.User.Id == userId).ToListAsync();
+        }
+
+        public async Task<bool> FriendExists(int connectionId)
+        {
+            return await dataContext.Friends.AnyAsync(f => f.Id == connectionId);
+        }
+
+        public async Task<Friend> GetFriendAsync(int connectionId)
+        {
+            return await dataContext.Friends.FirstOrDefaultAsync(f => f.Id == connectionId);
         }
 
         public void CreateFriend(Friend friend)

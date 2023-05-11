@@ -14,12 +14,12 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
-        public async Task<DLC> GetDLCConnByIdAsync(int parentGameId, int dlcGame)
+        public async Task<DLC> GetDLCConnByIdAsync(int dlcConnId)
         {
             return await dataContext.DLCs
                 .Include(p => p.ParentGame)
                 .Include(d => d.DLCGame)
-                .FirstOrDefaultAsync(d => d.ParentGame.Id == parentGameId && d.DLCGame.Id == dlcGame);
+                .FirstOrDefaultAsync(d => d.Id == dlcConnId);
         }
 
         public async Task<bool> DLCExistsAsync(int parentGameId, int dlcGameId)

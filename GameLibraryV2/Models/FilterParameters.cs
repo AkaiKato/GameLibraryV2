@@ -1,10 +1,8 @@
 ﻿using GameLibraryV2.Helper;
-using GameLibraryV2.Interfaces;
-using GameLibraryV2.Models.Common;
 
 namespace GameLibraryV2.Models
 {
-    public class FilterParameters : Pagination
+    public class FilterParameters
     {
         public int MinYearOfRelease { get; set; } = 1800;
 
@@ -77,54 +75,6 @@ namespace GameLibraryV2.Models
                     return false;
             }
 
-            return true;
-        }
-
-        protected internal bool TagEquals(IList<Tag> obj, string[] obj2)
-        {
-            foreach (var item in obj2)
-            {
-                if (item == null)
-                    continue;
-                if (obj.Any(x => x.Name.Trim().ToLower() == item.Trim().ToLower()))
-                    continue;
-                return false;
-            }
-            return true;
-        }
-
-        protected internal bool PlatformEquals(IList<Platform> obj, string[] obj2)
-        {
-            foreach (var item in obj2)
-            {
-                if (item == null)
-                    continue;
-                if (obj.Any(x => x.Name.Trim().ToLower() == item.Trim().ToLower()))
-                    continue;
-                return false;
-            }
-            return true;
-        }
-
-        protected internal bool DeveloperEquals(IList<Developer> obj, string[] obj2)
-        {
-            foreach (var item in obj)
-            {
-                if (obj2.Where(x => x != null).Any(x => x.Trim().ToLower() == item.Name.Trim().ToLower()))
-                    continue;
-                return false;
-            }
-            return true;
-        }
-
-        protected internal bool PublisherEquals(IList<Publisher> obj, string[] obj2)
-        {
-            foreach (var item in obj)
-            {
-                if (obj2.Where(x => x != null).Any(x => x.Trim().ToLower() == item.Name.Trim().ToLower()))
-                    continue;
-                return false;
-            }
             return true;
         }
     }

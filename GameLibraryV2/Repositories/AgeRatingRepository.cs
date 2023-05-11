@@ -52,6 +52,11 @@ namespace GameLibraryV2.Repositories
             dataContext.Update(ageRating);
         }
 
+        public void DeleteAgeRating(int ageRatingId)
+        {
+            dataContext.Remove(ageRatingId);
+        }
+
         public void DeleteAgeRating(AgeRating ageRating)
         {
             dataContext.Remove(ageRating); 

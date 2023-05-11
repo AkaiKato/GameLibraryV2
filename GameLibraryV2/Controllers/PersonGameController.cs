@@ -182,18 +182,15 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deletePersonGame")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> DeletePersonGame([FromBody] JustGuIdDto personGameDelete)
+        public async Task<IActionResult> DeletePersonGame([FromQuery] Guid personGameDelete)
         {
-            if (personGameDelete == null)
-                return BadRequest(ModelState);
-
-            if (!await personGameRepository.PersonGameExistsAsync(personGameDelete.Id))
-                return NotFound($"Not found personGame with such id {personGameDelete.Id}");
+            if (!await personGameRepository.PersonGameExistsAsync(personGameDelete))
+                return NotFound($"Not found personGame with such id {personGameDelete}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var personGame = await personGameRepository.GetPersonGameByIdAsync(personGameDelete.Id);
+            var personGame = await personGameRepository.GetPersonGameByIdAsync(personGameDelete);
 
             if(personGame.Score != -1)
                 ratingRepository.Remove(personGame.Game.Rating, personGame.Score % 10);

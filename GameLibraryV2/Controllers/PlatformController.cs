@@ -75,11 +75,12 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="platformId"></param>
         /// <param name="filterParameters"></param>
+        /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("{platformId}/games")]
         [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetPlatformGameOrderByRating(int platformId, [FromQuery] FilterParameters filterParameters)
+        public async Task<IActionResult> GetPlatformGameOrderByRating(int platformId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
             if (!await platformRepository.PlatformExistAsync(platformId))
                 return NotFound($"Not found platform with such id {platformId}");
@@ -102,7 +103,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = await gameRepository.GetGameByPlatformAsync(platformId, filterParameters);
+            var games = await gameRepository.GetGameByPlatformAsync(platformId, filterParameters, pagination);
 
             var metadata = new
             {
@@ -191,15 +192,15 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deletePlatform")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> DeletePlatform([FromBody] JustIdDto platfromDelete)
+        public async Task<IActionResult> DeletePlatform([FromQuery] int platfromDelete)
         {
-            if (!await platformRepository.PlatformExistAsync(platfromDelete.Id))
-                return NotFound($"Not found platform with such id {platfromDelete.Id}");
+            if (!await platformRepository.PlatformExistAsync(platfromDelete))
+                return NotFound($"Not found platform with such id {platfromDelete}");
 
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var platform = await platformRepository.GetPlatformByIdAsync(platfromDelete.Id);
+            var platform = await platformRepository.GetPlatformByIdAsync(platfromDelete);
 
             var pg = await personGameRepository.GetAllPersonGamesAsync();
             var personGames = pg.Where(pg => pg.PlayedPlatform!.Id == platform.Id).ToList();

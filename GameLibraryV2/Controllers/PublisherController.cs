@@ -69,11 +69,12 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="publisherId"></param>
         /// <param name="filterParameters"></param>
+        /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("{publisherId}/games")]
         [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetPublisherGames(int publisherId, [FromQuery] FilterParameters filterParameters)
+        public async Task<IActionResult> GetPublisherGames(int publisherId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
             if (!await publisherRepository.PublisherExistsAsync(publisherId))
                 return NotFound($"Not found publisher with such id {publisherId}");
@@ -96,7 +97,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = await gameRepository.GetGamesByPublisherAsync(publisherId, filterParameters);
+            var games = await gameRepository.GetGamesByPublisherAsync(publisherId, filterParameters, pagination);
 
             var metadata = new
             {
@@ -185,12 +186,12 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deletePublisher")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> DeletePublisher([FromBody] JustIdDto deletePublisher)
+        public async Task<IActionResult> DeletePublisher([FromQuery] int deletePublisher)
         {
-            if (!await publisherRepository.PublisherExistsAsync(deletePublisher.Id))
-                return NotFound($"Not found publisher with such id {deletePublisher.Id}");
+            if (!await publisherRepository.PublisherExistsAsync(deletePublisher))
+                return NotFound($"Not found publisher with such id {deletePublisher}");
 
-            var publisher = await publisherRepository.GetPublisherByIdAsync(deletePublisher.Id);
+            var publisher = await publisherRepository.GetPublisherByIdAsync(deletePublisher);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

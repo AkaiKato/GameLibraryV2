@@ -80,28 +80,20 @@ namespace GameLibraryV2.Controllers
         /// <summary>
         /// Delete friend
         /// </summary>
-        /// <param name="deleteFriend"></param>
+        /// <param name="friendConnectionId"></param>
         /// <returns></returns>
         [HttpDelete("deleteFriend")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> DeleteFriend([FromBody] FriendUpdate deleteFriend)
+        public async Task<IActionResult> DeleteFriend([FromQuery] int friendConnectionId)
         {
-            if (!await userRepository.UserExistsByIdAsync(deleteFriend.UserId))
-                return NotFound($"Not found user with such id {deleteFriend.UserId}");
-
-            if (!await userRepository.UserExistsByIdAsync(deleteFriend.FriendId))
-                return NotFound($"Not found user with such id {deleteFriend.FriendId}");
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var fusers = await friendRepository.GetUserFriendsAsync(deleteFriend.UserId);
-                
-            var friend =  fusers.FirstOrDefault(u => u.Friendu.Id == deleteFriend.FriendId);
+            if (!await friendRepository.FriendExists(friendConnectionId))
+                return NotFound();
 
-            if (friend == null)
-                return BadRequest("No such friend");
+            var friend = await friendRepository.GetFriendAsync(friendConnectionId);
 
             friendRepository.DeleteFriend(friend);
             await friendRepository.SaveFriendAsync();

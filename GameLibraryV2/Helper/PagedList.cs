@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using GameLibraryV2.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameLibraryV2.Helper
 {
@@ -21,12 +22,12 @@ namespace GameLibraryV2.Helper
             AddRange(item);
         }
 
-        public static async Task<PagedList<T>> ToPagedList(IQueryable<T> source, int pageNumber, int pageSize) 
+        public static async Task<PagedList<T>> ToPagedList(IQueryable<T> source, Pagination pagination) 
         { 
             var count = source.Count();
-            var items = source.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+            var items = source.Skip((pagination.PageNumber - 1) * pagination.PageSize).Take(pagination.PageSize);
 
-            return new PagedList<T>(await items.ToListAsync(), count, pageNumber, pageSize);
+            return new PagedList<T>(await items.ToListAsync(), count, pagination.PageNumber, pagination.PageSize);
         }
     }
 }

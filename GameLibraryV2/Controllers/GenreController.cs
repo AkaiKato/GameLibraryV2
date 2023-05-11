@@ -68,11 +68,12 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="genreId"></param>
         /// <param name="filterParameters"></param>
+        /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("{genreId}/games")]
         [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetGenreGames(int genreId, [FromQuery] FilterParameters filterParameters)
+        public async Task<IActionResult> GetGenreGames(int genreId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
             if (!await genreRepository.GenreExistsAsync(genreId))
                 return NotFound($"Not found genre with such id {genreId}");
@@ -95,7 +96,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = await gameRepository.GetGamesByGenreAsync(genreId, filterParameters);
+            var games = await gameRepository.GetGamesByGenreAsync(genreId, filterParameters, pagination);
 
             var metadata = new
             {
@@ -184,15 +185,15 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deleteGenre")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> DeleteGenre([FromBody] JustIdDto genreDelete)
+        public async Task<IActionResult> DeleteGenre([FromQuery] int genreDelete)
         {
-            if (!await genreRepository.GenreExistsAsync(genreDelete.Id))
-                return NotFound($"Not found genre with such id {genreDelete.Id}");
+            if (!await genreRepository.GenreExistsAsync(genreDelete))
+                return NotFound($"Not found genre with such id {genreDelete}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var genre = await genreRepository.GetGenreByIdAsync(genreDelete.Id);
+            var genre = await genreRepository.GetGenreByIdAsync(genreDelete);
 
             genreRepository.DeleteGenre(genre);
             await genreRepository.SaveGenreAsync();

@@ -8,7 +8,7 @@ namespace GameLibraryV2.Interfaces
 
         public Task<bool> DLCExistsByConnIdAsync(int dlc);
 
-        public Task<DLC> GetDLCConnByIdAsync(int parentGameId, int dlcGame);
+        public Task<DLC> GetDLCConnByIdAsync(int dlcConnId);
 
         public void DLCCreate(DLC dlc);
 

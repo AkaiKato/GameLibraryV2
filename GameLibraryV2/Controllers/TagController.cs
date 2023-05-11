@@ -70,11 +70,12 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="tagId"></param>
         /// <param name="filterParameters"></param>
+        /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("{tagId}/games")]
         [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetTagGames(int tagId, [FromQuery] FilterParameters filterParameters)
+        public async Task<IActionResult> GetTagGames(int tagId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
             if (!await tagRepository.TagExistsAsync(tagId))
                 return NotFound($"Not found tag with such id {tagId}");
@@ -97,7 +98,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = await gameRepository.GetGamesByTagAsync(tagId, filterParameters);
+            var games = await gameRepository.GetGamesByTagAsync(tagId, filterParameters, pagination);
 
             var metadata = new
             {
