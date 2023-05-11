@@ -133,18 +133,16 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deleteReview")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> DeleteGameReview([FromBody] JustIdDto reviewDelete)
+        public async Task<IActionResult> DeleteGameReview([FromQuery] int reviewDelete)
         {
-            if (reviewDelete == null)
-                return BadRequest(ModelState);
 
-            if (!await reviewRepository.ReviewExistsAsync(reviewDelete.Id))
-                return NotFound($"Not found review with such id {reviewDelete.Id}");
+            if (!await reviewRepository.ReviewExistsAsync(reviewDelete))
+                return NotFound($"Not found review with such id {reviewDelete}");
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var review = await reviewRepository.GetReviewByIdAsync(reviewDelete.Id);
+            var review = await reviewRepository.GetReviewByIdAsync(reviewDelete);
 
             reviewRepository.DeleteReview(review);
             await reviewRepository.SaveReviewAsync();

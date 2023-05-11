@@ -167,17 +167,17 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deleteUser")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> DeleteUser([FromBody] JustIdDto userDelete) 
+        public async Task<IActionResult> DeleteUser([FromQuery] int userDelete) 
         {
-            if (!await userRepository.UserExistsByIdAsync(userDelete.Id))
-                return NotFound($"Not found user with such id {userDelete.Id}");
+            if (!await userRepository.UserExistsByIdAsync(userDelete))
+                return NotFound($"Not found user with such id {userDelete}");
 
-            var user = await userRepository.GetUserByIdAsync(userDelete.Id);
+            var user = await userRepository.GetUserByIdAsync(userDelete);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var fusers = await friendRepository.GetUserFriendsAsync(userDelete.Id);
+            var fusers = await friendRepository.GetUserFriendsAsync(userDelete);
 
             if (fusers.Count > 0)
             {

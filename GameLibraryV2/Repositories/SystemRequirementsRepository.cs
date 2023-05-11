@@ -15,6 +15,11 @@ namespace GameLibraryV2.Repositories
             dataContext = context;
         }
 
+        public async Task<SystemRequirements> GetSystemRequirementsAsync(int id)
+        {
+            return await dataContext.SystemRequirements.FindAsync(id);
+        }
+
         public async Task<bool> SystemRequirementsExists(int id)
         {
             return await dataContext.SystemRequirements.AnyAsync(x => x.Id == id);

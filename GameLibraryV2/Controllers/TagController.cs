@@ -187,15 +187,15 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deleteTag")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> DeleteTag([FromBody] JustIdDto tagDelete)
+        public async Task<IActionResult> DeleteTag([FromQuery] int tagDelete)
         {
-            if (!await tagRepository.TagExistsAsync(tagDelete.Id))
-                return NotFound($"Not found tag with such id {tagDelete.Id}");
+            if (!await tagRepository.TagExistsAsync(tagDelete))
+                return NotFound($"Not found tag with such id {tagDelete}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var platform = await tagRepository.GetTagByIdAsync(tagDelete.Id);
+            var platform = await tagRepository.GetTagByIdAsync(tagDelete);
 
             tagRepository.DeleteTag(platform);
             await tagRepository.SaveTagAsync();

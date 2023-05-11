@@ -230,7 +230,6 @@ namespace GameLibraryV2.Controllers
                 tagS.Add(tag);
             }
 
-
             var gameMap = mapper.Map<Game>(gameCreate);
 
             gameMap.AgeRating = await ageRatingRepository.GetAgeRatingByIdAsync(gameCreate.AgeRating);

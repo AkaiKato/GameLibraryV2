@@ -102,18 +102,15 @@ namespace GameLibraryV2.Controllers
         [HttpPut("gameRatingNulling")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> DeleteGameRating(JustIdDto ratingId)
+        public async Task<IActionResult> DeleteGameRating(int ratingId)
         {
-            if (ratingId == null)
-                return BadRequest(ModelState);
-
-            if(!await ratingRepository.RatingExistsAsync(ratingId.Id))
-                return NotFound($"Not found rating with such id {ratingId.Id}");
+            if(!await ratingRepository.RatingExistsAsync(ratingId))
+                return NotFound($"Not found rating with such id {ratingId}");
 
             if(!ModelState.IsValid) 
                 return BadRequest(ModelState);
 
-            var rating = await ratingRepository.GetRatingByIdAsync(ratingId.Id);
+            var rating = await ratingRepository.GetRatingByIdAsync(ratingId);
 
             rating.TotalRating = 0;
             rating.NumberOfOne = 0;
