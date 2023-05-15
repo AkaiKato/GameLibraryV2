@@ -6,7 +6,9 @@ using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using GameLibraryV2.Models.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static GameLibraryV2.Helper.Enums;
 
 namespace GameLibraryV2.Controllers
 {
@@ -84,6 +86,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="personGameCreate"></param>
         /// <returns></returns>
         [HttpPost("addPersonGame")]
+        [Authorize]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> AddPersonGame([FromBody] PersonGameCreate personGameCreate)
@@ -91,15 +94,18 @@ namespace GameLibraryV2.Controllers
             if(personGameCreate == null)
                 return BadRequest(ModelState);
 
-            if(!await userRepository.UserExistsByIdAsync(personGameCreate.UserId))
+            if (!await userRepository.UserExistsByIdAsync(personGameCreate.UserId))
                 return NotFound($"Not found user with such id {personGameCreate.UserId}");
 
-            if(!await gameRepository.GameExistsAsync(personGameCreate.GameId))
+            if (!await userRepository.UserRefreshTokenValid(personGameCreate.UserId, Request.Cookies["refreshToken"]))
+                return BadRequest("Invalid Token");
+
+            if (!await gameRepository.GameExistsAsync(personGameCreate.GameId))
                 return NotFound($"Not found game with such id {personGameCreate.GameId}");
 
             personGameCreate.List = personGameCreate.List;
             
-            if(!Enum.GetNames(typeof(Enums.List)).Contains(personGameCreate.List.Trim().ToLower()))
+            if(!Enum.GetNames(typeof(List)).Contains(personGameCreate.List.Trim().ToLower()))
                return BadRequest("Unsupported list");
 
             if (!ModelState.IsValid)

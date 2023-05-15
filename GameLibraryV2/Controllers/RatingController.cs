@@ -13,7 +13,7 @@ namespace GameLibraryV2.Controllers
     [ApiController]
     public class RatingController : Controller
     {
-        private int numberOfScores = 1;
+        private readonly int numberOfScores = 1;
         private readonly IRatingRepository ratingRepository;
         private readonly IGameRepository gameRepository;
         public RatingController(IRatingRepository _ratingRepository, IGameRepository _gameRepository)
@@ -164,7 +164,7 @@ namespace GameLibraryV2.Controllers
 
             await ratingRepository.SaveRatingAsync();
 
-            return Ok(gamesRatings);
+            return Ok();
         }
 
         private static int CalcCountOfNumbers(Rating x)

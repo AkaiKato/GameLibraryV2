@@ -2,6 +2,7 @@ using GameLibraryV2;
 using GameLibraryV2.Data;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -73,7 +74,12 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddAuthentication().AddJwtBearer(options =>
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -82,9 +88,12 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
             ValidateAudience = false,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 builder.Configuration.GetSection("AppSettings:Token").Value!)),
+            ValidateLifetime = true,
         };
     }
  );
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddDbContext<DataContext>(options =>
 {
@@ -121,6 +130,7 @@ app.UseSwagger();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

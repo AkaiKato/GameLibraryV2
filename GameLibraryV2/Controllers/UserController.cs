@@ -44,6 +44,7 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetUsers()
         {
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 

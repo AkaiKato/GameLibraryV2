@@ -28,6 +28,8 @@ namespace GameLibraryV2.Interfaces
 
         public Task<bool> UserEmailAlreadyInUseAsync(int userId, string email);
 
+        public Task<bool> UserRefreshTokenValid(int userId, string refreshToken);
+
         public void CreateUser(User user);
 
         public void UpdateUser(User user);

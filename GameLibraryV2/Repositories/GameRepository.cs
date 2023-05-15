@@ -160,15 +160,6 @@ namespace GameLibraryV2.Repositories
                 games = games.OrderBy(x => x.Name);
         }
 
-        public async Task<PagedList<Game>> GetGamesAsync(FilterParameters filterParameters, Pagination pagination)
-        {
-            var games = dataContext.Games.AsQueryable();
-
-            Filter(ref games, filterParameters);
-
-            return await PagedList<Game>.ToPagedList(games, pagination);
-        }
-
         public async Task<IList<Game>> GetGamesThatContainsStringAsync(string searchString)
         {
             return await dataContext.Games.Where(g => g.Name.ToLower().Contains(searchString.ToLower().Trim().ToString()))
@@ -316,6 +307,15 @@ namespace GameLibraryV2.Repositories
             }).ToListAsync();
         }
 
+        public async Task<PagedList<Game>> GetGamesAsync(FilterParameters filterParameters, Pagination pagination)
+        {
+            var games = dataContext.Games.AsQueryable();
+
+            Filter(ref games, filterParameters);
+
+            return await PagedList<Game>.ToPagedList(games, pagination);
+        }
+
         public async Task<PagedList<Game>> GetGamesByAgeRatingAsync(int ageRatingId, FilterParameters filterParameters, Pagination pagination)
         {
             var games = dataContext.Games.Where(g => g.AgeRating.Id == ageRatingId)
@@ -380,7 +380,6 @@ namespace GameLibraryV2.Repositories
             return await PagedList<Game>.ToPagedList(games.AsQueryable(), pagination);
         }
 
-
         public async Task<int> GetTotalNumberOfGames()
         {
             return await dataContext.Games.CountAsync();
@@ -394,6 +393,56 @@ namespace GameLibraryV2.Repositories
         public async Task<int> GetNumberOfDLC()
         {
             return await dataContext.Games.Where(d => d.Type.ToLower() == "dlc").CountAsync();
+        }
+
+        public async Task<Game> GetMostRatedGame()
+        {
+            return await dataContext.Games.Include(a => a.AgeRating).Include(d => d.Developers)
+                .Include(p => p.Publishers).Include(p => p.Platforms)
+                .Include(g => g.Genres).Include(t => t.Tags)
+                .Include(p => p.ParentGame).Include(s => s.SystemRequirements)
+                .Include(r => r.Rating).Where(x => x.Type.ToLower() == "game")
+                .OrderByDescending(x => x.Rating.TotalRating).FirstAsync();
+        }
+
+        public async Task<Game> GetMostRatedDLC()
+        {
+            return await dataContext.Games.Include(a => a.AgeRating).Include(d => d.Developers)
+                .Include(p => p.Publishers).Include(p => p.Platforms)
+                .Include(g => g.Genres).Include(t => t.Tags)
+                .Include(p => p.ParentGame).Include(s => s.SystemRequirements)
+                .Include(r => r.Rating).Where(x => x.Type.ToLower() == "dlc")
+                .OrderByDescending(x => x.Rating.TotalRating).FirstAsync();
+        }
+
+        public async Task<Game> GetMostRatedGameByYear(int year)
+        {
+            return await dataContext.Games.Include(a => a.AgeRating).Include(d => d.Developers)
+                .Include(p => p.Publishers).Include(p => p.Platforms)
+                .Include(g => g.Genres).Include(t => t.Tags)
+                .Include(p => p.ParentGame).Include(s => s.SystemRequirements)
+                .Include(r => r.Rating).Where(x => x.Type.ToLower() == "game" && x.ReleaseDate.Year == year)
+                .OrderByDescending(x => x.Rating.TotalRating).FirstOrDefaultAsync();
+        }
+
+        public async Task<Game> GetMostRatedDLCByYear(int year)
+        {
+            return await dataContext.Games.Include(a => a.AgeRating).Include(d => d.Developers)
+                .Include(p => p.Publishers).Include(p => p.Platforms)
+                .Include(g => g.Genres).Include(t => t.Tags)
+                .Include(p => p.ParentGame).Include(s => s.SystemRequirements)
+                .Include(r => r.Rating).Where(x => x.Type.ToLower() == "dlc" && x.ReleaseDate.Year == year)
+                .OrderByDescending(x => x.Rating.TotalRating).FirstOrDefaultAsync();
+        }
+
+        public async Task<DateTime> GetMinReleaseDate()
+        {
+            return await dataContext.Games.MinAsync(x => x.ReleaseDate);
+        }
+
+        public async Task<DateTime> GetMaxReleaseDate()
+        {
+            return await dataContext.Games.MaxAsync(x => x.ReleaseDate);
         }
 
         public void CreateGame(Game game)

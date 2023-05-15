@@ -96,6 +96,11 @@ namespace GameLibraryV2.Repositories
             return await dataContext.Users.AnyAsync(u => u.Email.Trim().ToLower() == email.Trim().ToLower() && u.Id != userId);
         }
 
+        public async Task<bool> UserRefreshTokenValid(int userId, string refreshToken)
+        {
+            return await dataContext.Users.AnyAsync(u => u.Id == userId && u.RefreshToken == refreshToken);
+        }
+
         public void CreateUser(User user)
         {
             user.UserRoles = new List<Role>() { dataContext.Roles.FirstOrDefault(r => r.RoleName.Trim().ToLower() == "user")!};

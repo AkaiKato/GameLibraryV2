@@ -1,4 +1,5 @@
-﻿using GameLibraryV2.Helper;
+﻿using GameLibraryV2.Data;
+using GameLibraryV2.Helper;
 using GameLibraryV2.Models;
 using GameLibraryV2.Models.Common;
 
@@ -43,6 +44,18 @@ namespace GameLibraryV2.Interfaces
         public Task<int> GetNumberOfGames();
 
         public Task<int> GetNumberOfDLC();
+
+        public Task<Game> GetMostRatedGame();
+
+        public Task<Game> GetMostRatedDLC();
+
+        public Task<Game> GetMostRatedGameByYear(int year);
+
+        public Task<Game> GetMostRatedDLCByYear(int year);
+
+        public Task<DateTime> GetMinReleaseDate();
+
+        public Task<DateTime> GetMaxReleaseDate();
 
         public void CreateGame(Game game);
 
