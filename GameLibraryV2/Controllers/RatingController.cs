@@ -130,7 +130,7 @@ namespace GameLibraryV2.Controllers
             return Ok("Successfully nulled");
         }
 
-        [HttpGet("/tr")]
+        [HttpGet("/recalculateRating")]
         public async Task<IActionResult> TotalRatingCalculation()
         {
             var gamesRatings = await ratingRepository.GetRatingsAsync();
