@@ -4,7 +4,6 @@ using GameLibraryV2.Dto.Create;
 using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
-using GameLibraryV2.Models;
 using GameLibraryV2.Models.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -43,8 +42,6 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("{userId}/persongames")]
-        [ProducesResponseType(200, Type = typeof(IList<PersonGameDto>))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetPersonGames(int userId)
         {
             if(!await userRepository.UserExistsByIdAsync(userId))
@@ -65,8 +62,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="list"></param>
         /// <returns></returns>
         [HttpGet("{userId}/persongamesbylist")]
-        [ProducesResponseType(200, Type = typeof(IList<PersonGameDto>))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetPersonGamesByList(int userId, string list) 
         {
             if(!await userRepository.UserExistsByIdAsync(userId))
@@ -87,8 +82,6 @@ namespace GameLibraryV2.Controllers
         /// <returns></returns>
         [HttpPost("addPersonGame")]
         [Authorize]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> AddPersonGame([FromBody] PersonGameCreate personGameCreate)
         {
             if(personGameCreate == null)
@@ -130,8 +123,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="personGameUpdate"></param>
         /// <returns></returns>
         [HttpPut("updatePersonGame")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UpdatePersonGame([FromBody] PersonGameUpdate personGameUpdate)
         {
             if (personGameUpdate == null)
@@ -186,8 +177,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="personGameDelete"></param>
         /// <returns></returns>
         [HttpDelete("deletePersonGame")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> DeletePersonGame([FromQuery] Guid personGameDelete)
         {
             if (!await personGameRepository.PersonGameExistsAsync(personGameDelete))

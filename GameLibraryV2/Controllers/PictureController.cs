@@ -32,8 +32,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="pic"></param>
         /// <returns></returns>
         [HttpPut("uploadDeveloperPicture")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UploadDeveloperPicture([FromQuery] int developerId, IFormFile pic)
         {
             if (pic == null)
@@ -78,8 +76,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="pic"></param>
         /// <returns></returns>
         [HttpPut("uploadDeveloperMiniPicture")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UploadDeveloperMiniPicture([FromQuery] int developerId, IFormFile pic)
         {
             if (pic == null)
@@ -124,8 +120,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="pic"></param>
         /// <returns></returns>
         [HttpPut("uploadGamePicture")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UploadGamePicture([FromQuery] int gameId, IFormFile pic)
         {
             if (pic == null)
@@ -168,8 +162,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="pic"></param>
         /// <returns></returns>
         [HttpPut("uploadPublisherPicture")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UploadPublisherPicture([FromQuery] int publisherId, IFormFile pic)
         {
             if (pic == null)
@@ -214,8 +206,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="pic"></param>
         /// <returns></returns>
         [HttpPut("uploadPublisherMiniPicture")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UploadPublihserMiniPicture([FromQuery] int publisherId, IFormFile pic)
         {
             if (pic == null)
@@ -260,8 +250,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="pic"></param>
         /// <returns></returns>
         [HttpPut("uploadUserPicture")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UploadUserPicture([FromQuery] int userId, IFormFile pic)
         {
             if (pic == null)
@@ -298,7 +286,6 @@ namespace GameLibraryV2.Controllers
 
             return Ok("Successfully updated");
         }
-
 
         protected internal static string PathToUrl(string path)
         {

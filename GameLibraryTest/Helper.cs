@@ -59,6 +59,19 @@ namespace GameLibraryTest
             };
         }
 
+        public PersonGame CreateRandomPersonGame()
+        {
+            return new PersonGame
+            {
+                Id = Guid.NewGuid(),
+                User = CreateRandomUser(),
+                Game = CreateRandomGame(),
+                Score = rand.Next(1,10),
+                List = rand.Next(0, 1) == 0 ? "planned" : "completed",
+                Favourite = rand.Next(0, 1) != 0,
+            };
+        }
+
         public SystemRequirements CreateSystemRequirements()
         {
             return new SystemRequirements
