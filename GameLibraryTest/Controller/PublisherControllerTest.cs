@@ -16,7 +16,7 @@ namespace GameLibraryTest.Controller
 {
     public class PublisherControllerTest
     {
-        private readonly Mock<IPublisherRepository> publishserRepositoryMock = new();
+        private readonly Mock<IPublisherRepository> publisherRepositoryMock = new();
         private readonly Mock<IGameRepository> gameRepositoryMock = new();
         private readonly Mock<IMapper> mapperMock = new();
         readonly Random rand = new();
@@ -39,7 +39,7 @@ namespace GameLibraryTest.Controller
             var mapper = mockMapper.CreateMapper();
             var mappedExpected = mapper.Map<List<PublisherDto>>(expectedItems);
 
-            publishserRepositoryMock.Setup(r => r.GetPublishersAsync()).ReturnsAsync(expectedItems);
+            publisherRepositoryMock.Setup(r => r.GetPublishersAsync()).ReturnsAsync(expectedItems);
             mapperMock.Setup(r => r.Map<List<PublisherDto>>(expectedItems)).Returns(mappedExpected);
 
             var controller = PublisherControllerCreate();
@@ -55,7 +55,7 @@ namespace GameLibraryTest.Controller
         [Fact]
         public async Task PublisherController_GetPublisherById_ReturnNotFound()
         {
-            publishserRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>()))!.ReturnsAsync(false);
+            publisherRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>()))!.ReturnsAsync(false);
 
             var controller = PublisherControllerCreate();
 
@@ -76,8 +76,8 @@ namespace GameLibraryTest.Controller
             var mapper = mockMapper.CreateMapper();
             var mappedExpected = mapper.Map<PublisherDto>(expectedItem);
 
-            publishserRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>()))!.ReturnsAsync(true);
-            publishserRepositoryMock.Setup(r => r.GetPublisherByIdAsync(It.IsAny<int>()))!.ReturnsAsync(expectedItem);
+            publisherRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>()))!.ReturnsAsync(true);
+            publisherRepositoryMock.Setup(r => r.GetPublisherByIdAsync(It.IsAny<int>()))!.ReturnsAsync(expectedItem);
             mapperMock.Setup(r => r.Map<PublisherDto>(expectedItem)).Returns(mappedExpected);
 
             var controller = PublisherControllerCreate();
@@ -93,7 +93,7 @@ namespace GameLibraryTest.Controller
         [Fact]
         public async Task PublisherController_GetPublisherGames_ReturnNotFound()
         {
-            publishserRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>())).ReturnsAsync(false);
+            publisherRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>())).ReturnsAsync(false);
             var filter = new Mock<FilterParameters>();
             var pagination = new Mock<Pagination>();
 
@@ -126,7 +126,7 @@ namespace GameLibraryTest.Controller
 
             var expectedMapped = mapper.Map<List<GameSmallListDto>>(expectedItems);
 
-            publishserRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>())).ReturnsAsync(true);
+            publisherRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>())).ReturnsAsync(true);
             gameRepositoryMock.Setup(r => r.GetGamesByPublisherAsync(It.IsAny<int>(),
                 It.IsAny<FilterParameters>(), It.IsAny<Pagination>())).ReturnsAsync(expectedPagedList);
             mapperMock.Setup(r => r.Map<List<GameSmallListDto>>(expectedPagedList)).Returns(expectedMapped);
@@ -148,7 +148,7 @@ namespace GameLibraryTest.Controller
         public async Task PublisherController_CreatePublisher_ReturnBadRequest()
         {
             var expectedItem = help.CreateRandomPublisher();
-            publishserRepositoryMock.Setup(r => r.GetPublisherByNameAsync(It.IsAny<string>()))!.ReturnsAsync(expectedItem);
+            publisherRepositoryMock.Setup(r => r.GetPublisherByNameAsync(It.IsAny<string>()))!.ReturnsAsync(expectedItem);
 
             var controller = PublisherControllerCreate();
 
@@ -160,7 +160,7 @@ namespace GameLibraryTest.Controller
         [Fact]
         public async Task PublisherController_CreatePublisher_ReturnOk()
         {
-            publishserRepositoryMock.Setup(r => r.GetPublisherByNameAsync(It.IsAny<string>()))!.ReturnsAsync((Publisher)null!);
+            publisherRepositoryMock.Setup(r => r.GetPublisherByNameAsync(It.IsAny<string>()))!.ReturnsAsync((Publisher)null!);
 
             var controller = PublisherControllerCreate();
 
@@ -172,7 +172,7 @@ namespace GameLibraryTest.Controller
         [Fact]
         public async Task PublisherController_UpdatePublisherInfo_ReturnNotFound()
         {
-            publishserRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>())).ReturnsAsync(false);
+            publisherRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>())).ReturnsAsync(false);
 
             var controller = PublisherControllerCreate();
 
@@ -184,8 +184,8 @@ namespace GameLibraryTest.Controller
         [Fact]
         public async Task PublisherController_UpdatePublisherInfo_ReturnBadRequest()
         {
-            publishserRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>())).ReturnsAsync(true);
-            publishserRepositoryMock.Setup(r => r.PublisherNameAlreadyExistsAsync(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(true);
+            publisherRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>())).ReturnsAsync(true);
+            publisherRepositoryMock.Setup(r => r.PublisherNameAlreadyExistsAsync(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(true);
 
             var controller = PublisherControllerCreate();
 
@@ -198,9 +198,9 @@ namespace GameLibraryTest.Controller
         public async Task PublisherController_UpdatePublisherInfo_ReturnOk()
         {
             var expectedItem = help.CreateRandomPublisher();
-            publishserRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>())).ReturnsAsync(true);
-            publishserRepositoryMock.Setup(r => r.PublisherNameAlreadyExistsAsync(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(false);
-            publishserRepositoryMock.Setup(r => r.GetPublisherByIdAsync(It.IsAny<int>())).ReturnsAsync(expectedItem);
+            publisherRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>())).ReturnsAsync(true);
+            publisherRepositoryMock.Setup(r => r.PublisherNameAlreadyExistsAsync(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(false);
+            publisherRepositoryMock.Setup(r => r.GetPublisherByIdAsync(It.IsAny<int>())).ReturnsAsync(expectedItem);
 
             var controller = PublisherControllerCreate();
 
@@ -212,7 +212,7 @@ namespace GameLibraryTest.Controller
         [Fact]
         public async Task PublisherController_DeletePublisher_ReturnNotFound()
         {
-            publishserRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>())).ReturnsAsync(false);
+            publisherRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>())).ReturnsAsync(false);
 
             var controller = PublisherControllerCreate();
 
@@ -226,8 +226,8 @@ namespace GameLibraryTest.Controller
         {
             var expectedItem = help.CreateRandomPublisher();
 
-            publishserRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>())).ReturnsAsync(true);
-            publishserRepositoryMock.Setup(r => r.GetPublisherByIdAsync(It.IsAny<int>())).ReturnsAsync(expectedItem);
+            publisherRepositoryMock.Setup(r => r.PublisherExistsAsync(It.IsAny<int>())).ReturnsAsync(true);
+            publisherRepositoryMock.Setup(r => r.GetPublisherByIdAsync(It.IsAny<int>())).ReturnsAsync(expectedItem);
 
             var controller = PublisherControllerCreate();
 
@@ -238,7 +238,7 @@ namespace GameLibraryTest.Controller
 
         private PublisherController PublisherControllerCreate()
         {
-            return new PublisherController(publishserRepositoryMock.Object,
+            return new PublisherController(publisherRepositoryMock.Object,
                 gameRepositoryMock.Object, mapperMock.Object);
         }
 

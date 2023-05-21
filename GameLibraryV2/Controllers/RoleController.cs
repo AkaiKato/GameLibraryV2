@@ -28,8 +28,6 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("roleAll")]
-        [ProducesResponseType(200, Type = typeof(IList<RoleDto>))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetRoles()
         {
             if (!ModelState.IsValid)
@@ -46,9 +44,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="roleId"></param>
         /// <returns></returns>
         [HttpGet("{roleId}")]
-        [ProducesResponseType(200, Type = typeof(RoleDto))]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> GetPublisherById(int roleId)
+        public async Task<IActionResult> GetRoleById(int roleId)
         {
             if (!await roleRepository.RoleExistsAsync(roleId))
                 return NotFound($"Not found role with such id {roleId}");
@@ -68,8 +64,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="roleId"></param>
         /// <returns></returns>
         [HttpGet("{roleId}/users")]
-        [ProducesResponseType(200, Type = typeof(IList<UserDto>))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetRoleUsers(int roleId)
         {
             if (!await roleRepository.RoleExistsAsync(roleId))
@@ -89,10 +83,11 @@ namespace GameLibraryV2.Controllers
         /// <param name="addRole"></param>
         /// <returns></returns>
         [HttpPut("addRole")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> AddRole([FromBody] RoleUpdate addRole)
         {
+            if(addRole == null)
+                return BadRequest(ModelState);
+
             if (!await userRepository.UserExistsByIdAsync(addRole.UserId))
                 return NotFound($"Not found user with such id {addRole.UserId}");
 
@@ -151,6 +146,9 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> DeleteRole([FromBody] RoleUpdate deleteRole)
         {
+            if (deleteRole == null)
+                return BadRequest(ModelState);
+
             if (!await userRepository.UserExistsByIdAsync(deleteRole.UserId))
                 return NotFound($"Not found user with such id {deleteRole.UserId}");
 
