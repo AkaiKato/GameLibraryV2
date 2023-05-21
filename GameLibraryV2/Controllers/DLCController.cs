@@ -3,7 +3,6 @@ using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
-using GameLibraryV2.Models;
 using GameLibraryV2.Models.Common;
 using Microsoft.AspNetCore.Mvc;
 
@@ -111,8 +110,8 @@ namespace GameLibraryV2.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if(! await dlcRepository.DLCExistsByConnIdAsync(dlcConnectionId))
-                return NotFound();
+            if(!await dlcRepository.DLCExistsByConnIdAsync(dlcConnectionId))
+                return NotFound("Not found such connection");
 
             var dlc = await dlcRepository.GetDLCConnByIdAsync(dlcConnectionId);
 

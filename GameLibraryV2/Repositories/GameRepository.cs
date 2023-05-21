@@ -415,24 +415,50 @@ namespace GameLibraryV2.Repositories
                 .OrderByDescending(x => x.Rating.TotalRating).FirstAsync();
         }
 
-        public async Task<Game> GetMostRatedGameByYear(int year)
+        public async Task<List<Game>> GetMostRatedGameByYear()
         {
-            return await dataContext.Games.Include(a => a.AgeRating).Include(d => d.Developers)
+            var idsOfNeededGames = dataContext.Games
+                .Where(x => x.Type.ToLower() == "game")
+                .Select(x => new Game 
+                { 
+                    Id = x.Id, 
+                    ReleaseDate = x.ReleaseDate, 
+                    Rating = x.Rating
+                })
+                .GroupBy(x => x.ReleaseDate.Year, (k, g) => g.OrderByDescending(e => e.Rating.TotalRating)
+                .Select(x => x.Id)
+                .First());
+
+            var games = dataContext.Games.Include(a => a.AgeRating).Include(d => d.Developers)
                 .Include(p => p.Publishers).Include(p => p.Platforms)
                 .Include(g => g.Genres).Include(t => t.Tags)
                 .Include(p => p.ParentGame).Include(s => s.SystemRequirements)
-                .Include(r => r.Rating).Where(x => x.Type.ToLower() == "game" && x.ReleaseDate.Year == year)
-                .OrderByDescending(x => x.Rating.TotalRating).FirstOrDefaultAsync();
+                .Include(r => r.Rating).Where(x => idsOfNeededGames.Contains(x.Id));
+
+            return await games.ToListAsync();
         }
 
-        public async Task<Game> GetMostRatedDLCByYear(int year)
+        public async Task<List<Game>> GetMostRatedDLCByYear()
         {
-            return await dataContext.Games.Include(a => a.AgeRating).Include(d => d.Developers)
+            var idsOfNeededGames = dataContext.Games
+                .Where(x => x.Type.ToLower() == "dlc")
+                .Select(x => new Game
+                {
+                    Id = x.Id,
+                    ReleaseDate = x.ReleaseDate,
+                    Rating = x.Rating
+                })
+                .GroupBy(x => x.ReleaseDate.Year, (k, g) => g.OrderByDescending(e => e.Rating.TotalRating)
+                .Select(x => x.Id)
+                .First());
+
+            var games = dataContext.Games.Include(a => a.AgeRating).Include(d => d.Developers)
                 .Include(p => p.Publishers).Include(p => p.Platforms)
                 .Include(g => g.Genres).Include(t => t.Tags)
                 .Include(p => p.ParentGame).Include(s => s.SystemRequirements)
-                .Include(r => r.Rating).Where(x => x.Type.ToLower() == "dlc" && x.ReleaseDate.Year == year)
-                .OrderByDescending(x => x.Rating.TotalRating).FirstOrDefaultAsync();
+                .Include(r => r.Rating).Where(x => idsOfNeededGames.Contains(x.Id));
+
+            return await games.ToListAsync();
         }
 
         public async Task<DateTime> GetMinReleaseDate()

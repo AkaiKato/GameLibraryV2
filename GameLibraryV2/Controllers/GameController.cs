@@ -70,7 +70,6 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("games")]
-        [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
         public async Task<IActionResult> GetGames([FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
             if(!filterParameters.ValidYearRange)
@@ -119,8 +118,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="gameId"></param>
         /// <returns></returns>
         [HttpGet("{gameId}")]
-        [ProducesResponseType(200, Type = typeof(GameDto))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetGameById(int gameId)
         {
             if (!await gameRepository.GameExistsAsync(gameId))
@@ -142,8 +139,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="gameId"></param>
         /// <returns></returns>
         [HttpGet("{gameId}/review")]
-        [ProducesResponseType(200, Type = typeof(IList<ReviewDto>))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetGameReview(int gameId)
         {
             if (!await gameRepository.GameExistsAsync(gameId))
@@ -163,8 +158,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="gameCreate"></param>
         /// <returns></returns>
         [HttpPost("createGame")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> CreateGame([FromBody] GameCreateDto gameCreate)
         {
             if (gameCreate == null)
@@ -232,6 +225,7 @@ namespace GameLibraryV2.Controllers
 
             var gameMap = mapper.Map<Game>(gameCreate);
 
+            
             gameMap.AgeRating = await ageRatingRepository.GetAgeRatingByIdAsync(gameCreate.AgeRating);
             gameMap.PicturePath = $"\\Images\\gamePicture\\Def.jpg";
             gameMap.Reviews = new List<Review>();
@@ -255,8 +249,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="gameUpdate"></param>
         /// <returns></returns>
         [HttpPut("updateGame")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UpdateGameInfo([FromBody] GameUpdate gameUpdate)
         {
             if (gameUpdate == null)
@@ -271,8 +263,8 @@ namespace GameLibraryV2.Controllers
             if (!Enum.GetNames(typeof(Enums.Status)).Contains(gameUpdate.Status.Trim().ToLower()))
                 return BadRequest("Unsupported status");
 
-            if (!await ageRatingRepository.AgeRatingExistsAsync(gameUpdate.AgeRating.Id))
-                return BadRequest($"Not found AgeRating with such id {gameUpdate.AgeRating.Id}");
+            if (!await ageRatingRepository.AgeRatingExistsAsync(gameUpdate.AgeRating))
+                return NotFound($"Not found AgeRating with such id {gameUpdate.AgeRating}");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -280,45 +272,45 @@ namespace GameLibraryV2.Controllers
             var devS = new List<Developer>();
             foreach (var item in gameUpdate.Developers)
             {
-                var dev = await developerRepository.GetDeveloperByIdAsync(item.Id);
+                var dev = await developerRepository.GetDeveloperByIdAsync(item);
                 if (dev == null)
-                    return BadRequest($"Not found developer with such id {item.Id}");
+                    return NotFound($"Not found developer with such id {item}");
                 devS.Add(dev);
             }
 
             var pubS = new List<Publisher>();
             foreach (var item in gameUpdate.Publishers)
             {
-                var pub = await publisherRepository.GetPublisherByIdAsync(item.Id);
+                var pub = await publisherRepository.GetPublisherByIdAsync(item);
                 if (pub == null)
-                    return BadRequest($"Not found publisher with such id {item.Id}");
+                    return NotFound($"Not found publisher with such id {item}");
                 pubS.Add(pub);
             }
 
             var platS = new List<Platform>();
             foreach (var item in gameUpdate.Platforms)
             {
-                var plat = await platformRepository.GetPlatformByIdAsync(item.Id);
+                var plat = await platformRepository.GetPlatformByIdAsync(item);
                 if (plat == null)
-                    return BadRequest($"Not found platform with such id {item.Id}");
+                    return NotFound($"Not found platform with such id {item}");
                 platS.Add(plat);
             }
 
             var genrS = new List<Genre>();
             foreach (var item in gameUpdate.Genres)
             {
-                var genr = await genreRepository.GetGenreByIdAsync(item.Id);
+                var genr = await genreRepository.GetGenreByIdAsync(item);
                 if (genr == null)
-                    return BadRequest($"Not found genre with such id {item.Id}");
+                    return NotFound($"Not found genre with such id {item}");
                 genrS.Add(genr);
             }
 
             var tagS = new List<Tag>();
             foreach (var item in gameUpdate.Tags)
             {
-                var tag = await tagRepository.GetTagByIdAsync(item.Id);
+                var tag = await tagRepository.GetTagByIdAsync(item);
                 if (tag == null)
-                    return BadRequest($"Not found tag with such id {item.Id}");
+                    return NotFound($"Not found tag with such id {item}");
                 tagS.Add(tag);
             }
 
@@ -331,7 +323,7 @@ namespace GameLibraryV2.Controllers
             game.NSFW = gameUpdate.NSFW;
             game.AveragePlayTime = gameUpdate.AveragePlayTime;
 
-            game.AgeRating = await ageRatingRepository.GetAgeRatingByIdAsync(gameUpdate.AgeRating.Id);
+            game.AgeRating = await ageRatingRepository.GetAgeRatingByIdAsync(gameUpdate.AgeRating);
 
             game.Developers = devS;
             game.Publishers = pubS;
@@ -351,8 +343,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="gameDelete"></param>
         /// <returns></returns>
         [HttpDelete("deleteGame")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> DeleteGame([FromQuery] int gameDelete)
         {
             if(!await gameRepository.GameExistsAsync(gameDelete))
@@ -395,9 +385,12 @@ namespace GameLibraryV2.Controllers
             return Ok("Successfully Deleted");
         }
 
+        /// <summary>
+        /// Returns favourite games of specified user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet("{userId}/favouriteGames")]
-        [ProducesResponseType(200, Type = typeof(GameDto))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetUserFavouriteGames(int userId)
         {
             if (!await userRepository.UserExistsByIdAsync(userId))

@@ -49,9 +49,9 @@ namespace GameLibraryV2.Interfaces
 
         public Task<Game> GetMostRatedDLC();
 
-        public Task<Game> GetMostRatedGameByYear(int year);
+        public Task<List<Game>> GetMostRatedGameByYear();
 
-        public Task<Game> GetMostRatedDLCByYear(int year);
+        public Task<List<Game>> GetMostRatedDLCByYear();
 
         public Task<DateTime> GetMinReleaseDate();
 

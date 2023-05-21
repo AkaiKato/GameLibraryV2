@@ -79,7 +79,7 @@ namespace GameLibraryV2.Controllers
 
             var user = await userRepository.GetUserByNicknameAsync(userLogin.Nickname);
 
-            if(!BCrypt.Net.BCrypt.Verify(userLogin.Password, user.Password))
+            if(!ValidatePassword(userLogin.Password, user.Password))
                 return BadRequest("Wrong Password");
 
             if (!ModelState.IsValid)
@@ -97,14 +97,14 @@ namespace GameLibraryV2.Controllers
         }
 
         [HttpPost("/refreshToken")]
-        public async Task<IActionResult> RefreshToken(JustIdDto userId)
+        public async Task<IActionResult> RefreshToken([FromQuery] int userId)
         {
             var refreshToken = Request.Cookies["refreshToken"];
 
-            if(!await userRepository.UserExistsByIdAsync(userId.Id))
-                return NotFound($"Not found user with such id {userId.Id}");
+            if(!await userRepository.UserExistsByIdAsync(userId))
+                return NotFound($"Not found user with such id {userId}");
 
-            var user = await userRepository.GetUserByIdAsync(userId.Id);
+            var user = await userRepository.GetUserByIdAsync(userId);
 
             if (!user.RefreshToken.Equals(refreshToken))
                 return Unauthorized("Invalid Refresh Token");
@@ -170,6 +170,11 @@ namespace GameLibraryV2.Controllers
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
             return jwt;
+        }
+
+        private bool ValidatePassword(string loginPassword, string userPassword)
+        {
+            return BCrypt.Net.BCrypt.Verify(loginPassword, userPassword);
         }
     }
 }

@@ -7,6 +7,8 @@ using GameLibraryV2.Models;
 using GameLibraryV2.Dto.Update;
 using System.Text.Json;
 using GameLibraryV2.Models.Common;
+using Microsoft.AspNetCore.Authorization;
+using static GameLibraryV2.Helper.Enums;
 
 namespace GameLibraryV2.Controllers
 {
@@ -32,6 +34,7 @@ namespace GameLibraryV2.Controllers
         /// Return all AgeRatings
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpGet("ageRatingAll")]
         public async Task<IActionResult> GetAgeRatings()
         {
@@ -69,11 +72,12 @@ namespace GameLibraryV2.Controllers
         /// <param name="filterParameters"></param>
         /// <param name="pagination"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("{ageRatingId}/games")]
         public async Task<IActionResult> GetAgeRatingGames(int ageRatingId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
             if(!await ageRatingRepository.AgeRatingExistsAsync(ageRatingId))
-                return NotFound($"Not found game with such id {ageRatingId}");
+                return NotFound($"Not found AgeRating with such id {ageRatingId}");
 
             if (!filterParameters.ValidYearRange)
                 return BadRequest("Max release year cannot be less than min year");
@@ -117,6 +121,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="ageRatingCreate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpPost("createAgeRating")]
         public async Task<IActionResult> CreateAgeRating([FromBody] AgeRatingCreateDto ageRatingCreate) 
         {
@@ -144,6 +149,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="ageRatingUpdate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpPut("updateAgeRating")]
         public async Task<IActionResult> UpdateAgeRating([FromBody] CommonUpdate ageRatingUpdate)
         {
@@ -172,6 +178,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="ageRatingDelete"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpDelete("deleteAgeRating")]
         public async Task<IActionResult> DeleteAgeRating([FromQuery] int ageRatingDelete)
         {

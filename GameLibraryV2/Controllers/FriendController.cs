@@ -2,7 +2,6 @@
 using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
-using GameLibraryV2.Models;
 using GameLibraryV2.Models.Common;
 using Microsoft.AspNetCore.Mvc;
 
@@ -91,7 +90,7 @@ namespace GameLibraryV2.Controllers
                 return BadRequest(ModelState);
 
             if (!await friendRepository.FriendExists(friendConnectionId))
-                return NotFound();
+                return NotFound("Not found such friend Connection");
 
             var friend = await friendRepository.GetFriendAsync(friendConnectionId);
 

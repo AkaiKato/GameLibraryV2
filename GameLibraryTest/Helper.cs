@@ -1,4 +1,5 @@
-﻿using GameLibraryV2.Dto.Update;
+﻿using GameLibraryV2.Dto.create;
+using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Helper;
 using GameLibraryV2.Models.Common;
 
@@ -7,6 +8,35 @@ namespace GameLibraryTest
     public class Helper
     {
         readonly Random rand = new();
+        
+        public User CreateRandomUser()
+        {
+            return new User
+            {
+                Id = rand.Next(100),
+                Email = RandomString(50),
+                Nickname = RandomString(50),
+                Password = RandomString(50),
+                Age = rand.Next(15, 100),
+                Gender = rand.Next(0, 1) == 0 ? "male" : "female",
+                PicturePath = RandomString(50),
+                RegistrationdDate = DateTime.Now,
+                UserRoles = new List<Role> { CreateRandomRole() },
+                RefreshToken = RandomString(50),
+                TokenCreated = DateTime.Now,
+                TokenExpires = DateTime.Now,
+            };
+        }
+
+        public Role CreateRandomRole()
+        {
+            return new Role
+            {
+                Id = rand.Next(100),
+                RoleName = RandomString(50),
+            };
+        }
+
         public Game CreateRandomGame()
         {
             return new Game
@@ -14,18 +44,51 @@ namespace GameLibraryTest
                 Id = rand.Next(100),
                 Name = RandomString(50),
                 PicturePath = RandomString(100),
-                Status = RandomString(50),
+                Status = rand.Next(0, 1) == 0 ? "released" : "announsed",
                 ReleaseDate = DateTime.UtcNow,
                 Description = RandomString(50),
                 AgeRating = CreateRandomAgeRating(),
                 NSFW = false,
-                Type = RandomString(50),
+                Type = rand.Next(0, 1) == 0 ? "game" : "dlc",
                 Rating = CreateRandomRating(),
                 Developers = new List<Developer>() { CreateRandomDeveloper() },
                 Publishers = new List<Publisher>() { CreateRandomPublisher() },
                 Platforms = new List<Platform> { CreateRandomPlatform() },
                 Genres = new List<Genre> { CreateRandomGenre() },
                 Tags = new List<Tag> { CreateRandomTag() },
+            };
+        }
+
+        public SystemRequirements CreateSystemRequirements()
+        {
+            return new SystemRequirements
+            {
+                Id = rand.Next(100),
+                Type = rand.Next(0, 1) == 0 ? "min" : "max",
+                OC = RandomString(50),
+                Processor = RandomString(50),
+                RAM = RandomString(50),
+                VideoCard = RandomString(50),
+                DirectX = RandomString(50),
+                Ethernet = RandomString(50),
+                HardDriveSpace = RandomString(50),
+                Additional = RandomString(50),
+            };
+        }
+
+        public SystemRequirementsCreateDto CreateSystemRequirementsCreateDto()
+        {
+            return new SystemRequirementsCreateDto
+            {
+                Type = rand.Next(0, 1) == 0 ? "min" : "max",
+                OC = RandomString(50),
+                Processor = RandomString(50),
+                RAM = RandomString(50),
+                VideoCard = RandomString(50),
+                DirectX = RandomString(50),
+                Ethernet = RandomString(50),
+                HardDriveSpace = RandomString(50),
+                Additional = RandomString(50),
             };
         }
 
@@ -94,6 +157,40 @@ namespace GameLibraryTest
                 NumberOfEight = rand.Next(100),
                 NumberOfNine = rand.Next(100),
                 NumberOfTen = rand.Next(100),
+            };
+        }
+
+        public Review CreateRandomReview()
+        {
+            return new()
+            {
+                Id = rand.Next(100),
+                Game = CreateRandomGame(),
+                User = CreateRandomUser(),
+                Rating = rand.Next(1, 10),
+                Text = RandomString(50),
+                PublishDate = DateTime.Now,
+                ReviewRating = rand.Next(),
+            };
+        }
+
+        public Friend CreateRandomFriend()
+        {
+            return new()
+            {
+                Id = rand.Next(100),
+                User = CreateRandomUser(),
+                Friendu = CreateRandomUser(),
+            };
+        }
+
+        public DLC CreateRandomDlc()
+        {
+            return new()
+            {
+                Id = rand.Next(100),
+                ParentGame = CreateRandomGame(),
+                DLCGame = CreateRandomGame(),
             };
         }
 

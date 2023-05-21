@@ -53,7 +53,7 @@ namespace GameLibraryV2.Controllers
         public async Task<IActionResult> GetDeveloperById(int developerId) 
         {
             if(!await developerRepository.DeveloperExistsAsync(developerId))
-                return NotFound();
+                return NotFound("Not found AgeRating with such id");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -76,7 +76,7 @@ namespace GameLibraryV2.Controllers
         public async Task<IActionResult> GetDeveloperGames(int developerId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
             if (!await developerRepository.DeveloperExistsAsync(developerId))
-                return NotFound();
+                return NotFound("Not found Developer with such id {ageRatingId}");
 
             if (!filterParameters.ValidYearRange)
                 return BadRequest("Max release year cannot be less than min year");
@@ -185,7 +185,7 @@ namespace GameLibraryV2.Controllers
         [HttpDelete("deleteDeveloper")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> DeleteUser([FromQuery] int developerDelete)
+        public async Task<IActionResult> DeleteDeveloper([FromQuery] int developerDelete)
         {
             if (!await developerRepository.DeveloperExistsAsync(developerDelete))
                 return NotFound($"Not found developer with such id {developerDelete}");

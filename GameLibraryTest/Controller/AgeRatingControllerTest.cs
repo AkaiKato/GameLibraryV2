@@ -5,13 +5,10 @@ using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using GameLibraryV2.Models.Common;
 using Microsoft.AspNetCore.Mvc;
-using GameLibraryTest;
 using Moq;
 using GameLibraryV2.Helper;
 using Microsoft.AspNetCore.Http;
-using System.Collections.Specialized;
 using GameLibraryV2.Dto.smallInfo;
-using System.Collections.Generic;
 using GameLibraryV2.Dto.Create;
 
 namespace GameLibraryTest.Controller
@@ -25,7 +22,7 @@ namespace GameLibraryTest.Controller
         readonly Helper help = new();
 
         [Fact]
-        public async Task AgeController_GetAgeRating_ReturnAll()
+        public async Task AgeRatingController_GetAgeRating_ReturnOk()
         {
             int numberItemsExpected = 10;
             var expectedItems = new List<AgeRating>();
@@ -47,7 +44,7 @@ namespace GameLibraryTest.Controller
         }
 
         [Fact]
-        public async Task AgeController_GetAgeRatingById_ReturnNotFound()
+        public async Task AgeRatingController_GetAgeRatingById_ReturnNotFound()
         {
             ageRatingRepositoryStub.Setup(r => r.AgeRatingExistsAsync(It.IsAny<int>()))!.ReturnsAsync(false);
 
@@ -59,7 +56,7 @@ namespace GameLibraryTest.Controller
         }
 
         [Fact]
-        public async Task AgeController_GetAgeRatingById_ReturnExpectedItem()
+        public async Task AgeRatingController_GetAgeRatingById_ReturnExpectedItem()
         {
             var ageRating = help.CreateRandomAgeRating();
 
@@ -78,7 +75,7 @@ namespace GameLibraryTest.Controller
 
 
         [Fact]
-        public async Task AgeController_GetAgeRatingGames_ReturnNotFound()
+        public async Task AgeRatingController_GetAgeRatingGames_ReturnNotFound()
         {
             ageRatingRepositoryStub.Setup(r => r.AgeRatingExistsAsync(It.IsAny<int>())).ReturnsAsync(false);
             var filter = new Mock<FilterParameters>();
@@ -92,7 +89,7 @@ namespace GameLibraryTest.Controller
         }
 
         [Fact]
-        public async Task AgeController_GetAgeRatingGames_ReturnGameList()
+        public async Task AgeRatingController_GetAgeRatingGames_ReturnGameList()
         {
             int numberItemsExpected = 10;
             var expectedItems = new List<Game>();
@@ -132,7 +129,7 @@ namespace GameLibraryTest.Controller
         }
 
         [Fact]
-        public async Task AgeController_CreateAgeRating_ReturnBadRequest()
+        public async Task AgeRatingController_CreateAgeRating_ReturnBadRequest()
         {
             var expectedItem = help.CreateRandomAgeRating();
             ageRatingRepositoryStub.Setup(r => r.GetAgeRatingByNameAsync(It.IsAny<string>()))!.ReturnsAsync(expectedItem);
@@ -145,9 +142,9 @@ namespace GameLibraryTest.Controller
         }
 
         [Fact]
-        public async Task AgeController_CreateAgeRating_ReturnOk()
+        public async Task AgeRatingController_CreateAgeRating_ReturnOk()
         {
-            ageRatingRepositoryStub.Setup(r => r.GetAgeRatingByNameAsync(It.IsAny<string>())).ReturnsAsync((AgeRating)null);
+            ageRatingRepositoryStub.Setup(r => r.GetAgeRatingByNameAsync(It.IsAny<string>()))!.ReturnsAsync((AgeRating)null);
 
             var controller = AgeRatingControllerCreate();
 
@@ -157,7 +154,7 @@ namespace GameLibraryTest.Controller
         }
 
         [Fact]
-        public async Task AgeController_UpdateAgeRating_ReturnNotFound()
+        public async Task AgeRatingController_UpdateAgeRating_ReturnNotFound()
         {
             ageRatingRepositoryStub.Setup(r => r.AgeRatingExistsAsync(It.IsAny<int>())).ReturnsAsync(false);
 
@@ -169,7 +166,7 @@ namespace GameLibraryTest.Controller
         }
 
         [Fact]
-        public async Task AgeController_UpdateAgeRating_ReturnBadRequest()
+        public async Task AgeRatingController_UpdateAgeRating_ReturnBadRequest()
         {
             ageRatingRepositoryStub.Setup(r => r.AgeRatingExistsAsync(It.IsAny<int>())).ReturnsAsync(true);
             ageRatingRepositoryStub.Setup(r => r.AgeRatingAlreadyExistsAsync(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(true);
@@ -182,7 +179,7 @@ namespace GameLibraryTest.Controller
         }
 
         [Fact]
-        public async Task AgeController_UpdateAgeRating_ReturnOk()
+        public async Task AgeRatingController_UpdateAgeRating_ReturnOk()
         {
             var expectedItem = help.CreateRandomAgeRating();
             ageRatingRepositoryStub.Setup(r => r.AgeRatingExistsAsync(It.IsAny<int>())).ReturnsAsync(true);
@@ -197,7 +194,7 @@ namespace GameLibraryTest.Controller
         }
 
         [Fact]
-        public async Task AgeController_DeleteAgeRating_ReturnNotFound()
+        public async Task AgeRatingController_DeleteAgeRating_ReturnNotFound()
         {
             ageRatingRepositoryStub.Setup(r => r.AgeRatingExistsAsync(It.IsAny<int>())).ReturnsAsync(false);
 
@@ -209,7 +206,7 @@ namespace GameLibraryTest.Controller
         }
 
         [Fact]
-        public async Task AgeController_DeleteAgeRating_ReturnOk()
+        public async Task AgeRatingController_DeleteAgeRating_ReturnOk()
         {
             var expectedItem = help.CreateRandomAgeRating();
 

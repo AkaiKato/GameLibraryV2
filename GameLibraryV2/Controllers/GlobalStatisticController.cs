@@ -7,12 +7,11 @@ namespace GameLibraryV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GlobalStatisticController : ControllerBase
+    public class GlobalStatisticController : Controller
     {
         private readonly IGameRepository gameRepository;
         private readonly IMapper mapper;
-        public GlobalStatisticController(IGameRepository _gameRepository,
-            IMapper _mapper)
+        public GlobalStatisticController(IGameRepository _gameRepository, IMapper _mapper)
         {
             gameRepository = _gameRepository;
             mapper = _mapper;
@@ -44,7 +43,7 @@ namespace GameLibraryV2.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok( mapper.Map<GameDto>(await gameRepository.GetMostRatedGame()));
+            return Ok(mapper.Map<GameDto>(await gameRepository.GetMostRatedGame()));
         }
 
         [HttpGet("mostRatedDLC")]
@@ -62,17 +61,7 @@ namespace GameLibraryV2.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            List<GameDto> games = new List<GameDto>();
-
-            DateTime minDate = await gameRepository.GetMinReleaseDate();
-            DateTime maxDate = await gameRepository.GetMaxReleaseDate();
-
-            for (int i = minDate.Year; i < maxDate.Year + 1; i++)
-            {
-                var g = await gameRepository.GetMostRatedGameByYear(i);
-                if (g != null)
-                    games.Add(mapper.Map<GameDto>(g));
-            }
+            var games = mapper.Map<List<GameDto>>(await gameRepository.GetMostRatedGameByYear());
 
             return Ok(games);
         }
@@ -83,17 +72,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            List<GameDto> games = new List<GameDto>();
-
-            DateTime minDate = await gameRepository.GetMinReleaseDate();
-            DateTime maxDate = await gameRepository.GetMaxReleaseDate();
-
-            for (int i = minDate.Year; i < maxDate.Year + 1; i++)
-            {
-                var g = await gameRepository.GetMostRatedDLCByYear(i);
-                if (g != null)
-                    games.Add(mapper.Map<GameDto>(g));
-            }
+            var games = mapper.Map<List<GameDto>>(await gameRepository.GetMostRatedDLCByYear());
 
             return Ok(games);
         }

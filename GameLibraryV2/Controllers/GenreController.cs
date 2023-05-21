@@ -31,7 +31,6 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("genreAll")]
-        [ProducesResponseType(200, Type = typeof(IList<GenreDto>))]
         public async Task<IActionResult> GetGenres()
         {
             if (!ModelState.IsValid)
@@ -48,8 +47,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="genreId"></param>
         /// <returns></returns>
         [HttpGet("{genreId}")]
-        [ProducesResponseType(200, Type = typeof(GenreDto))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetGenreById(int genreId) 
         {
             if(!await genreRepository.GenreExistsAsync(genreId))
@@ -71,8 +68,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("{genreId}/games")]
-        [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetGenreGames(int genreId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
             if (!await genreRepository.GenreExistsAsync(genreId))
@@ -121,8 +116,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="genreCreate"></param>
         /// <returns></returns>
         [HttpPost("createGenre")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> CreateGenre([FromBody] GenreCreateDto genreCreate)
         {
             if (genreCreate == null)
@@ -150,8 +143,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="genreUpdate"></param>
         /// <returns></returns>
         [HttpPut("updateGenre")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UpdateGenreInfo([FromBody] CommonUpdate genreUpdate)
         {
             if (genreUpdate == null)
@@ -183,8 +174,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="genreDelete"></param>
         /// <returns></returns>
         [HttpDelete("deleteGenre")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> DeleteGenre([FromQuery] int genreDelete)
         {
             if (!await genreRepository.GenreExistsAsync(genreDelete))
