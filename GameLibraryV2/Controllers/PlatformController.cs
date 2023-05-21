@@ -6,7 +6,6 @@ using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using GameLibraryV2.Models.Common;
-using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Text.Json;
@@ -37,8 +36,6 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("platfrormAll")]
-        [ProducesResponseType(200, Type = typeof(IList<PlatformDto>))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetPlatforms()
         {
             if (!ModelState.IsValid)
@@ -55,9 +52,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="platformId"></param>
         /// <returns></returns>
         [HttpGet("{platformId}")]
-        [ProducesResponseType(200, Type = typeof(PlatformDto))]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> GetPersonGamesByList(int platformId)
+        public async Task<IActionResult> GetPlatformById(int platformId)
         {
             if (!await platformRepository.PlatformExistAsync(platformId))
                 return NotFound($"Not found platform with such id {platformId}");
@@ -78,9 +73,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("{platformId}/games")]
-        [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> GetPlatformGameOrderByRating(int platformId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
+        public async Task<IActionResult> GetPlatformGame(int platformId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
             if (!await platformRepository.PlatformExistAsync(platformId))
                 return NotFound($"Not found platform with such id {platformId}");
@@ -128,8 +121,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="platformCreate"></param>
         /// <returns></returns>
         [HttpPost("createPlatform")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> CreatePLatform([FromBody] PlatformCreateDto platformCreate)
         {
             if (platformCreate == null)
@@ -157,8 +148,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="platformUpdate"></param>
         /// <returns></returns>
         [HttpPut("updatePlatform")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UpdatePlatformInfo([FromBody] CommonUpdate platformUpdate)
         {
             if (platformUpdate == null)
@@ -190,8 +179,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="platfromDelete"></param>
         /// <returns></returns>
         [HttpDelete("deletePlatform")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> DeletePlatform([FromQuery] int platfromDelete)
         {
             if (!await platformRepository.PlatformExistAsync(platfromDelete))
@@ -203,7 +190,9 @@ namespace GameLibraryV2.Controllers
             var platform = await platformRepository.GetPlatformByIdAsync(platfromDelete);
 
             var pg = await personGameRepository.GetAllPersonGamesAsync();
-            var personGames = pg.Where(pg => pg.PlayedPlatform!.Id == platform.Id).ToList();
+            
+            var personGames = pg.Where(pg => pg.PlayedPlatform != null 
+            && pg.PlayedPlatform.Id == platform.Id).ToList();
 
             foreach (var item in personGames)
             {
