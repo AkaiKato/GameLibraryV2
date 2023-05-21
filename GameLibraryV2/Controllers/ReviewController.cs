@@ -104,7 +104,7 @@ namespace GameLibraryV2.Controllers
         [HttpPut("updateReviewRating")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> UpdateRaviewRatingGameReview([FromBody] ReviewRatingUpdate reviewRatingUpdate)
+        public async Task<IActionResult> UpdateRaviewRating([FromBody] ReviewRatingUpdate reviewRatingUpdate)
         {
             if (reviewRatingUpdate == null)
                 return BadRequest(ModelState);
@@ -135,7 +135,6 @@ namespace GameLibraryV2.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> DeleteGameReview([FromQuery] int reviewDelete)
         {
-
             if (!await reviewRepository.ReviewExistsAsync(reviewDelete))
                 return NotFound($"Not found review with such id {reviewDelete}");
 
