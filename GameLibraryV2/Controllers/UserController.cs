@@ -40,11 +40,8 @@ namespace GameLibraryV2.Controllers
         /// <returns></returns>
         [HttpGet("userAll")]
         [Authorize(Roles = "admin")]
-        [ProducesResponseType(200, Type = typeof(IList<UserDto>))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetUsers()
         {
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -59,12 +56,10 @@ namespace GameLibraryV2.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet("{userId}")]
-        [ProducesResponseType(200, Type = typeof(UserDto))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetUserById(int userId)
         {
             if (!await userRepository.UserExistsByIdAsync(userId))
-                return NotFound();
+                return NotFound("Not found user with such id");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -103,8 +98,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet("{userId}/role")]
-        [ProducesResponseType(200, Type = typeof(IList<RoleDto>))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetUserRole(int userId)
         {
             if (!await userRepository.UserExistsByIdAsync(userId))
@@ -124,8 +117,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="userUpdate"></param>
         /// <returns></returns>
         [HttpPut("updateUser")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UpdateUserInfo([FromBody] UserUpdate userUpdate)
         {
             if (userUpdate == null)
@@ -166,8 +157,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="userDelete"></param>
         /// <returns></returns>
         [HttpDelete("deleteUser")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> DeleteUser([FromQuery] int userDelete) 
         {
             if (!await userRepository.UserExistsByIdAsync(userDelete))
