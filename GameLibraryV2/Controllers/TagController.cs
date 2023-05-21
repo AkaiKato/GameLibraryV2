@@ -6,10 +6,8 @@ using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using GameLibraryV2.Models.Common;
-using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
-using static GameLibraryV2.Helper.Enums;
 
 namespace GameLibraryV2.Controllers
 {
@@ -33,7 +31,6 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("tagAll")]
-        [ProducesResponseType(200, Type = typeof(IList<TagDto>))]
         public async Task<IActionResult> GetTags()
         {
             var Tags = mapper.Map<List<TagDto>>(await tagRepository.GetTagsAsync());
@@ -50,8 +47,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="tagId"></param>
         /// <returns></returns>
         [HttpGet("{tagId}")]
-        [ProducesResponseType(200, Type = typeof(TagDto))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetTagById(int tagId)
         {
             if (!await tagRepository.TagExistsAsync(tagId))
@@ -73,8 +68,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("{tagId}/games")]
-        [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetTagGames(int tagId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
             if (!await tagRepository.TagExistsAsync(tagId))
@@ -123,8 +116,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="tagCreate"></param>
         /// <returns></returns>
         [HttpPost("createTag")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> CreateTag([FromBody] TagCreateDto tagCreate)
         {
             if (tagCreate == null)
@@ -152,8 +143,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="tagUpdate"></param>
         /// <returns></returns>
         [HttpPut("updateTag")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UpdateTagInfo([FromBody] CommonUpdate tagUpdate)
         {
             if (tagUpdate == null)
@@ -185,8 +174,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="tagDelete"></param>
         /// <returns></returns>
         [HttpDelete("deleteTag")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> DeleteTag([FromQuery] int tagDelete)
         {
             if (!await tagRepository.TagExistsAsync(tagDelete))

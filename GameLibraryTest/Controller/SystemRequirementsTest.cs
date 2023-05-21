@@ -9,7 +9,6 @@ namespace GameLibraryTest.Controller
     public class SystemRequirementsTest
     {
         private readonly Mock<ISystemRequirements> systemRequirementsRepositoryMock = new();
-        readonly Random rand = new();
         readonly Helper help = new();
 
         [Fact]
