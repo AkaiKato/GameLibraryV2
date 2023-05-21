@@ -19,7 +19,7 @@ namespace GameLibraryV2.Controllers
         public async Task<IActionResult> UpdateSystemRequirements([FromBody] SystemRequirements systemReq)
         {
             if (!await systemRequirements.SystemRequirementsExists(systemReq.Id))
-                return NotFound();
+                return NotFound("Not found systemRequirements with such Id");
 
             var sys = await systemRequirements.GetSystemRequirementsAsync(systemReq.Id);
 
