@@ -50,7 +50,6 @@ namespace GameLibraryV2.Controllers
             };
 
             return Ok(search);
-
         }
     }
 }
