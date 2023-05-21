@@ -47,7 +47,6 @@ namespace GameLibraryTest.Controller
             var result = await controller.GetPublishers();
 
             result.Should().BeOfType<OkObjectResult>();
-
             var okResult = result as OkObjectResult;
             var verifyRes = (okResult!.Value as List<PublisherDto>);
             verifyRes.Should().BeEquivalentTo(mappedExpected);

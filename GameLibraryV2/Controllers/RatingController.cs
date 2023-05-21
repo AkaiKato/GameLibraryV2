@@ -1,11 +1,7 @@
-﻿using AutoMapper;
-using GameLibraryV2.Dto.Common;
-using GameLibraryV2.Dto.Update;
+﻿using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
-using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Policy;
 
 namespace GameLibraryV2.Controllers
 {
@@ -27,8 +23,6 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("ratings")]
-        [ProducesResponseType(200, Type = typeof(IList<Rating>))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetAllRatings()
         {
             var ratings = await ratingRepository.GetRatingsAsync();
@@ -45,8 +39,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="gameId"></param>
         /// <returns></returns>
         [HttpGet("gameRating")]
-        [ProducesResponseType(200, Type = typeof(Rating))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetGameRating(int gameId)
         {
             if (!await gameRepository.GameExistsAsync(gameId))
@@ -71,8 +63,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="ratingUpdate"></param>
         /// <returns></returns>
         [HttpPut("gameRatingAdd")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UpdateGameRating(RatingUpdate ratingUpdate)
         {
             if (ratingUpdate == null)
@@ -100,8 +90,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="ratingId"></param>
         /// <returns></returns>
         [HttpPut("gameRatingNulling")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> DeleteGameRating(int ratingId)
         {
             if(!await ratingRepository.RatingExistsAsync(ratingId))
@@ -164,7 +152,7 @@ namespace GameLibraryV2.Controllers
 
             await ratingRepository.SaveRatingAsync();
 
-            return Ok();
+            return Ok("Successfully updated");
         }
 
         private static int CalcCountOfNumbers(Rating x)
