@@ -26,7 +26,7 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{userId}/publishers")]
         public async Task<IActionResult> GetUserPublisherStatistics(int userId) 
         {
-            if(await userRepository.GetUserByIdAsync(userId) == null)
+            if(!await userRepository.UserExistsByIdAsync(userId))
                 return NotFound($"Not found user with such id {userId}");
 
             if(!ModelState.IsValid)
@@ -45,7 +45,7 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{userId}/tags")]
         public async Task<IActionResult> GetUserTagStatistics(int userId)
         {
-            if (await userRepository.GetUserByIdAsync(userId) == null)
+            if (!await userRepository.UserExistsByIdAsync(userId))
                 return NotFound($"Not found user with such id {userId}");
 
             if (!ModelState.IsValid)
@@ -64,7 +64,7 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{userId}/developer")]
         public async Task<IActionResult> GetUserDeveloperStatistics(int userId)
         {
-            if (await userRepository.GetUserByIdAsync(userId) == null)
+            if (!await userRepository.UserExistsByIdAsync(userId))
                 return NotFound($"Not found user with such id {userId}");
 
             if (!ModelState.IsValid)
@@ -83,7 +83,7 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{userId}/platforms")]
         public async Task<IActionResult> GetUserPlatformStatistics(int userId)
         {
-            if (await userRepository.GetUserByIdAsync(userId) == null)
+            if (!await userRepository.UserExistsByIdAsync(userId))
                 return NotFound($"Not found user with such id {userId}");
 
             if (!ModelState.IsValid)
@@ -102,7 +102,7 @@ namespace GameLibraryV2.Controllers
         [HttpGet("{userId}/genres")]
         public async Task<IActionResult> GetUserGenreStatistics(int userId)
         {
-            if (await userRepository.GetUserByIdAsync(userId) == null)
+            if (!await userRepository.UserExistsByIdAsync(userId))
                 return NotFound($"Not found user with such id {userId}");
 
             if (!ModelState.IsValid)

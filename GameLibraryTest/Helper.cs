@@ -1,4 +1,5 @@
 ﻿using GameLibraryV2.Dto.create;
+using GameLibraryV2.Dto.Statistic;
 using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Helper;
 using GameLibraryV2.Models.Common;
@@ -214,6 +215,16 @@ namespace GameLibraryTest
                 Id = rand.Next(100),
                 Name = RandomString(20),
                 Description = RandomString(100),
+            };
+        }
+
+        public CountStatistic CreateRandomCountStatistic()
+        {
+            return new()
+            {
+                Id = rand.Next(100),
+                Name = RandomString(20),
+                Count = rand.Next(100),
             };
         }
 
