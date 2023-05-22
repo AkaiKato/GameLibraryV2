@@ -111,7 +111,6 @@ namespace GameLibraryV2.Controllers
             var games = await personGamesRepository.GetPersonGenreStatisticAsync(userId);
 
             return Ok(games);
-
         }
     }
 }

@@ -23,7 +23,7 @@ namespace GameLibraryV2.Controllers
             userRepository = _userRepository;
         }
 
-        private readonly string[] permittedExtensions = { ".jpg", ".jpeg", ".png" };
+        private readonly string[] permittedExtensions = { ".jpg", ".jpeg", ".webp" };
 
         /// <summary>
         /// Update developer picture

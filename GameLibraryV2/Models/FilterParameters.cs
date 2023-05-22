@@ -30,7 +30,7 @@ namespace GameLibraryV2.Models
 
         public string[]? Publisher { get; set; }
 
-        public string[]? AgeRating { get; set; }
+        public string? AgeRating { get; set; }
 
         public bool NSFW { get; set; } = false;
 
@@ -55,7 +55,7 @@ namespace GameLibraryV2.Models
 
             for (int i = 0; i < status.Length; i++)
             {
-                if (!hash.Contains(status[i].Trim().ToLower()))
+                if (status[i] == null || !hash.Contains(status[i].Trim().ToLower()))
                     return false;
             }
 
@@ -71,7 +71,7 @@ namespace GameLibraryV2.Models
 
             for (int i = 0; i < type.Length; i++)
             {
-                if (!hash.Contains(type[i].Trim().ToLower()))
+                if (type[i] == null || !hash.Contains(type[i].Trim().ToLower()))
                     return false;
             }
 

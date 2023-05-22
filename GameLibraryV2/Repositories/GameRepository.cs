@@ -30,7 +30,6 @@ namespace GameLibraryV2.Repositories
             if (filterParameters.Status != null)
             {
                 games = games.Where(g => filterParameters.Status
-                                .Where(y => y != null)
                                 .Select(y => y.ToLower())
                                 .Contains(g.Status.ToLower()))
                                 .AsQueryable();
@@ -39,7 +38,6 @@ namespace GameLibraryV2.Repositories
             if (filterParameters.Type != null)
             {
                 games = games.Where(g => filterParameters.Type
-                                .Where(y => y != null)
                                 .Select(y => y.ToLower())
                                 .Contains(g.Type.ToLower()))
                                 .AsQueryable();
@@ -107,9 +105,7 @@ namespace GameLibraryV2.Repositories
 
             if (filterParameters.AgeRating != null)
             {
-                games = games.Where(g => filterParameters.AgeRating
-                                .Where(a => a != null)
-                                .Select(a => a.ToLower())
+                games = games.Where(g => filterParameters.AgeRating.ToLower()
                                 .Contains(g.AgeRating.Name.Trim().ToLower()))
                                 .AsQueryable();
             }

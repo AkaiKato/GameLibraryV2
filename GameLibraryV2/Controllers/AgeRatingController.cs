@@ -8,7 +8,6 @@ using GameLibraryV2.Dto.Update;
 using System.Text.Json;
 using GameLibraryV2.Models.Common;
 using Microsoft.AspNetCore.Authorization;
-using static GameLibraryV2.Helper.Enums;
 
 namespace GameLibraryV2.Controllers
 {
