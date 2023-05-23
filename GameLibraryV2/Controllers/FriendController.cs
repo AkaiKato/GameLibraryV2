@@ -28,8 +28,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet("{userId}/friends")]
-        [ProducesResponseType(200, Type = typeof(IList<FriendDto>))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetUserFriends(int userId)
         {
             if (!await userRepository.UserExistsByIdAsync(userId))
@@ -49,8 +47,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="addFriend"></param>
         /// <returns></returns>
         [HttpPut("addFriend")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> AddFriend([FromBody] FriendUpdate addFriend)
         {
             if (!await userRepository.UserExistsByIdAsync(addFriend.UserId))
@@ -82,8 +78,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="friendConnectionId"></param>
         /// <returns></returns>
         [HttpDelete("deleteFriend")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> DeleteFriend([FromQuery] int friendConnectionId)
         {
             if (!ModelState.IsValid)

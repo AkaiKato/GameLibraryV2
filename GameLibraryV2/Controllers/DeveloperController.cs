@@ -31,7 +31,6 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("developerAll")]
-        [ProducesResponseType(200, Type = typeof(IList<DeveloperDto>))]
         public async Task<IActionResult> GetDevelopers()
         {
             if (!ModelState.IsValid)
@@ -48,8 +47,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="developerId"></param>
         /// <returns></returns>
         [HttpGet("{developerId}")]
-        [ProducesResponseType(200, Type = typeof(DeveloperDto))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetDeveloperById(int developerId) 
         {
             if(!await developerRepository.DeveloperExistsAsync(developerId))
@@ -71,8 +68,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("{developerId}/games")]
-        [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetDeveloperGames(int developerId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
             if (!await developerRepository.DeveloperExistsAsync(developerId))
@@ -121,8 +116,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="developerCreate"></param>
         /// <returns></returns>
         [HttpPost("createDeveloper")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> CreateDeveloper([FromBody] DeveloperCreateDto developerCreate)
         {
             if (developerCreate == null)
@@ -150,8 +143,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="developerUpdate"></param>
         /// <returns></returns>
         [HttpPut("updateDeveloper")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UpdateDeveloperInfo([FromBody] CommonUpdate developerUpdate)
         {
             if (developerUpdate == null)
@@ -183,8 +174,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="developerDelete"></param>
         /// <returns></returns>
         [HttpDelete("deleteDeveloper")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> DeleteDeveloper([FromQuery] int developerDelete)
         {
             if (!await developerRepository.DeveloperExistsAsync(developerDelete))

@@ -571,7 +571,7 @@ namespace GameLibraryTest.Controller
             {
                 Name = help.RandomString(50),
                 Status = rand.Next(0, 1) == 0 ? "released" : "announsed",
-                ReleaseDate = DateTime.UtcNow,
+                ReleaseDate = DateOnly.FromDateTime(DateTime.Now),
                 Description = help.RandomString(50),
                 AgeRating = rand.Next(100),
                 NSFW = false,
@@ -592,7 +592,7 @@ namespace GameLibraryTest.Controller
                 Id = rand.Next(100),
                 Name = help.RandomString(50),
                 Status = rand.Next(0, 1) == 0 ? "released" : "announsed",
-                ReleaseDate = DateTime.UtcNow,
+                ReleaseDate = DateOnly.FromDateTime(DateTime.Now),
                 Description = help.RandomString(50),
                 AgeRating = rand.Next(100),
                 NSFW = false,

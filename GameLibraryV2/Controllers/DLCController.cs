@@ -28,7 +28,6 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("dlcAll")]
-        [ProducesResponseType(200, Type = typeof(List<GameSmallListDto>))]
         public async Task<IActionResult> GetDLCs()
         {
             if (!ModelState.IsValid)
@@ -45,8 +44,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="dlcId"></param>
         /// <returns></returns>
         [HttpGet("{dlcId}")]
-        [ProducesResponseType(200, Type = typeof(GameDto))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetDLCById(int dlcId)
         {
             if(!await gameRepository.DLCExistsAsync(dlcId))
@@ -66,8 +63,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="addDlc"></param>
         /// <returns></returns>
         [HttpPost("createDlc")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> CreateGameDlc([FromBody] DlcUpdate addDlc)
         {
             if (addDlc == null)
@@ -103,8 +98,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="dlcConnectionId"></param>
         /// <returns></returns>
         [HttpDelete("deleteDlc")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> DeleteGameDlc([FromQuery] int dlcConnectionId)
         {
             if(!ModelState.IsValid)

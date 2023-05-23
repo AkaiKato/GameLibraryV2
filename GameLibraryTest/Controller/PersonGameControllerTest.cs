@@ -3,15 +3,12 @@ using FluentAssertions;
 using GameLibraryV2.Controllers;
 using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.Create;
-using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
-using GameLibraryV2.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using GameLibraryV2.Repositories;
 using GameLibraryV2.Dto.Update;
 
 namespace GameLibraryTest.Controller

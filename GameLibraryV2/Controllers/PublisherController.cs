@@ -31,8 +31,6 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("publisherAll")]
-        [ProducesResponseType(200, Type = typeof(IList<PublisherDto>))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetPublishers()
         {
             if (!ModelState.IsValid)
@@ -49,8 +47,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="publisherId"></param>
         /// <returns></returns>
         [HttpGet("{publisherId}")]
-        [ProducesResponseType(200, Type = typeof(PublisherDto))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetPublisherById(int publisherId)
         {
             if (!await publisherRepository.PublisherExistsAsync(publisherId))
@@ -72,8 +68,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("{publisherId}/games")]
-        [ProducesResponseType(200, Type = typeof(IList<GameSmallListDto>))]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> GetPublisherGames(int publisherId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
             if (!await publisherRepository.PublisherExistsAsync(publisherId))
@@ -122,8 +116,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="publisherCreate"></param>
         /// <returns></returns>
         [HttpPost("createPublisher")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> CreatePublisher([FromBody] PublisherCreateDto publisherCreate)
         {
             if (publisherCreate == null)
@@ -151,8 +143,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="publisherUpdate"></param>
         /// <returns></returns>
         [HttpPut("updatePublisher")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UpdatePublisherInfo([FromBody] CommonUpdate publisherUpdate)
         {
             if (publisherUpdate == null)
@@ -184,8 +174,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="deletePublisher"></param>
         /// <returns></returns>
         [HttpDelete("deletePublisher")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> DeletePublisher([FromQuery] int deletePublisher)
         {
             if (!await publisherRepository.PublisherExistsAsync(deletePublisher))

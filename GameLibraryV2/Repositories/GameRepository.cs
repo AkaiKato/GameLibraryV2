@@ -457,12 +457,12 @@ namespace GameLibraryV2.Repositories
             return await games.ToListAsync();
         }
 
-        public async Task<DateTime> GetMinReleaseDate()
+        public async Task<DateOnly> GetMinReleaseDate()
         {
             return await dataContext.Games.MinAsync(x => x.ReleaseDate);
         }
 
-        public async Task<DateTime> GetMaxReleaseDate()
+        public async Task<DateOnly> GetMaxReleaseDate()
         {
             return await dataContext.Games.MaxAsync(x => x.ReleaseDate);
         }

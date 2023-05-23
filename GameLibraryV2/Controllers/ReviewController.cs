@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
@@ -36,8 +35,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="reviewCreate"></param>
         /// <returns></returns>
         [HttpPost("createReview")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> CreateGameReview([FromBody] ReviewCreateDto reviewCreate)
         {
             if (reviewCreate == null)
@@ -73,8 +70,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="reviewUpdate"></param>
         /// <returns></returns>
         [HttpPut("updateReview")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UpdateGameReview([FromBody] ReviewUpdate reviewUpdate)
         {
             if (reviewUpdate == null)
@@ -102,8 +97,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="reviewRatingUpdate"></param>
         /// <returns></returns>
         [HttpPut("updateReviewRating")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> UpdateRaviewRating([FromBody] ReviewRatingUpdate reviewRatingUpdate)
         {
             if (reviewRatingUpdate == null)
@@ -131,8 +124,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="reviewDelete"></param>
         /// <returns></returns>
         [HttpDelete("deleteReview")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> DeleteGameReview([FromQuery] int reviewDelete)
         {
             if (!await reviewRepository.ReviewExistsAsync(reviewDelete))

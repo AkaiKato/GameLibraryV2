@@ -10,7 +10,7 @@ namespace GameLibraryV2.Dto.Update
 
         public string Status { get; set; } = null!;
 
-        public DateTime ReleaseDate { get; set; }
+        public DateOnly ReleaseDate { get; set; }
 
         public string? Description { get; set; }
 

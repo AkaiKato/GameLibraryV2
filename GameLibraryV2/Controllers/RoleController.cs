@@ -112,9 +112,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="roleCreate"></param>
         /// <returns></returns>
-        [HttpPost("createRole")]  
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
+        [HttpPost("createRole")]
         public async Task<IActionResult> CreateRole([FromBody] RoleCreateDto roleCreate)
         {
             if (roleCreate == null)
@@ -142,8 +140,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="deleteRole"></param>
         /// <returns></returns>
         [HttpDelete("deleteUserRole")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> DeleteRole([FromBody] RoleUpdate deleteRole)
         {
             if (deleteRole == null)

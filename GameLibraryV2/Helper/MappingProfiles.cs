@@ -38,13 +38,6 @@ namespace GameLibraryV2.Helper
             CreateMap<Tag, TagSmallDto>();
             CreateMap<User, UserSmallDto>();
 
-            //JustId
-            CreateMap<JustIdDto, Developer>();
-            CreateMap<JustIdDto, Publisher>();
-            CreateMap<JustIdDto, Genre>();
-            CreateMap<JustIdDto, Platform>();
-            CreateMap<JustIdDto, Tag>();
-
             //Create DTO
             CreateMap<AgeRatingCreateDto, AgeRating>();
             CreateMap<DeveloperCreateDto, Developer>();

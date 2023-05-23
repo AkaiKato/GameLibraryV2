@@ -160,8 +160,7 @@ namespace GameLibraryV2.Controllers
             personGame.Comment = personGameUpdate.Comment;
             personGame.List = personGameUpdate.List.Trim().ToLower();
 
-            if (personGameUpdate.PlayedPlatform != null)
-                personGame.PlayedPlatform = await platformRepository.GetPlatformByIdAsync(personGameUpdate.PlayedPlatform.Id);
+            personGame.PlayedPlatform = await platformRepository.GetPlatformByIdAsync(personGameUpdate.PlayedPlatform);
 
             personGame.Favourite = personGameUpdate.Favourite;
 

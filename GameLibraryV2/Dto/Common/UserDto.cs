@@ -16,7 +16,7 @@ namespace GameLibraryV2.Dto.Common
 
         public string PicturePath { get; set; } = "Def.jpg";
 
-        public DateTime RegistrationdDate { get; set; }
+        public DateOnly RegistrationdDate { get; set; }
 
         public virtual IList<RoleDto> UserRoles { get; set; } = null!;
     }

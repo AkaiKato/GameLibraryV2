@@ -16,7 +16,7 @@
 
         public string PicturePath { get; set; } = null!;
 
-        public DateTime RegistrationdDate { get; set; }
+        public DateOnly RegistrationdDate { get; set; }
 
         public virtual IList<PersonGame>? UserGames { get; set; }
 

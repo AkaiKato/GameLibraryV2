@@ -53,9 +53,9 @@ namespace GameLibraryV2.Interfaces
 
         public Task<List<Game>> GetMostRatedDLCByYear();
 
-        public Task<DateTime> GetMinReleaseDate();
+        public Task<DateOnly> GetMinReleaseDate();
 
-        public Task<DateTime> GetMaxReleaseDate();
+        public Task<DateOnly> GetMaxReleaseDate();
 
         public void CreateGame(Game game);
 

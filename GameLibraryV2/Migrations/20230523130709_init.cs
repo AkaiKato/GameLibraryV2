@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -15,10 +16,10 @@ namespace GameLibraryV2.Migrations
                 name: "AgeRating",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -29,12 +30,12 @@ namespace GameLibraryV2.Migrations
                 name: "Developers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PicturePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MiniPicturePath = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    PicturePath = table.Column<string>(type: "text", nullable: false),
+                    MiniPicturePath = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,10 +46,10 @@ namespace GameLibraryV2.Migrations
                 name: "Genres",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -59,10 +60,10 @@ namespace GameLibraryV2.Migrations
                 name: "Platforms",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -73,12 +74,12 @@ namespace GameLibraryV2.Migrations
                 name: "Publishers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PicturePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MiniPicturePath = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    PicturePath = table.Column<string>(type: "text", nullable: false),
+                    MiniPicturePath = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,19 +90,19 @@ namespace GameLibraryV2.Migrations
                 name: "Ratings",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TotalRating = table.Column<double>(type: "float", nullable: false),
-                    NumberOfOne = table.Column<int>(type: "int", nullable: false),
-                    NumberOfTwo = table.Column<int>(type: "int", nullable: false),
-                    NumberOfThree = table.Column<int>(type: "int", nullable: false),
-                    NumberOfFour = table.Column<int>(type: "int", nullable: false),
-                    NumberOfFive = table.Column<int>(type: "int", nullable: false),
-                    NumberOfSix = table.Column<int>(type: "int", nullable: false),
-                    NumberOfSeven = table.Column<int>(type: "int", nullable: false),
-                    NumberOfEight = table.Column<int>(type: "int", nullable: false),
-                    NumberOfNine = table.Column<int>(type: "int", nullable: false),
-                    NumberOfTen = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TotalRating = table.Column<double>(type: "double precision", nullable: false),
+                    NumberOfOne = table.Column<int>(type: "integer", nullable: false),
+                    NumberOfTwo = table.Column<int>(type: "integer", nullable: false),
+                    NumberOfThree = table.Column<int>(type: "integer", nullable: false),
+                    NumberOfFour = table.Column<int>(type: "integer", nullable: false),
+                    NumberOfFive = table.Column<int>(type: "integer", nullable: false),
+                    NumberOfSix = table.Column<int>(type: "integer", nullable: false),
+                    NumberOfSeven = table.Column<int>(type: "integer", nullable: false),
+                    NumberOfEight = table.Column<int>(type: "integer", nullable: false),
+                    NumberOfNine = table.Column<int>(type: "integer", nullable: false),
+                    NumberOfTen = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -112,9 +113,9 @@ namespace GameLibraryV2.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RoleName = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -125,10 +126,10 @@ namespace GameLibraryV2.Migrations
                 name: "Tags",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -139,18 +140,18 @@ namespace GameLibraryV2.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Nickname = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Age = table.Column<int>(type: "int", nullable: false),
-                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PicturePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RegistrationdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TokenCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TokenExpires = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Nickname = table.Column<string>(type: "text", nullable: false),
+                    Password = table.Column<string>(type: "text", nullable: false),
+                    Age = table.Column<int>(type: "integer", nullable: false),
+                    Gender = table.Column<string>(type: "text", nullable: false),
+                    PicturePath = table.Column<string>(type: "text", nullable: false),
+                    RegistrationdDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    RefreshToken = table.Column<string>(type: "text", nullable: false),
+                    TokenCreated = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    TokenExpires = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -161,19 +162,19 @@ namespace GameLibraryV2.Migrations
                 name: "Games",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PicturePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AgeRatingId = table.Column<int>(type: "int", nullable: false),
-                    NSFW = table.Column<bool>(type: "bit", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AveragePlayTime = table.Column<double>(type: "float", nullable: true),
-                    ParentGameId = table.Column<int>(type: "int", nullable: true),
-                    RatingId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    PicturePath = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    ReleaseDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    AgeRatingId = table.Column<int>(type: "integer", nullable: false),
+                    NSFW = table.Column<bool>(type: "boolean", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    AveragePlayTime = table.Column<double>(type: "double precision", nullable: true),
+                    ParentGameId = table.Column<int>(type: "integer", nullable: true),
+                    RatingId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -201,10 +202,10 @@ namespace GameLibraryV2.Migrations
                 name: "Friends",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    FrienduId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    FrienduId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -226,8 +227,8 @@ namespace GameLibraryV2.Migrations
                 name: "RoleUser",
                 columns: table => new
                 {
-                    RoleUsersId = table.Column<int>(type: "int", nullable: false),
-                    UserRolesId = table.Column<int>(type: "int", nullable: false)
+                    RoleUsersId = table.Column<int>(type: "integer", nullable: false),
+                    UserRolesId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -250,8 +251,8 @@ namespace GameLibraryV2.Migrations
                 name: "DeveloperGame",
                 columns: table => new
                 {
-                    DeveloperGamesId = table.Column<int>(type: "int", nullable: false),
-                    DevelopersId = table.Column<int>(type: "int", nullable: false)
+                    DeveloperGamesId = table.Column<int>(type: "integer", nullable: false),
+                    DevelopersId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -274,10 +275,10 @@ namespace GameLibraryV2.Migrations
                 name: "DLCs",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ParentGameId = table.Column<int>(type: "int", nullable: false),
-                    DLCGameId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ParentGameId = table.Column<int>(type: "integer", nullable: false),
+                    DLCGameId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -299,8 +300,8 @@ namespace GameLibraryV2.Migrations
                 name: "GameGenre",
                 columns: table => new
                 {
-                    GenreGamesId = table.Column<int>(type: "int", nullable: false),
-                    GenresId = table.Column<int>(type: "int", nullable: false)
+                    GenreGamesId = table.Column<int>(type: "integer", nullable: false),
+                    GenresId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -323,8 +324,8 @@ namespace GameLibraryV2.Migrations
                 name: "GamePlatform",
                 columns: table => new
                 {
-                    PlatformGamesId = table.Column<int>(type: "int", nullable: false),
-                    PlatformsId = table.Column<int>(type: "int", nullable: false)
+                    PlatformGamesId = table.Column<int>(type: "integer", nullable: false),
+                    PlatformsId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -347,8 +348,8 @@ namespace GameLibraryV2.Migrations
                 name: "GamePublisher",
                 columns: table => new
                 {
-                    PublisherGamesId = table.Column<int>(type: "int", nullable: false),
-                    PublishersId = table.Column<int>(type: "int", nullable: false)
+                    PublisherGamesId = table.Column<int>(type: "integer", nullable: false),
+                    PublishersId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -371,8 +372,8 @@ namespace GameLibraryV2.Migrations
                 name: "GameTag",
                 columns: table => new
                 {
-                    TagsGamesId = table.Column<int>(type: "int", nullable: false),
-                    TagsId = table.Column<int>(type: "int", nullable: false)
+                    TagsGamesId = table.Column<int>(type: "integer", nullable: false),
+                    TagsId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -395,14 +396,14 @@ namespace GameLibraryV2.Migrations
                 name: "PersonGames",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    GameId = table.Column<int>(type: "int", nullable: false),
-                    Score = table.Column<int>(type: "int", nullable: false),
-                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    List = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PlayedPlatformId = table.Column<int>(type: "int", nullable: true),
-                    Favourite = table.Column<bool>(type: "bit", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    GameId = table.Column<int>(type: "integer", nullable: false),
+                    Score = table.Column<int>(type: "integer", nullable: false),
+                    Comment = table.Column<string>(type: "text", nullable: true),
+                    List = table.Column<string>(type: "text", nullable: false),
+                    PlayedPlatformId = table.Column<int>(type: "integer", nullable: true),
+                    Favourite = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -430,14 +431,14 @@ namespace GameLibraryV2.Migrations
                 name: "Reviews",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    GameId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    Rating = table.Column<int>(type: "int", nullable: false),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PublishDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReviewRating = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    GameId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    Rating = table.Column<int>(type: "integer", nullable: false),
+                    Text = table.Column<string>(type: "text", nullable: false),
+                    PublishDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ReviewRating = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -460,18 +461,18 @@ namespace GameLibraryV2.Migrations
                 name: "SystemRequirements",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OC = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Processor = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RAM = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    VideoCard = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DirectX = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Ethernet = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HardDriveSpace = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Additional = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    GameId = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    OC = table.Column<string>(type: "text", nullable: true),
+                    Processor = table.Column<string>(type: "text", nullable: true),
+                    RAM = table.Column<string>(type: "text", nullable: true),
+                    VideoCard = table.Column<string>(type: "text", nullable: true),
+                    DirectX = table.Column<string>(type: "text", nullable: true),
+                    Ethernet = table.Column<string>(type: "text", nullable: true),
+                    HardDriveSpace = table.Column<string>(type: "text", nullable: true),
+                    Additional = table.Column<string>(type: "text", nullable: true),
+                    GameId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {

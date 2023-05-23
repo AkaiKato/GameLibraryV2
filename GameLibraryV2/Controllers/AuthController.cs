@@ -56,7 +56,7 @@ namespace GameLibraryV2.Controllers
                 Age = userCreate.Age,
                 Gender = userCreate.Gender,
                 PicturePath = $"\\Images\\userPicture\\Def.jpg",
-                RegistrationdDate = DateTime.Now,
+                RegistrationdDate = DateOnly.FromDateTime(DateTime.Now),
                 UserGames = new List<PersonGame>() { },
                 UserRoles = new List<Role>() { await roleRepository.GetRoleByNameAsync(Enums.Roles.user.ToString()) },
                 UserFriends = new List<Friend>() { },

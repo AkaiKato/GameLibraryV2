@@ -44,7 +44,7 @@ namespace GameLibraryV2.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.UseCollation("Latin1_General_CS_AS_KS_WS");
+            //modelBuilder.HasCollation("Latin1_General_CS_AS_KS_WS");
             modelBuilder.Entity<Game>().HasMany(g => g.DLCs).WithOne(pg => pg.ParentGame).OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<User>().HasMany(u => u.UserFriends).WithOne(g => g.User).OnDelete(DeleteBehavior.NoAction);
         }
