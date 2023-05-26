@@ -2,6 +2,7 @@
 using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -30,6 +31,7 @@ namespace GameLibraryV2.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Search(string searchString)
         {
             if (searchString == null)

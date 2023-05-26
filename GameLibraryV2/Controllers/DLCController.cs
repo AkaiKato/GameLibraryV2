@@ -4,6 +4,7 @@ using GameLibraryV2.Dto.smallInfo;
 using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -62,6 +63,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="addDlc"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpPost("createDlc")]
         public async Task<IActionResult> CreateGameDlc([FromBody] DlcUpdate addDlc)
         {
@@ -97,6 +99,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="dlcConnectionId"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpDelete("deleteDlc")]
         public async Task<IActionResult> DeleteGameDlc([FromQuery] int dlcConnectionId)
         {

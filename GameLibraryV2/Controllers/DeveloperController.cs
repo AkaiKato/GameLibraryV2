@@ -6,6 +6,7 @@ using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using GameLibraryV2.Models.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -67,6 +68,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="filterParameters"></param>
         /// <param name="pagination"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("{developerId}/games")]
         public async Task<IActionResult> GetDeveloperGames(int developerId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
@@ -115,6 +117,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="developerCreate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpPost("createDeveloper")]
         public async Task<IActionResult> CreateDeveloper([FromBody] DeveloperCreateDto developerCreate)
         {
@@ -142,6 +145,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="developerUpdate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpPut("updateDeveloper")]
         public async Task<IActionResult> UpdateDeveloperInfo([FromBody] CommonUpdate developerUpdate)
         {
@@ -173,6 +177,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="developerDelete"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpDelete("deleteDeveloper")]
         public async Task<IActionResult> DeleteDeveloper([FromQuery] int developerDelete)
         {

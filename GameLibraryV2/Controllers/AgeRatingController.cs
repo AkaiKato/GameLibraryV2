@@ -33,8 +33,8 @@ namespace GameLibraryV2.Controllers
         /// Return all AgeRatings
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "admin")]
         [HttpGet("ageRatingAll")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAgeRatings()
         {
             if (!ModelState.IsValid)
@@ -50,6 +50,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="ageRatingId"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("{ageRatingId}")]
         public async Task<IActionResult> GetAgeRatingById(int ageRatingId)
         {

@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class GlobalStatisticController : Controller
     {
         private readonly IGameRepository gameRepository;

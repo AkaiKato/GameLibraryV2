@@ -6,8 +6,10 @@ using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using GameLibraryV2.Models.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using static GameLibraryV2.Helper.Enums;
 
 namespace GameLibraryV2.Controllers
 {
@@ -68,6 +70,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("{tagId}/games")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetTagGames(int tagId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
             if (!await tagRepository.TagExistsAsync(tagId))
@@ -116,6 +119,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="tagCreate"></param>
         /// <returns></returns>
         [HttpPost("createTag")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateTag([FromBody] TagCreateDto tagCreate)
         {
             if (tagCreate == null)
@@ -143,6 +147,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="tagUpdate"></param>
         /// <returns></returns>
         [HttpPut("updateTag")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateTagInfo([FromBody] CommonUpdate tagUpdate)
         {
             if (tagUpdate == null)
@@ -174,6 +179,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="tagDelete"></param>
         /// <returns></returns>
         [HttpDelete("deleteTag")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteTag([FromQuery] int tagDelete)
         {
             if (!await tagRepository.TagExistsAsync(tagDelete))

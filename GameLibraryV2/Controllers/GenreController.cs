@@ -6,8 +6,10 @@ using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using GameLibraryV2.Models.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using static GameLibraryV2.Helper.Enums;
 
 namespace GameLibraryV2.Controllers
 {
@@ -67,6 +69,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="filterParameters"></param>
         /// <param name="pagination"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("{genreId}/games")]
         public async Task<IActionResult> GetGenreGames(int genreId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
@@ -115,6 +118,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="genreCreate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpPost("createGenre")]
         public async Task<IActionResult> CreateGenre([FromBody] GenreCreateDto genreCreate)
         {
@@ -142,6 +146,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="genreUpdate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpPut("updateGenre")]
         public async Task<IActionResult> UpdateGenreInfo([FromBody] CommonUpdate genreUpdate)
         {
@@ -173,6 +178,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="genreDelete"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpDelete("deleteGenre")]
         public async Task<IActionResult> DeleteGenre([FromQuery] int genreDelete)
         {

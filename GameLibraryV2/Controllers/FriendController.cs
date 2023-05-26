@@ -3,7 +3,9 @@ using GameLibraryV2.Dto.Common;
 using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static GameLibraryV2.Helper.Enums;
 
 namespace GameLibraryV2.Controllers
 {
@@ -23,10 +25,11 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Return specified user friends
+        /// Return friends of specified user 
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
+        [Authorize(Roles = "user")]
         [HttpGet("{userId}/friends")]
         public async Task<IActionResult> GetUserFriends(int userId)
         {
@@ -46,6 +49,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="addFriend"></param>
         /// <returns></returns>
+        [Authorize(Roles = "user")]
         [HttpPut("addFriend")]
         public async Task<IActionResult> AddFriend([FromBody] FriendUpdate addFriend)
         {
@@ -77,6 +81,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="friendConnectionId"></param>
         /// <returns></returns>
+        [Authorize(Roles = "user")]
         [HttpDelete("deleteFriend")]
         public async Task<IActionResult> DeleteFriend([FromQuery] int friendConnectionId)
         {

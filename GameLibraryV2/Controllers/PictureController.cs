@@ -1,26 +1,32 @@
 ﻿using GameLibraryV2.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 
 namespace GameLibraryV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "admin")]
     public class PictureController : Controller
     {
         private readonly IDeveloperRepository developerRepository;
         private readonly IGameRepository gameRepository;
         private readonly IPublisherRepository publisherRepository;
         private readonly IUserRepository userRepository;
+        private readonly IWebHostEnvironment webHostEnvironment;
 
         public PictureController(IDeveloperRepository _developerRepository,
             IGameRepository _gameRepository,
             IPublisherRepository _publisherRepository,
-            IUserRepository _userRepository)
+            IUserRepository _userRepository,
+            IWebHostEnvironment _webHostEnvironment)
         {
             developerRepository = _developerRepository;
             gameRepository = _gameRepository;
             publisherRepository = _publisherRepository;
             userRepository = _userRepository;
+            webHostEnvironment = _webHostEnvironment;
         }
 
         private readonly string[] permittedExtensions = { ".jpg", ".jpeg", ".webp" };
@@ -51,7 +57,12 @@ namespace GameLibraryV2.Controllers
             var developer = await developerRepository.GetDeveloperByIdAsync(developerId);
             var newfilePath = $"\\Images\\developerPicture\\{unique}{ext}";
             var oldfilePath = developer.PicturePath;
+            var filePath = webHostEnvironment.WebRootPath + "\\uploads\\";
 
+            /*if(!Directory.Exists(filePath))
+                Directory.CreateDirectory(filePath);
+            using (FileStream fileStream = System.IO.File.Create(filePath + pic.FileName))*/
+                
             using var stream = new FileStream(newfilePath, FileMode.Create);
             pic.CopyTo(stream);
 
@@ -250,6 +261,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="pic"></param>
         /// <returns></returns>
         [HttpPut("uploadUserPicture")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> UploadUserPicture([FromQuery] int userId, IFormFile pic)
         {
             if (pic == null)

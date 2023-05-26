@@ -7,6 +7,7 @@ using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using GameLibraryV2.Models.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -69,6 +70,7 @@ namespace GameLibraryV2.Controllers
         /// Return games
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("games")]
         public async Task<IActionResult> GetGames([FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
@@ -117,6 +119,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="gameId"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("{gameId}")]
         public async Task<IActionResult> GetGameById(int gameId)
         {
@@ -138,6 +141,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="gameId"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("{gameId}/review")]
         public async Task<IActionResult> GetGameReview(int gameId)
         {
@@ -157,6 +161,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="gameCreate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpPost("createGame")]
         public async Task<IActionResult> CreateGame([FromBody] GameCreateDto gameCreate)
         {
@@ -248,6 +253,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="gameUpdate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpPut("updateGame")]
         public async Task<IActionResult> UpdateGameInfo([FromBody] GameUpdate gameUpdate)
         {
@@ -342,6 +348,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="gameDelete"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpDelete("deleteGame")]
         public async Task<IActionResult> DeleteGame([FromQuery] int gameDelete)
         {
@@ -390,6 +397,8 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "user")]
         [HttpGet("{userId}/favouriteGames")]
         public async Task<IActionResult> GetUserFavouriteGames(int userId)
         {

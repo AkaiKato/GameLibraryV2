@@ -4,7 +4,9 @@ using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static GameLibraryV2.Helper.Enums;
 
 namespace GameLibraryV2.Controllers
 {
@@ -83,6 +85,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="addRole"></param>
         /// <returns></returns>
         [HttpPut("addRole")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> AddRole([FromBody] RoleUpdate addRole)
         {
             if(addRole == null)

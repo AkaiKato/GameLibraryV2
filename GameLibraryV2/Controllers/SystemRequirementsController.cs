@@ -1,6 +1,8 @@
 ﻿using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static GameLibraryV2.Helper.Enums;
 
 namespace GameLibraryV2.Controllers
 {
@@ -16,6 +18,7 @@ namespace GameLibraryV2.Controllers
         }
 
         [HttpPut("updateSystemRequirements")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateSystemRequirements([FromBody] SystemRequirements systemReq)
         {
             if (!await systemRequirements.SystemRequirementsExists(systemReq.Id))

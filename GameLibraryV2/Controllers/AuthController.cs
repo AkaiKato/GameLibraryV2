@@ -7,9 +7,11 @@ using GameLibraryV2.Models.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.ConstrainedExecution;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using static GameLibraryV2.Helper.Enums;
 
 namespace GameLibraryV2.Controllers
 {
@@ -149,12 +151,17 @@ namespace GameLibraryV2.Controllers
 
         private string CreateToken(User user)
         {
-            List<Claim> claims = new List<Claim>
+            List<Claim> claims = new List<Claim>();
+            foreach (var item in user.UserRoles)
             {
-                new Claim("Id", user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.UserRoles.FirstOrDefault()!.RoleName),
-                new Claim(ClaimTypes.Name, user.Nickname)
-            };
+                if (Enum.GetNames(typeof(Roles)).Contains(item.RoleName.Trim().ToLower()))
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, item.RoleName.Trim().ToLower()));
+                }
+            }
+
+            claims.Add(new Claim("Id", user.Id.ToString()));
+            claims.Add(new Claim(ClaimTypes.Name, user.Nickname));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 configuration.GetSection("AppSettings:Token").Value!));

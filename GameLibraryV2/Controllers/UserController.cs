@@ -39,7 +39,6 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("userAll")]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetUsers()
         {
             if (!ModelState.IsValid)
@@ -56,6 +55,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet("{userId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetUserById(int userId)
         {
             if (!await userRepository.UserExistsByIdAsync(userId))
@@ -93,7 +93,7 @@ namespace GameLibraryV2.Controllers
         }
 
         /// <summary>
-        /// Return specified user role
+        /// Return role specified user 
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
@@ -117,6 +117,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="userUpdate"></param>
         /// <returns></returns>
         [HttpPut("updateUser")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> UpdateUserInfo([FromBody] UserUpdate userUpdate)
         {
             if (userUpdate == null)
@@ -157,6 +158,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="userDelete"></param>
         /// <returns></returns>
         [HttpDelete("deleteUser")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteUser([FromQuery] int userDelete) 
         {
             if (!await userRepository.UserExistsByIdAsync(userDelete))

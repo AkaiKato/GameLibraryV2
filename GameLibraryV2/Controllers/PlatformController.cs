@@ -6,8 +6,8 @@ using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using GameLibraryV2.Models.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Text.Json;
 
 namespace GameLibraryV2.Controllers
@@ -72,6 +72,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="filterParameters"></param>
         /// <param name="pagination"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("{platformId}/games")]
         public async Task<IActionResult> GetPlatformGame(int platformId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
@@ -120,6 +121,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="platformCreate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpPost("createPlatform")]
         public async Task<IActionResult> CreatePLatform([FromBody] PlatformCreateDto platformCreate)
         {
@@ -147,6 +149,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="platformUpdate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpPut("updatePlatform")]
         public async Task<IActionResult> UpdatePlatformInfo([FromBody] CommonUpdate platformUpdate)
         {
@@ -178,6 +181,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="platfromDelete"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpDelete("deletePlatform")]
         public async Task<IActionResult> DeletePlatform([FromQuery] int platfromDelete)
         {

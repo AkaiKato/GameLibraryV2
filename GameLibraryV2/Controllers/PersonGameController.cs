@@ -41,6 +41,7 @@ namespace GameLibraryV2.Controllers
         /// Return all Person Games
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "user")]
         [HttpGet("{userId}/persongames")]
         public async Task<IActionResult> GetPersonGames(int userId)
         {
@@ -61,6 +62,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="userId"></param>
         /// <param name="list"></param>
         /// <returns></returns>
+        [Authorize(Roles = "user")]
         [HttpGet("{userId}/persongamesbylist")]
         public async Task<IActionResult> GetPersonGamesByList(int userId, string list) 
         {
@@ -80,8 +82,8 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="personGameCreate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "user")]
         [HttpPost("addPersonGame")]
-        [Authorize]
         public async Task<IActionResult> AddPersonGame([FromBody] PersonGameCreate personGameCreate)
         {
             if(personGameCreate == null)
@@ -122,6 +124,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="personGameUpdate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "user")]
         [HttpPut("updatePersonGame")]
         public async Task<IActionResult> UpdatePersonGame([FromBody] PersonGameUpdate personGameUpdate)
         {
@@ -175,6 +178,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="personGameDelete"></param>
         /// <returns></returns>
+        [Authorize(Roles = "user")]
         [HttpDelete("deletePersonGame")]
         public async Task<IActionResult> DeletePersonGame([FromQuery] Guid personGameDelete)
         {

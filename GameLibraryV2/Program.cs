@@ -3,6 +3,7 @@ using GameLibraryV2.Data;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -129,7 +130,12 @@ app.UseSwagger();
     });
 //}
 
-app.UseHttpsRedirection();
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

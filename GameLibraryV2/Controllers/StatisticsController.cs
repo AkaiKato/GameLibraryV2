@@ -1,10 +1,12 @@
 ﻿using GameLibraryV2.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
 {
     [Route("/api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class StatisticsController : ControllerBase
     {
         private readonly IUserRepository userRepository;

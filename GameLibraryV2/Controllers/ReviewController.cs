@@ -3,6 +3,7 @@ using GameLibraryV2.Dto.create;
 using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -34,6 +35,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="reviewCreate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "user")]
         [HttpPost("createReview")]
         public async Task<IActionResult> CreateGameReview([FromBody] ReviewCreateDto reviewCreate)
         {
@@ -69,6 +71,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="reviewUpdate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "user")]
         [HttpPut("updateReview")]
         public async Task<IActionResult> UpdateGameReview([FromBody] ReviewUpdate reviewUpdate)
         {
@@ -96,6 +99,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="reviewRatingUpdate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "user")]
         [HttpPut("updateReviewRating")]
         public async Task<IActionResult> UpdateRaviewRating([FromBody] ReviewRatingUpdate reviewRatingUpdate)
         {
@@ -123,6 +127,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="reviewDelete"></param>
         /// <returns></returns>
+        [Authorize(Roles = "user")]
         [HttpDelete("deleteReview")]
         public async Task<IActionResult> DeleteGameReview([FromQuery] int reviewDelete)
         {

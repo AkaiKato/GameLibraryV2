@@ -1,6 +1,7 @@
 ﻿using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibraryV2.Controllers
@@ -90,6 +91,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="ratingId"></param>
         /// <returns></returns>
         [HttpPut("gameRatingNulling")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteGameRating(int ratingId)
         {
             if(!await ratingRepository.RatingExistsAsync(ratingId))
@@ -119,6 +121,7 @@ namespace GameLibraryV2.Controllers
         }
 
         [HttpGet("/recalculateRating")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> TotalRatingCalculation()
         {
             var gamesRatings = await ratingRepository.GetRatingsAsync();

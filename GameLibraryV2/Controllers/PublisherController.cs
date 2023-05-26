@@ -6,6 +6,7 @@ using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models;
 using GameLibraryV2.Models.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -67,6 +68,7 @@ namespace GameLibraryV2.Controllers
         /// <param name="filterParameters"></param>
         /// <param name="pagination"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("{publisherId}/games")]
         public async Task<IActionResult> GetPublisherGames(int publisherId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
         {
@@ -115,6 +117,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="publisherCreate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpPost("createPublisher")]
         public async Task<IActionResult> CreatePublisher([FromBody] PublisherCreateDto publisherCreate)
         {
@@ -142,6 +145,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="publisherUpdate"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpPut("updatePublisher")]
         public async Task<IActionResult> UpdatePublisherInfo([FromBody] CommonUpdate publisherUpdate)
         {
@@ -173,6 +177,7 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="deletePublisher"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpDelete("deletePublisher")]
         public async Task<IActionResult> DeletePublisher([FromQuery] int deletePublisher)
         {
