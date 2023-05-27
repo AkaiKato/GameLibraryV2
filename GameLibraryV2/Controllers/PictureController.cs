@@ -14,19 +14,16 @@ namespace GameLibraryV2.Controllers
         private readonly IGameRepository gameRepository;
         private readonly IPublisherRepository publisherRepository;
         private readonly IUserRepository userRepository;
-        private readonly IWebHostEnvironment webHostEnvironment;
 
         public PictureController(IDeveloperRepository _developerRepository,
             IGameRepository _gameRepository,
             IPublisherRepository _publisherRepository,
-            IUserRepository _userRepository,
-            IWebHostEnvironment _webHostEnvironment)
+            IUserRepository _userRepository)
         {
             developerRepository = _developerRepository;
             gameRepository = _gameRepository;
             publisherRepository = _publisherRepository;
             userRepository = _userRepository;
-            webHostEnvironment = _webHostEnvironment;
         }
 
         private readonly string[] permittedExtensions = { ".jpg", ".jpeg", ".webp" };
@@ -55,25 +52,25 @@ namespace GameLibraryV2.Controllers
 
             var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             var developer = await developerRepository.GetDeveloperByIdAsync(developerId);
-            var newfilePath = $"\\Images\\developerPicture\\{unique}{ext}";
+            var newfilePath = $"/uploads/developerPicture/{unique}{ext}";
             var oldfilePath = developer.PicturePath;
-            var filePath = webHostEnvironment.WebRootPath + "\\uploads\\";
-
-            /*if(!Directory.Exists(filePath))
-                Directory.CreateDirectory(filePath);
-            using (FileStream fileStream = System.IO.File.Create(filePath + pic.FileName))*/
-                
-            using var stream = new FileStream(newfilePath, FileMode.Create);
-            pic.CopyTo(stream);
+            
+            /*if (!Directory.Exists($"{Directory.GetCurrentDirectory()}/uploads"))
+            {
+                Directory.CreateDirectory($"{Directory.GetCurrentDirectory()}/uploads/");
+                Directory.CreateDirectory($"{Directory.GetCurrentDirectory()}/uploads/developerPicture/");
+            }*/
+            using (FileStream fileStream = System.IO.File.Create($"/var" + newfilePath))
+            pic.CopyTo(fileStream);
 
             developer!.PicturePath = newfilePath;
 
             developerRepository.UpdateDeveloper(developer);
             await developerRepository.SaveDeveloperAsync();
 
-            if (oldfilePath.Trim() != $"\\Images\\developerPicture\\Def.jpg")
+            if (oldfilePath.Trim() != $"/uploads/developerPicture/Def.jpg")
             {
-                FileInfo f = new(oldfilePath);
+                FileInfo f = new($"/var" + oldfilePath);
                 f.Delete();
             }
 
@@ -104,10 +101,10 @@ namespace GameLibraryV2.Controllers
 
             var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             var developer = await developerRepository.GetDeveloperByIdAsync(developerId);
-            var newfilePath = $"\\Images\\developerMiniPicture\\{unique}{ext}";
+            var newfilePath = $"/uploads/developerMiniPicture/{unique}{ext}";
             var oldfilePath = developer.MiniPicturePath;
 
-            using var stream = new FileStream(newfilePath, FileMode.Create);
+            using var stream = new FileStream($"/var" + newfilePath, FileMode.Create);
             pic.CopyTo(stream);
 
             developer!.MiniPicturePath = newfilePath;
@@ -115,9 +112,9 @@ namespace GameLibraryV2.Controllers
             developerRepository.UpdateDeveloper(developer);
             await developerRepository.SaveDeveloperAsync();
 
-            if (oldfilePath.Trim() != $"\\Images\\developerMiniPicture\\Def.jpg")
+            if (oldfilePath.Trim() != $"/uploads/developerMiniPicture/Def.jpg")
             {
-                FileInfo f = new(oldfilePath);
+                FileInfo f = new($"/var" + oldfilePath);
                 f.Delete();
             }
 
@@ -146,10 +143,10 @@ namespace GameLibraryV2.Controllers
 
             var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             var game = await gameRepository.GetGameByIdAsync(gameId);
-            var newfilePath = $"\\Images\\gamePicture\\{unique}{ext}";
+            var newfilePath = $"/uploads/gamePicture/{unique}{ext}";
             var oldfilePath = game.PicturePath;
 
-            using var stream = new FileStream(newfilePath, FileMode.Create);
+            using var stream = new FileStream($"/var" + newfilePath, FileMode.Create);
             pic.CopyTo(stream);
 
             game!.PicturePath = newfilePath;
@@ -157,9 +154,9 @@ namespace GameLibraryV2.Controllers
             gameRepository.UpdateGame(game);
             await gameRepository.SaveGameAsync();
 
-            if (oldfilePath.Trim() != $"\\Images\\gamePicture\\Def.jpg")
+            if (oldfilePath.Trim() != $"/uploads/gamePicture/Def.jpg")
             {
-                FileInfo f = new(oldfilePath);
+                FileInfo f = new($"/var" + oldfilePath);
                 f.Delete();
             }
 
@@ -190,19 +187,19 @@ namespace GameLibraryV2.Controllers
 
             var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             var publisher = await publisherRepository.GetPublisherByIdAsync(publisherId);
-            var newfilePath = $"\\Images\\publisherPicture\\{unique}{ext}";
+            var newfilePath = $"/uploads/publisherPicture/{unique}{ext}";
             var oldfilePath = publisher.PicturePath;
 
-            using var stream = new FileStream(newfilePath, FileMode.Create);
+            using var stream = new FileStream($"/var" + newfilePath, FileMode.Create);
             pic.CopyTo(stream);
             publisher!.PicturePath = newfilePath;
 
             publisherRepository.UpdatePublisher(publisher);
             await publisherRepository.SavePublisherAsync();
 
-            if (oldfilePath.Trim() != $"\\Images\\publisherPicture\\Def.jpg")
+            if (oldfilePath.Trim() != $"/uploads/publisherPicture/Def.jpg")
             {
-                FileInfo f = new(oldfilePath);
+                FileInfo f = new($"/var" + oldfilePath);
                 f.Delete();
             }
 
@@ -234,19 +231,19 @@ namespace GameLibraryV2.Controllers
 
             var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             var publisher = await publisherRepository.GetPublisherByIdAsync(publisherId);
-            var newfilePath = $"\\Images\\publisherMiniPicture\\{unique}{ext}";
+            var newfilePath = $"/uploads/publisherMiniPicture/{unique}{ext}";
             var oldfilePath = publisher.MiniPicturePath;
 
-            using var stream = new FileStream(newfilePath, FileMode.Create);
+            using var stream = new FileStream($"/var" + newfilePath, FileMode.Create);
             pic.CopyTo(stream);
             publisher!.MiniPicturePath = newfilePath;
 
             publisherRepository.UpdatePublisher(publisher);
             await publisherRepository.SavePublisherAsync();
 
-            if (oldfilePath.Trim() != $"\\Images\\publisherMiniPicture\\Def.jpg")
+            if (oldfilePath.Trim() != $"/uploads/publisherMiniPicture/Def.jpg")
             {
-                FileInfo f = new(oldfilePath);
+                FileInfo f = new($"/var" + oldfilePath);
                 f.Delete();
             }
 
@@ -279,10 +276,10 @@ namespace GameLibraryV2.Controllers
 
             var unique = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             var user = await userRepository.GetUserByIdAsync(userId);
-            var newfilePath = $"\\Images\\userPicture\\{unique}{ext}";
+            var newfilePath = $"/uploads/userPicture/{unique}{ext}";
             var oldfilePath = user.PicturePath;
 
-            using var stream = new FileStream(newfilePath, FileMode.Create);
+            using var stream = new FileStream($"/var" + newfilePath, FileMode.Create);
             pic.CopyTo(stream);
 
             user!.PicturePath = newfilePath;
@@ -290,9 +287,9 @@ namespace GameLibraryV2.Controllers
             userRepository.UpdateUser(user);
             await userRepository.SaveUserAsync();
 
-            if (oldfilePath.Trim() != $"\\Images\\userPicture\\Def.jpg")
+            if (oldfilePath.Trim() != $"/uploads/userPicture/Def.jpg")
             {
-                FileInfo f = new(oldfilePath);
+                FileInfo f = new($"/var" + oldfilePath);
                 f.Delete();
             }
 
