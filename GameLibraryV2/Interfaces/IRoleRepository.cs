@@ -1,5 +1,4 @@
-﻿using GameLibraryV2.Data;
-using GameLibraryV2.Models.Common;
+﻿using GameLibraryV2.Models.Common;
 
 namespace GameLibraryV2.Interfaces
 {

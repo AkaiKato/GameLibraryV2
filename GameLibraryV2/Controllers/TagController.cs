@@ -9,7 +9,6 @@ using GameLibraryV2.Models.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
-using static GameLibraryV2.Helper.Enums;
 
 namespace GameLibraryV2.Controllers
 {
@@ -69,9 +68,9 @@ namespace GameLibraryV2.Controllers
         /// <param name="filterParameters"></param>
         /// <param name="pagination"></param>
         /// <returns></returns>
-        [HttpGet("{tagId}/games")]
+        [HttpPost("{tagId}/games")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetTagGames(int tagId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
+        public async Task<IActionResult> GetTagGames(int tagId, [FromBody] FilterParameters filterParameters)
         {
             if (!await tagRepository.TagExistsAsync(tagId))
                 return NotFound($"Not found tag with such id {tagId}");
@@ -94,7 +93,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = await gameRepository.GetGamesByTagAsync(tagId, filterParameters, pagination);
+            var games = await gameRepository.GetGamesByTagAsync(tagId, filterParameters);
 
             var metadata = new
             {

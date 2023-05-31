@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using FluentAssertions;
 using GameLibraryV2.Controllers;
 using GameLibraryV2.Dto.Common;

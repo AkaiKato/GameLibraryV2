@@ -7,7 +7,6 @@ using GameLibraryV2.Models.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.ConstrainedExecution;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -44,7 +43,7 @@ namespace GameLibraryV2.Controllers
             if (await userRepository.HasNicknameAsync(userCreate.Nickname))
                 return BadRequest("User with this Nickname already exists");
 
-            if (!Enum.GetNames(typeof(Enums.Genders)).Contains(userCreate.Gender))
+            if (!Enum.GetNames(typeof(Genders)).Contains(userCreate.Gender.ToLower()))
                 return BadRequest("Unsupported Gender");
 
             if (!ModelState.IsValid)

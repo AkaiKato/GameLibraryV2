@@ -1,14 +1,7 @@
 ﻿using AutoMapper;
 using GameLibraryV2.Dto.Common;
-using GameLibraryV2.Dto.smallInfo;
-using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
-using GameLibraryV2.Models;
-using GameLibraryV2.Models.Common;
-using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Text.Json;
 using static GameLibraryV2.Helper.Enums;
 
 namespace GameLibraryV2.Controllers
@@ -96,6 +89,54 @@ namespace GameLibraryV2.Controllers
             };
 
             return Ok(Filter);
+        }
+
+        [HttpGet("consts")]
+        public async Task<IActionResult> GetConsts()
+        {
+            var status = new List<string>
+            {
+                Status.announсed.ToString(),
+                Status.released.ToString()
+            };
+
+            var type = new List<string>
+            {
+                Types.game.ToString(),
+                Types.dlc.ToString()
+            };
+
+            var list = new List<string>
+            {
+                List.planned.ToString(),
+                List.playing.ToString(),
+                List.completed.ToString(),
+                List.dropped.ToString(),
+                List.onhold.ToString(),
+            };
+
+            var genders = new List<string>
+            {
+                Genders.male.ToString(),
+                Genders.female.ToString(),
+            };
+
+            var roles = new List<string>
+            {
+                Roles.user.ToString(),
+                Roles.admin.ToString(),
+            };
+
+            var consts = new
+            {
+                list,
+                type,
+                genders,
+                roles,
+                status,
+            };
+
+            return Ok(consts);
         }
     }
 }

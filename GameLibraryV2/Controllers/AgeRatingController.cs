@@ -73,8 +73,8 @@ namespace GameLibraryV2.Controllers
         /// <param name="pagination"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet("{ageRatingId}/games")]
-        public async Task<IActionResult> GetAgeRatingGames(int ageRatingId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
+        [HttpPost("{ageRatingId}/games")]
+        public async Task<IActionResult> GetAgeRatingGames(int ageRatingId, [FromBody] FilterParameters filterParameters)
         {
             if(!await ageRatingRepository.AgeRatingExistsAsync(ageRatingId))
                 return NotFound($"Not found AgeRating with such id {ageRatingId}");
@@ -97,7 +97,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = await gameRepository.GetGamesByAgeRatingAsync(ageRatingId, filterParameters, pagination);
+            var games = await gameRepository.GetGamesByAgeRatingAsync(ageRatingId, filterParameters);
 
             var metadata = new
             {

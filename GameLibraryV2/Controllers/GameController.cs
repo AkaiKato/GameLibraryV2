@@ -71,8 +71,8 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet("games")]
-        public async Task<IActionResult> GetGames([FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
+        [HttpPost("games")]
+        public async Task<IActionResult> GetGames([FromBody] FilterParameters filterParameters)
         {
             if(!filterParameters.ValidYearRange)
                 return BadRequest("Max release year cannot be less than min year");
@@ -92,7 +92,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = await gameRepository.GetGamesAsync(filterParameters, pagination);
+            var games = await gameRepository.GetGamesAsync(filterParameters);
 
             logger.Log(LogLevel.Information, $"Requested Path: {Request.Path}");
             logger.LogInformation(filterParameters.ToString());

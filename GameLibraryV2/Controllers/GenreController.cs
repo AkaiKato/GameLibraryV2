@@ -9,7 +9,6 @@ using GameLibraryV2.Models.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
-using static GameLibraryV2.Helper.Enums;
 
 namespace GameLibraryV2.Controllers
 {
@@ -70,8 +69,8 @@ namespace GameLibraryV2.Controllers
         /// <param name="pagination"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet("{genreId}/games")]
-        public async Task<IActionResult> GetGenreGames(int genreId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
+        [HttpPost("{genreId}/games")]
+        public async Task<IActionResult> GetGenreGames(int genreId, [FromBody] FilterParameters filterParameters)
         {
             if (!await genreRepository.GenreExistsAsync(genreId))
                 return NotFound($"Not found genre with such id {genreId}");
@@ -94,7 +93,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = await gameRepository.GetGamesByGenreAsync(genreId, filterParameters, pagination);
+            var games = await gameRepository.GetGamesByGenreAsync(genreId, filterParameters);
 
             var metadata = new
             {

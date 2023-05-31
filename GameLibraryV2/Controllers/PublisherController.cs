@@ -69,8 +69,8 @@ namespace GameLibraryV2.Controllers
         /// <param name="pagination"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet("{publisherId}/games")]
-        public async Task<IActionResult> GetPublisherGames(int publisherId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
+        [HttpPost("{publisherId}/games")]
+        public async Task<IActionResult> GetPublisherGames(int publisherId, [FromBody] FilterParameters filterParameters)
         {
             if (!await publisherRepository.PublisherExistsAsync(publisherId))
                 return NotFound($"Not found publisher with such id {publisherId}");
@@ -93,7 +93,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = await gameRepository.GetGamesByPublisherAsync(publisherId, filterParameters, pagination);
+            var games = await gameRepository.GetGamesByPublisherAsync(publisherId, filterParameters);
 
             var metadata = new
             {

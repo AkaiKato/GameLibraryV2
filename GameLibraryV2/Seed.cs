@@ -77,7 +77,7 @@ namespace GameLibraryV2
                     Gender = "Male",
                     PicturePath = $"/uploads/userPicture/Def.jpg",
                     RegistrationdDate = DateOnly.FromDateTime(DateTime.Now),
-                    UserRoles = new List<Role>() { adminRole },
+                    UserRoles = new List<Role>() { adminRole, userRole },
                 };
                 //Valera
                 var uservalera = new User()

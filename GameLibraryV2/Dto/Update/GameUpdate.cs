@@ -1,6 +1,4 @@
-﻿using GameLibraryV2.Dto.Common;
-
-namespace GameLibraryV2.Dto.Update
+﻿namespace GameLibraryV2.Dto.Update
 {
     public class GameUpdate
     {

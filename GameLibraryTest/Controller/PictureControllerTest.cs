@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using FluentAssertions;
+﻿using FluentAssertions;
 using GameLibraryV2.Controllers;
 using GameLibraryV2.Interfaces;
-using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

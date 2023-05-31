@@ -16,7 +16,7 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 // Add services to the container.
 
 builder.Services.AddControllers();
-
+builder.Services.AddCors();
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
@@ -129,6 +129,8 @@ app.UseSwagger();
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
     });
 //}
+
+app.UseCors(c => c.AllowAnyOrigin());
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {

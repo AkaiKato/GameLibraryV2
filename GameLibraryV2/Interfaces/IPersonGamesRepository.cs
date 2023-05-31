@@ -1,7 +1,5 @@
-﻿using GameLibraryV2.Data;
-using GameLibraryV2.Dto.Statistic;
+﻿using GameLibraryV2.Dto.Statistic;
 using GameLibraryV2.Models.Common;
-using System.Threading.Tasks;
 
 namespace GameLibraryV2.Interfaces
 {

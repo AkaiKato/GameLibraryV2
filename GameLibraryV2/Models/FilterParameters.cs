@@ -2,7 +2,7 @@
 
 namespace GameLibraryV2.Models
 {
-    public class FilterParameters
+    public class FilterParameters : Pagination
     {
         public int MinYearOfRelease { get; set; } = 1800;
 
@@ -72,7 +72,9 @@ namespace GameLibraryV2.Models
             for (int i = 0; i < type.Length; i++)
             {
                 if (type[i] == null || !hash.Contains(type[i].Trim().ToLower()))
-                    return false;
+                {
+                        return false;
+                }
             }
 
             return true;

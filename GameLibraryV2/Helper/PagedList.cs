@@ -22,12 +22,12 @@ namespace GameLibraryV2.Helper
             AddRange(item);
         }
 
-        public static async Task<PagedList<T>> ToPagedList(IQueryable<T> source, Pagination pagination) 
+        public static async Task<PagedList<T>> ToPagedList(IQueryable<T> source, FilterParameters filterParameters) 
         { 
             var count = source.Count();
-            var items = source.Skip((pagination.PageNumber - 1) * pagination.PageSize).Take(pagination.PageSize);
+            var items = source.Skip((filterParameters.PageNumber - 1) * filterParameters.PageSize).Take(filterParameters.PageSize);
 
-            return new PagedList<T>(await items.ToListAsync(), count, pagination.PageNumber, pagination.PageSize);
+            return new PagedList<T>(await items.ToListAsync(), count, filterParameters.PageNumber, filterParameters.PageSize);
         }
     }
 }

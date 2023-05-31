@@ -73,8 +73,8 @@ namespace GameLibraryV2.Controllers
         /// <param name="pagination"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet("{platformId}/games")]
-        public async Task<IActionResult> GetPlatformGame(int platformId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
+        [HttpPost("{platformId}/games")]
+        public async Task<IActionResult> GetPlatformGame(int platformId, [FromBody] FilterParameters filterParameters)
         {
             if (!await platformRepository.PlatformExistAsync(platformId))
                 return NotFound($"Not found platform with such id {platformId}");
@@ -97,7 +97,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = await gameRepository.GetGameByPlatformAsync(platformId, filterParameters, pagination);
+            var games = await gameRepository.GetGameByPlatformAsync(platformId, filterParameters);
 
             var metadata = new
             {

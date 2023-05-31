@@ -69,8 +69,8 @@ namespace GameLibraryV2.Controllers
         /// <param name="pagination"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet("{developerId}/games")]
-        public async Task<IActionResult> GetDeveloperGames(int developerId, [FromQuery] FilterParameters filterParameters, [FromQuery] Pagination pagination)
+        [HttpPost("{developerId}/games")]
+        public async Task<IActionResult> GetDeveloperGames(int developerId, [FromBody] FilterParameters filterParameters)
         {
             if (!await developerRepository.DeveloperExistsAsync(developerId))
                 return NotFound("Not found Developer with such id {ageRatingId}");
@@ -93,7 +93,7 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var games = await gameRepository.GetGamesByDeveloperAsync(developerId, filterParameters, pagination);
+            var games = await gameRepository.GetGamesByDeveloperAsync(developerId, filterParameters);
 
             var metadata = new
             {

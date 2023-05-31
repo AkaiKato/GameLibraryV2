@@ -1,6 +1,4 @@
-﻿using GameLibraryV2.Models;
-
-namespace GameLibraryV2.Dto.Common
+﻿namespace GameLibraryV2.Dto.Common
 {
     public class UserDto
     {

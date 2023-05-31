@@ -1,7 +1,6 @@
 ﻿using GameLibraryV2.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 
 namespace GameLibraryV2.Controllers
 {
@@ -54,12 +53,7 @@ namespace GameLibraryV2.Controllers
             var developer = await developerRepository.GetDeveloperByIdAsync(developerId);
             var newfilePath = $"/uploads/developerPicture/{unique}{ext}";
             var oldfilePath = developer.PicturePath;
-            
-            /*if (!Directory.Exists($"{Directory.GetCurrentDirectory()}/uploads"))
-            {
-                Directory.CreateDirectory($"{Directory.GetCurrentDirectory()}/uploads/");
-                Directory.CreateDirectory($"{Directory.GetCurrentDirectory()}/uploads/developerPicture/");
-            }*/
+
             using (FileStream fileStream = System.IO.File.Create($"/var" + newfilePath))
             pic.CopyTo(fileStream);
 
