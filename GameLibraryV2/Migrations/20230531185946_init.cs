@@ -437,7 +437,7 @@ namespace GameLibraryV2.Migrations
                     UserId = table.Column<int>(type: "integer", nullable: false),
                     Rating = table.Column<int>(type: "integer", nullable: false),
                     Text = table.Column<string>(type: "text", nullable: false),
-                    PublishDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    PublishDate = table.Column<DateOnly>(type: "date", nullable: false),
                     ReviewRating = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>

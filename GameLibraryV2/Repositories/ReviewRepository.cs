@@ -49,7 +49,7 @@ namespace GameLibraryV2.Repositories
 
         public async Task<IList<Review>> GetGameReviewsAsync(int gameId)
         {
-            return await dataContext.Reviews.Include(u => u.User).Where(d => d.Game.Id == gameId).ToListAsync();
+            return await dataContext.Reviews.Include(u => u.User).Include(g => g.Game).Where(d => d.Game.Id == gameId).ToListAsync();
         }
 
         public async Task<bool> ReviewExistsAsync(int reviewId)

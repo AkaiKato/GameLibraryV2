@@ -14,7 +14,7 @@ namespace GameLibraryV2.Dto.Common
 
         public string Text { get; set; } = null!;
 
-        public DateTime PublishDate { get; set; }
+        public DateOnly PublishDate { get; set; }
 
         public int ReviewRating { get; set; }
     }

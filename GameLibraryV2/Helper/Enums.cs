@@ -32,7 +32,7 @@
         public enum Status
         {
             released,
-            announсed
+            announced
         }
     }
 }

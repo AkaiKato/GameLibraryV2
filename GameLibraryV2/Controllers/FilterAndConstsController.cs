@@ -49,7 +49,7 @@ namespace GameLibraryV2.Controllers
 
             var status = new List<string>
             {
-                Status.announсed.ToString(),
+                Status.announced.ToString(),
                 Status.released.ToString()
             };
 
@@ -96,7 +96,7 @@ namespace GameLibraryV2.Controllers
         {
             var status = new List<string>
             {
-                Status.announсed.ToString(),
+                Status.announced.ToString(),
                 Status.released.ToString()
             };
 

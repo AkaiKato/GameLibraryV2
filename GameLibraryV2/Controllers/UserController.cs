@@ -180,9 +180,13 @@ namespace GameLibraryV2.Controllers
                 await friendRepository.SaveFriendAsync();
             }
 
-            if (user.PicturePath != $"\\Images\\userPicture\\Def.jpg")
+            var t = AppContext.BaseDirectory;
+            var tt = Directory.GetParent(t);
+            var ttt = Directory.GetParent(tt!.FullName);
+
+            if (user.PicturePath != $"/uploads/userPicture/Def.jpg")
             {
-                FileInfo f = new(user.PicturePath);
+                FileInfo f = new(ttt!.FullName + user.PicturePath);
                 f.Delete();
             }
 

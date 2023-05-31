@@ -5,8 +5,10 @@ using GameLibraryV2.Dto.Update;
 using GameLibraryV2.Helper;
 using GameLibraryV2.Interfaces;
 using GameLibraryV2.Models.Common;
+using GameLibraryV2.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using static GameLibraryV2.Helper.Enums;
 
 namespace GameLibraryV2.Controllers
@@ -41,7 +43,6 @@ namespace GameLibraryV2.Controllers
         /// Return all Person Games
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "user")]
         [HttpGet("{userId}/persongames")]
         public async Task<IActionResult> GetPersonGames(int userId)
         {
@@ -62,7 +63,6 @@ namespace GameLibraryV2.Controllers
         /// <param name="userId"></param>
         /// <param name="list"></param>
         /// <returns></returns>
-        [Authorize(Roles = "user")]
         [HttpGet("{userId}/persongamesbylist")]
         public async Task<IActionResult> GetPersonGamesByList(int userId, string list) 
         {
@@ -75,6 +75,17 @@ namespace GameLibraryV2.Controllers
             var PersonGamesByList = mapper.Map<List<PersonGameDto>>(await personGameRepository.PersonGamesByListAsync(userId, list));
 
             return Ok(PersonGamesByList);
+        }
+
+        [HttpGet("userHaveThisPersonGame")]
+        public async Task<IActionResult> UserHaveThisPersonGame(int userId, int gameId)
+        {
+            if (!await personGameRepository.PersonGameExistsAsync(userId, gameId))
+                return NotFound($"Not found in person Game");
+
+            var PersonGame = mapper.Map<PersonGameDto>(await personGameRepository.GetPersonGameByUserIdAndGameIdAsync(userId, gameId));
+
+            return Ok(PersonGame);
         }
 
         /// <summary>

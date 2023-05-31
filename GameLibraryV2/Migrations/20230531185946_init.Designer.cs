@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GameLibraryV2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230523130709_init")]
+    [Migration("20230531185946_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -369,8 +369,8 @@ namespace GameLibraryV2.Migrations
                     b.Property<int>("GameId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("PublishDate")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateOnly>("PublishDate")
+                        .HasColumnType("date");
 
                     b.Property<int>("Rating")
                         .HasColumnType("integer");

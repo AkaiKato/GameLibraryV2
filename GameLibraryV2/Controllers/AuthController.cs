@@ -56,7 +56,7 @@ namespace GameLibraryV2.Controllers
                 Nickname = userCreate.Nickname,
                 Age = userCreate.Age,
                 Gender = userCreate.Gender,
-                PicturePath = $"\\Images\\userPicture\\Def.jpg",
+                PicturePath = $"/uploads/userPicture/Def.jpg",
                 RegistrationdDate = DateOnly.FromDateTime(DateTime.Now),
                 UserGames = new List<PersonGame>() { },
                 UserRoles = new List<Role>() { await roleRepository.GetRoleByNameAsync(Enums.Roles.user.ToString()) },
@@ -169,7 +169,7 @@ namespace GameLibraryV2.Controllers
 
             var token = new JwtSecurityToken(
                     claims: claims,
-                    expires: DateTime.Now.AddMinutes(5),
+                    expires: DateTime.Now.AddMinutes(555),
                     signingCredentials: creds
                 );
 

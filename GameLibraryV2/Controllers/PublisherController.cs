@@ -66,7 +66,6 @@ namespace GameLibraryV2.Controllers
         /// </summary>
         /// <param name="publisherId"></param>
         /// <param name="filterParameters"></param>
-        /// <param name="pagination"></param>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("{publisherId}/games")]
@@ -134,6 +133,9 @@ namespace GameLibraryV2.Controllers
 
             var publisherMap = mapper.Map<Publisher>(publisherCreate);
 
+            publisherMap.PicturePath = "/uploads/publisherPicture/Def.jpg";
+            publisherMap.MiniPicturePath = "/uploads/publisherMiniPicture/Def.jpg";
+
             publisherRepository.CreatePublisher(publisherMap);
             await publisherRepository.SavePublisherAsync();
 
@@ -189,15 +191,19 @@ namespace GameLibraryV2.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (publisher.PicturePath != $"\\Images\\publisherPicture\\Def.jpg")
+            var t = AppContext.BaseDirectory;
+            var tt = Directory.GetParent(t);
+            var ttt = Directory.GetParent(tt!.FullName);
+
+            if (publisher.PicturePath != $"/uploads/publisherPicture/Def.jpg")
             {
-                FileInfo f = new(publisher.PicturePath);
+                FileInfo f = new(ttt!.FullName + publisher.PicturePath);
                 f.Delete();
             }
 
-            if (publisher.MiniPicturePath != $"\\Images\\publisherMiniPicture\\Def.jpg")
+            if (publisher.MiniPicturePath != $"/uploads/publisherMiniPicture/Def.jpg")
             {
-                FileInfo f = new(publisher.MiniPicturePath);
+                FileInfo f = new(ttt!.FullName + publisher.MiniPicturePath);
                 f.Delete();
             }
 

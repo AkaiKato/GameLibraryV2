@@ -59,8 +59,7 @@ namespace GameLibraryTest.Controller
             var expectedMapped = mapper.Map<List<GameSmallListDto>>(expectedItems);
 
 
-            gameRepositoryMock.Setup(r => r.GetGamesAsync(It.IsAny<FilterParameters>(), 
-                It.IsAny<Pagination>())).ReturnsAsync(expectedPagedList);
+            gameRepositoryMock.Setup(r => r.GetGamesAsync(It.IsAny<FilterParameters>())).ReturnsAsync(expectedPagedList);
             mapperMock.Setup(r => r.Map<List<GameSmallListDto>>(expectedPagedList)).Returns(expectedMapped);
 
             var controller = GameControllerCreate();
@@ -69,7 +68,7 @@ namespace GameLibraryTest.Controller
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = await controller.GetGames(filter.Object, pagination.Object);
+            var result = await controller.GetGames(filter.Object);
 
             var okRes = result as OkObjectResult;
             var verify = (okRes!.Value as List<GameSmallListDto>);

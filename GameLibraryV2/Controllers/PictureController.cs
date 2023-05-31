@@ -1,6 +1,7 @@
 ﻿using GameLibraryV2.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting.Internal;
 
 namespace GameLibraryV2.Controllers
 {
@@ -54,7 +55,11 @@ namespace GameLibraryV2.Controllers
             var newfilePath = $"/uploads/developerPicture/{unique}{ext}";
             var oldfilePath = developer.PicturePath;
 
-            using (FileStream fileStream = System.IO.File.Create($"/var" + newfilePath))
+            var t = AppContext.BaseDirectory;
+            var tt = Directory.GetParent(t);
+            var ttt = Directory.GetParent(tt!.FullName);
+
+            using (FileStream fileStream = System.IO.File.Create(ttt!.FullName + newfilePath))
             pic.CopyTo(fileStream);
 
             developer!.PicturePath = newfilePath;
@@ -64,7 +69,7 @@ namespace GameLibraryV2.Controllers
 
             if (oldfilePath.Trim() != $"/uploads/developerPicture/Def.jpg")
             {
-                FileInfo f = new($"/var" + oldfilePath);
+                FileInfo f = new(ttt.FullName + oldfilePath);
                 f.Delete();
             }
 
@@ -98,8 +103,12 @@ namespace GameLibraryV2.Controllers
             var newfilePath = $"/uploads/developerMiniPicture/{unique}{ext}";
             var oldfilePath = developer.MiniPicturePath;
 
-            using var stream = new FileStream($"/var" + newfilePath, FileMode.Create);
-            pic.CopyTo(stream);
+            var t = AppContext.BaseDirectory;
+            var tt = Directory.GetParent(t);
+            var ttt = Directory.GetParent(tt!.FullName);
+
+            using (FileStream fileStream = System.IO.File.Create(ttt!.FullName + newfilePath))
+            pic.CopyTo(fileStream);
 
             developer!.MiniPicturePath = newfilePath;
 
@@ -108,7 +117,7 @@ namespace GameLibraryV2.Controllers
 
             if (oldfilePath.Trim() != $"/uploads/developerMiniPicture/Def.jpg")
             {
-                FileInfo f = new($"/var" + oldfilePath);
+                FileInfo f = new(ttt!.FullName + oldfilePath);
                 f.Delete();
             }
 
@@ -140,8 +149,12 @@ namespace GameLibraryV2.Controllers
             var newfilePath = $"/uploads/gamePicture/{unique}{ext}";
             var oldfilePath = game.PicturePath;
 
-            using var stream = new FileStream($"/var" + newfilePath, FileMode.Create);
-            pic.CopyTo(stream);
+            var t = AppContext.BaseDirectory;
+            var tt = Directory.GetParent(t);
+            var ttt = Directory.GetParent(tt!.FullName);
+
+            using (FileStream fileStream = System.IO.File.Create(ttt!.FullName + newfilePath))
+            pic.CopyTo(fileStream);
 
             game!.PicturePath = newfilePath;
 
@@ -150,7 +163,7 @@ namespace GameLibraryV2.Controllers
 
             if (oldfilePath.Trim() != $"/uploads/gamePicture/Def.jpg")
             {
-                FileInfo f = new($"/var" + oldfilePath);
+                FileInfo f = new(ttt!.FullName + oldfilePath);
                 f.Delete();
             }
 
@@ -184,8 +197,13 @@ namespace GameLibraryV2.Controllers
             var newfilePath = $"/uploads/publisherPicture/{unique}{ext}";
             var oldfilePath = publisher.PicturePath;
 
-            using var stream = new FileStream($"/var" + newfilePath, FileMode.Create);
-            pic.CopyTo(stream);
+            var t = AppContext.BaseDirectory;
+            var tt = Directory.GetParent(t);
+            var ttt = Directory.GetParent(tt!.FullName);
+
+            using (FileStream fileStream = System.IO.File.Create(ttt!.FullName + newfilePath))
+            pic.CopyTo(fileStream);
+
             publisher!.PicturePath = newfilePath;
 
             publisherRepository.UpdatePublisher(publisher);
@@ -193,7 +211,7 @@ namespace GameLibraryV2.Controllers
 
             if (oldfilePath.Trim() != $"/uploads/publisherPicture/Def.jpg")
             {
-                FileInfo f = new($"/var" + oldfilePath);
+                FileInfo f = new(ttt!.FullName + oldfilePath);
                 f.Delete();
             }
 
@@ -228,8 +246,13 @@ namespace GameLibraryV2.Controllers
             var newfilePath = $"/uploads/publisherMiniPicture/{unique}{ext}";
             var oldfilePath = publisher.MiniPicturePath;
 
-            using var stream = new FileStream($"/var" + newfilePath, FileMode.Create);
-            pic.CopyTo(stream);
+            var t = AppContext.BaseDirectory;
+            var tt = Directory.GetParent(t);
+            var ttt = Directory.GetParent(tt!.FullName);
+
+            using (FileStream fileStream = System.IO.File.Create(ttt!.FullName + newfilePath))
+            pic.CopyTo(fileStream);
+
             publisher!.MiniPicturePath = newfilePath;
 
             publisherRepository.UpdatePublisher(publisher);
@@ -237,7 +260,7 @@ namespace GameLibraryV2.Controllers
 
             if (oldfilePath.Trim() != $"/uploads/publisherMiniPicture/Def.jpg")
             {
-                FileInfo f = new($"/var" + oldfilePath);
+                FileInfo f = new(ttt!.FullName + oldfilePath);
                 f.Delete();
             }
 
@@ -273,8 +296,12 @@ namespace GameLibraryV2.Controllers
             var newfilePath = $"/uploads/userPicture/{unique}{ext}";
             var oldfilePath = user.PicturePath;
 
-            using var stream = new FileStream($"/var" + newfilePath, FileMode.Create);
-            pic.CopyTo(stream);
+            var t = AppContext.BaseDirectory;
+            var tt = Directory.GetParent(t);
+            var ttt = Directory.GetParent(tt!.FullName);
+
+            using (FileStream fileStream = System.IO.File.Create(ttt!.FullName + newfilePath))
+            pic.CopyTo(fileStream);
 
             user!.PicturePath = newfilePath;
 
@@ -283,7 +310,7 @@ namespace GameLibraryV2.Controllers
 
             if (oldfilePath.Trim() != $"/uploads/userPicture/Def.jpg")
             {
-                FileInfo f = new($"/var" + oldfilePath);
+                FileInfo f = new(ttt!.FullName + oldfilePath);
                 f.Delete();
             }
 

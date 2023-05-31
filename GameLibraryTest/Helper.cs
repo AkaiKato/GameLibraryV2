@@ -183,7 +183,7 @@ namespace GameLibraryTest
                 User = CreateRandomUser(),
                 Rating = rand.Next(1, 10),
                 Text = RandomString(50),
-                PublishDate = DateTime.Now,
+                PublishDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 ReviewRating = rand.Next(),
             };
         }

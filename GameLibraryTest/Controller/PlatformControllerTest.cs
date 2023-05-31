@@ -100,7 +100,7 @@ namespace GameLibraryTest.Controller
 
             var controller = PlatformControllerCreate();
 
-            var result = await controller.GetPlatformGame(rand.Next(100), filter.Object, pagination.Object);
+            var result = await controller.GetPlatformGame(rand.Next(100), filter.Object);
 
             result.Should().BeOfType<NotFoundObjectResult>();
         }
@@ -129,7 +129,7 @@ namespace GameLibraryTest.Controller
 
             platformRepositoryMock.Setup(r => r.PlatformExistAsync(It.IsAny<int>())).ReturnsAsync(true);
             gameRepositoryMock.Setup(r => r.GetGameByPlatformAsync(It.IsAny<int>(),
-                It.IsAny<FilterParameters>(), It.IsAny<Pagination>())).ReturnsAsync(expectedPagedList);
+                It.IsAny<FilterParameters>())).ReturnsAsync(expectedPagedList);
             mapperMock.Setup(r => r.Map<List<GameSmallListDto>>(expectedPagedList)).Returns(expectedMapped);
 
             var controller = PlatformControllerCreate();
@@ -138,7 +138,7 @@ namespace GameLibraryTest.Controller
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = await controller.GetPlatformGame(rand.Next(100), filter.Object, pagination.Object);
+            var result = await controller.GetPlatformGame(rand.Next(100), filter.Object);
 
             var okRes = result as OkObjectResult;
             var verify = (okRes!.Value as List<GameSmallListDto>);

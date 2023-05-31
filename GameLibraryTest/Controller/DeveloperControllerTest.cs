@@ -101,7 +101,7 @@ namespace GameLibraryTest.Controller
 
             var controller = DeveloperControllerCreate();
 
-            var result = await controller.GetDeveloperGames(rand.Next(100), filter.Object, pagination.Object);
+            var result = await controller.GetDeveloperGames(rand.Next(100), filter.Object);
 
             result.Should().BeOfType<NotFoundObjectResult>();
         }
@@ -131,7 +131,7 @@ namespace GameLibraryTest.Controller
 
             developerRepositoryMock.Setup(r => r.DeveloperExistsAsync(It.IsAny<int>())).ReturnsAsync(true);
             gameRepositoryMock.Setup(r => r.GetGamesByDeveloperAsync(It.IsAny<int>(),
-                It.IsAny<FilterParameters>(), It.IsAny<Pagination>())).ReturnsAsync(expectedPagedList);
+                It.IsAny<FilterParameters>())).ReturnsAsync(expectedPagedList);
             mapperMock.Setup(r => r.Map<List<GameSmallListDto>>(expectedPagedList)).Returns(expectedMapped);
 
             var controller = DeveloperControllerCreate();
@@ -140,7 +140,7 @@ namespace GameLibraryTest.Controller
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = await controller.GetDeveloperGames(rand.Next(100), filter.Object, pagination.Object);
+            var result = await controller.GetDeveloperGames(rand.Next(100), filter.Object);
 
             var okRes = result as OkObjectResult;
             var verify = (okRes!.Value as List<GameSmallListDto>);
@@ -250,8 +250,6 @@ namespace GameLibraryTest.Controller
             return new DeveloperCreateDto
             {
                 Name = help.RandomString(20),
-                PicturePath = help.RandomString(20),
-                MiniPicturePath = help.RandomString(20),
             };
         }
     }

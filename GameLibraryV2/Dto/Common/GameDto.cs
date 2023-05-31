@@ -31,7 +31,7 @@ namespace GameLibraryV2.Dto.Common
 
         public IList<SystemRequirements>? SystemRequirements { get; set; }
 
-        public IList<DLCDto>? DLCs { get; set; }
+        public IList<DLCDto>? Dlcs { get; set; }
 
         public virtual IList<DeveloperDto> Developers { get; set; } = null!;
 

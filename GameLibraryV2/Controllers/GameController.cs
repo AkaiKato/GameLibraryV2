@@ -232,7 +232,7 @@ namespace GameLibraryV2.Controllers
 
             
             gameMap.AgeRating = await ageRatingRepository.GetAgeRatingByIdAsync(gameCreate.AgeRating);
-            gameMap.PicturePath = $"\\Images\\gamePicture\\Def.jpg";
+            gameMap.PicturePath = $"/uploads/gamePicture/Def.jpg";
             gameMap.Reviews = new List<Review>();
             gameMap.DLCs = new List<DLC>();
             gameMap.Rating = new Rating();
@@ -370,9 +370,13 @@ namespace GameLibraryV2.Controllers
                 await dlcRepository.SaveDLCAsync();
             }
 
-            if (game.PicturePath != $"\\Images\\gamePicture\\Def.jpg")
+            var t = AppContext.BaseDirectory;
+            var tt = Directory.GetParent(t);
+            var ttt = Directory.GetParent(tt!.FullName);
+
+            if (game.PicturePath != $"/uploads/gamePicture/Def.jpg")
             {
-                FileInfo f = new(game.PicturePath);
+                FileInfo f = new(ttt!.FullName + game.PicturePath);
                 f.Delete();
             }
             

@@ -177,7 +177,7 @@ namespace GameLibraryTest.Controller
             {
                 UserId = rand.Next(100),
                 GameId = rand.Next(100),
-                PublishDate = DateTime.UtcNow,
+                PublishDate = DateOnly.FromDateTime(DateTime.UtcNow),
             };
         }
 

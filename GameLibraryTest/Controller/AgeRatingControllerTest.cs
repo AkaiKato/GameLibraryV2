@@ -83,7 +83,7 @@ namespace GameLibraryTest.Controller
 
             var controller = AgeRatingControllerCreate();
 
-            var result = await controller.GetAgeRatingGames(rand.Next(100), filter.Object, pagination.Object);
+            var result = await controller.GetAgeRatingGames(rand.Next(100), filter.Object);
 
             result.Should().BeOfType<NotFoundObjectResult>();
         }
@@ -112,7 +112,7 @@ namespace GameLibraryTest.Controller
 
             ageRatingRepositoryStub.Setup(r => r.AgeRatingExistsAsync(It.IsAny<int>())).ReturnsAsync(true);
             gameRepositoryStub.Setup(r => r.GetGamesByAgeRatingAsync(It.IsAny<int>(), 
-                It.IsAny<FilterParameters>(), It.IsAny<Pagination>())).ReturnsAsync(expectedPagedList);
+                It.IsAny<FilterParameters>())).ReturnsAsync(expectedPagedList);
             mapperMock.Setup(r => r.Map<List<GameSmallListDto>>(expectedPagedList)).Returns(expectedMapped);
 
             var controller = AgeRatingControllerCreate();
@@ -121,7 +121,7 @@ namespace GameLibraryTest.Controller
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = await controller.GetAgeRatingGames(rand.Next(100), filter.Object, pagination.Object);
+            var result = await controller.GetAgeRatingGames(rand.Next(100), filter.Object);
 
             var okRes = result as OkObjectResult;
             var verify = (okRes!.Value as List<GameSmallListDto>);

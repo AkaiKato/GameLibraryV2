@@ -134,6 +134,9 @@ namespace GameLibraryV2.Controllers
 
             var developerMap = mapper.Map<Developer>(developerCreate);
 
+            developerMap.PicturePath = "/uploads/developerPicture/Def.jpg";
+            developerMap.MiniPicturePath = "/uploads/developerMiniPicture/Def.jpg";
+
             developerRepository.CreateDeveloper(developerMap);
             await developerRepository.SaveDeveloperAsync();
 
@@ -189,15 +192,19 @@ namespace GameLibraryV2.Controllers
 
             var developer = await developerRepository.GetDeveloperByIdAsync(developerDelete);
 
-            if (developer.PicturePath != $"\\Images\\developerPicture\\Def.jpg")
+            var t = AppContext.BaseDirectory;
+            var tt = Directory.GetParent(t);
+            var ttt = Directory.GetParent(tt!.FullName);
+
+            if (developer.PicturePath != "/uploads/developerPicture/Def.jpg")
             {
-                FileInfo f = new(developer.PicturePath);
+                FileInfo f = new(ttt!.FullName + developer.PicturePath);
                 f.Delete();
             }
 
-            if (developer.MiniPicturePath != $"\\Images\\developerMiniPicture\\Def.jpg")
+            if (developer.MiniPicturePath != "/uploads/developerMiniPicture/Def.jpg")
             {
-                FileInfo f = new(developer.MiniPicturePath);
+                FileInfo f = new(ttt!.FullName + developer.MiniPicturePath);
                 f.Delete();
             }
 

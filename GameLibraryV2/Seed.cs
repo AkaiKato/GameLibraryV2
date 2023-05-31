@@ -141,43 +141,43 @@ namespace GameLibraryV2
                 {
                     Name = "Team Cherry",
                     Description = "Team Cherry is a small indie games team in Adelaide, South Australia. Our mission is to build crazy and exciting worlds for you to explore and conquer",
-                    PicturePath = $"/uploads/developerPicture/Def.jpg",
-                    MiniPicturePath = $"/uploads/developerMiniPicture/Def.jpg",
+                    PicturePath = $"/uploads/developerPicture/1685553276738.jpg",
+                    MiniPicturePath = $"/uploads/developerMiniPicture/1685554222250.jpg",
                 };
                 var braceYourSelfGamesDev = new Developer()
                 {
                     Name = "Brace Yourself Games",
                     Description = "indie Game company",
-                    PicturePath = $"/uploads/developerPicture/Def.jpg",
-                    MiniPicturePath = $"/uploads/developerMiniPicture/Def.jpg",
+                    PicturePath = $"/uploads/developerPicture/1685554494626.jpg",
+                    MiniPicturePath = $"/uploads/developerMiniPicture/1685554902676.jpg",
                 };
                 var kleiEntertaimentDev = new Developer()
                 {
-                    Name = "Klei Entertaiment",
+                    Name = "Klei Entertainment",
                     Description = "Cool dev",
-                    PicturePath = $"/uploads/developerPicture/Def.jpg",
-                    MiniPicturePath = $"/uploads/developerMiniPicture/Def.jpg",
+                    PicturePath = $"/uploads/developerPicture/1685555146314.jpg",
+                    MiniPicturePath = $"/uploads/developerMiniPicture/1685555350713.jpg",
                 };
                 var dodgeRollDev = new Developer()
                 {
                     Name = "Dodge Roll",
                     Description = "developers of gangeon series",
-                    PicturePath = $"/uploads/developerPicture/Def.jpg",
-                    MiniPicturePath = $"/uploads/developerMiniPicture/Def.jpg",
+                    PicturePath = $"/uploads/developerPicture/1685555616051.jpg",
+                    MiniPicturePath = $"/uploads/developerMiniPicture/1685555781696.jpg",
                 };
                 var massiveMonsterDev = new Developer()
                 {
                     Name = "Massive Monster",
                     Description = "Developers of cult of the lamb!",
-                    PicturePath = $"/uploads/developerPicture/Def.jpg",
-                    MiniPicturePath = $"/uploads/developerMiniPicture/Def.jpg",
+                    PicturePath = $"/uploads/developerPicture/1685555925744.jpg",
+                    MiniPicturePath = $"/uploads/developerMiniPicture/1685556039437.jpg",
                 };
                 var scsSoftwareDev = new Developer()
                 {
                     Name = "SCS Software",
                     Description = "Best simulator developer",
-                    PicturePath = $"/uploads/developerPicture/Def.jpg",
-                    MiniPicturePath = $"/uploads/developerMiniPicture/Def.jpg",
+                    PicturePath = $"/uploads/developerPicture/1685556100017.jpg",
+                    MiniPicturePath = $"/uploads/developerMiniPicture/1685556216773.jpg",
                 };
                 //-----------------------------------------------------
                 //Publishers min 5
@@ -185,36 +185,36 @@ namespace GameLibraryV2
                 {
                     Name = teamCherryDev.Name,
                     Description = teamCherryDev.Description,
-                    PicturePath = $"/uploads/publisherPicture/Def.jpg",
-                    MiniPicturePath = $"/uploads/publisherMiniPicture/Def.jpg",
+                    PicturePath = $"/uploads/publisherPicture/1685554109061.jpg",
+                    MiniPicturePath = $"/uploads/publisherMiniPicture/1685554231011.jpg",
                 };
                 var braceYourSelfGamesPub = new Publisher()
                 {
                     Name = braceYourSelfGamesDev.Name,
                     Description = braceYourSelfGamesDev.Description,
-                    PicturePath = $"/uploads/publisherPicture/Def.jpg",
-                    MiniPicturePath = $"/uploads/publisherMiniPicture/Def.jpg",
+                    PicturePath = $"/uploads/publisherPicture/1685554477156.jpg",
+                    MiniPicturePath = $"/uploads/publisherMiniPicture/1685554912649.jpg",
                 };
                 var kleiEntertaimentPub = new Publisher()
                 {
-                    Name = "Klei Entertaiment",
+                    Name = "Klei Entertainment",
                     Description = "Cool publisher",
-                    PicturePath = $"/uploads/publisherPicture/Def.jpg",
-                    MiniPicturePath = $"/uploads/publisherMiniPicture/Def.jpg",
+                    PicturePath = $"/uploads/publisherPicture/1685555157726.jpg",
+                    MiniPicturePath = $"/uploads/publisherMiniPicture/1685555359911.jpg",
                 };
                 var devolverDigitalPub = new Publisher()
                 {
                     Name = "Devolver Digital",
                     Description = "BEST PUBLISHER",
-                    PicturePath = $"/uploads/publisherPicture/Def.jpg",
-                    MiniPicturePath = $"/uploads/publisherMiniPicture/Def.jpg",
+                    PicturePath = $"/uploads/publisherPicture/1685556289408.jpg",
+                    MiniPicturePath = $"/uploads/publisherMiniPicture/1685556487505.jpg",
                 };
                 var scsSoftwarePub = new Publisher()
                 {
                     Name = scsSoftwareDev.Name,
                     Description = scsSoftwareDev.Description,
-                    PicturePath = $"/uploads/publisherPicture/Def.jpg",
-                    MiniPicturePath = $"/uploads/publisherMiniPicture/Def.jpg",
+                    PicturePath = $"/uploads/publisherPicture/1685556107447.jpg",
+                    MiniPicturePath = $"/uploads/publisherMiniPicture/1685556228023.jpg",
                 };
                 //------------------------------------------------------
                 //Genres
@@ -368,7 +368,7 @@ namespace GameLibraryV2
                 var euroTruck = new Game()
                 {
                     Name = "Euro Truck Simulator 2",
-                    PicturePath = $"/uploads/gamePicture/Def.jpg",
+                    PicturePath = $"/uploads/gamePicture/1685544614339.jpg",
                     Status = Enums.Status.released.ToString(),
                     ReleaseDate = DateOnly.FromDateTime(new DateTime(2012, 10, 18)),
                     Description = "Станьте королем европейских дорог — водителем грузовика, который доставляет важные грузы на немалые расстояния! Вас ждут десятки городов Великобритании, Бельгии, Германии, Италии, Нидерландов, Польши и не только. Испытайте свои умения, выносливость и скорость.",
@@ -415,7 +415,7 @@ namespace GameLibraryV2
                 var euroTruckGoingEast = new Game()
                 {
                     Name = "Euro Truck Simulator 2 - Going East",
-                    PicturePath = $"/uploads/gamePicture/Def.jpg",
+                    PicturePath = $"/uploads/gamePicture/1685557105429.jpg",
                     Status = Enums.Status.released.ToString(),
                     ReleaseDate = DateOnly.FromDateTime(new DateTime(2013, 09, 20)),
                     Description = "Станьте королем европейских дорог — водителем грузовика, который доставляет важные грузы на немалые расстояния! Вас ждут десятки городов Великобритании, Бельгии, Германии, Италии, Нидерландов, Польши и не только. Испытайте свои умения, выносливость и скорость.",
@@ -463,7 +463,7 @@ namespace GameLibraryV2
                 var euroTruckScandinavia = new Game()
                 {
                     Name = "Euro Truck Simulator 2 - Scandinavia",
-                    PicturePath = $"/uploads/gamePicture/Def.jpg",
+                    PicturePath = $"/uploads/gamePicture/1685557196743.jpg",
                     Status = Enums.Status.released.ToString(),
                     ReleaseDate = DateOnly.FromDateTime(new DateTime(2015, 05, 6)),
                     Description = "Станьте королем европейских дорог — водителем грузовика, который доставляет важные грузы на немалые расстояния! Вас ждут десятки городов Великобритании, Бельгии, Германии, Италии, Нидерландов, Польши и не только. Испытайте свои умения, выносливость и скорость.",
@@ -511,7 +511,7 @@ namespace GameLibraryV2
                 var euroTruckHighPowerCargoPack = new Game()
                 {
                     Name = "Euro Truck Simulator 2 - High Power Cargo Pack",
-                    PicturePath = $"/uploads/gamePicture/Def.jpg",
+                    PicturePath = $"/uploads/gamePicture/1685557263290.jpg",
                     Status = Enums.Status.released.ToString(),
                     ReleaseDate = DateOnly.FromDateTime(new DateTime(2014, 08, 14)),
                     Description = "Станьте королем европейских дорог — водителем грузовика, который доставляет важные грузы на немалые расстояния! Вас ждут десятки городов Великобритании, Бельгии, Германии, Италии, Нидерландов, Польши и не только. Испытайте свои умения, выносливость и скорость.",
@@ -580,7 +580,7 @@ namespace GameLibraryV2
                         User = userRail,
                         Rating = 10,
                         Text = "Best way to live life",
-                        PublishDate = DateTime.UtcNow,
+                        PublishDate = DateOnly.FromDateTime(DateTime.UtcNow),
                         ReviewRating = 500,
                     },
                     new Review
@@ -589,7 +589,7 @@ namespace GameLibraryV2
                         User = userThird,
                         Rating = 1,
                         Text = "Worse way to live life",
-                        PublishDate = DateTime.UtcNow,
+                        PublishDate = DateOnly.FromDateTime(DateTime.UtcNow),
                         ReviewRating = -100,
                     },
                 };
@@ -598,7 +598,7 @@ namespace GameLibraryV2
                 var hollowKnight = new Game()
                 {
                     Name = "Hollow Knight",
-                    PicturePath = $"/uploads/gamePicture/Def.jpg",
+                    PicturePath = $"/uploads/gamePicture/1685554067744.jpg",
                     Status = Enums.Status.released.ToString(),
                     ReleaseDate = DateOnly.FromDateTime(new DateTime(2017, 02, 24)),
                     Description = "Hollow Knight – это эпическое приключение в огромном разрушенном королевстве, полном насекомых и героев. Исследуйте извилистые пещеры, сражайтесь с порчеными тварями и заводите дружбу со странными жуками – все это в классической двухмерной ручной рисовке.",
@@ -649,7 +649,7 @@ namespace GameLibraryV2
                 var hollowKnightHiddenDreams = new Game()
                 {
                     Name = "Hollow Knight: HiddenDreams",
-                    PicturePath = $"/uploads/gamePicture/Def.jpg",
+                    PicturePath = $"/uploads/gamePicture/1685558109613.jpg",
                     Status = Enums.Status.released.ToString(),
                     ReleaseDate = DateOnly.FromDateTime(new DateTime(2017, 06, 03)),
                     Description = "Hollow Knight – это эпическое приключение в огромном разрушенном королевстве, полном насекомых и героев. Исследуйте извилистые пещеры, сражайтесь с порчеными тварями и заводите дружбу со странными жуками – все это в классической двухмерной ручной рисовке.",
@@ -701,7 +701,7 @@ namespace GameLibraryV2
                 var hollowKnightTheGrimmTroupe = new Game()
                 {
                     Name = "Hollow Knight: The Grimm Troupe",
-                    PicturePath = $"/uploads/gamePicture/Def.jpg",
+                    PicturePath = $"/uploads/gamePicture/1685558173924.jpg",
                     Status = Enums.Status.released.ToString(),
                     ReleaseDate = DateOnly.FromDateTime(new DateTime(2017, 10, 26)),
                     Description = "Hollow Knight – это эпическое приключение в огромном разрушенном королевстве, полном насекомых и героев. Исследуйте извилистые пещеры, сражайтесь с порчеными тварями и заводите дружбу со странными жуками – все это в классической двухмерной ручной рисовке.",
@@ -753,7 +753,7 @@ namespace GameLibraryV2
                 var hollowKnightGodmaster = new Game()
                 {
                     Name = "Hollow Knight: Godmaster",
-                    PicturePath = $"/uploads/gamePicture/Def.jpg",
+                    PicturePath = $"/uploads/gamePicture/1685558216652.jpg",
                     Status = Enums.Status.released.ToString(),
                     ReleaseDate = DateOnly.FromDateTime(new DateTime(2018, 06, 23)),
                     Description = "Hollow Knight – это эпическое приключение в огромном разрушенном королевстве, полном насекомых и героев. Исследуйте извилистые пещеры, сражайтесь с порчеными тварями и заводите дружбу со странными жуками – все это в классической двухмерной ручной рисовке.",
@@ -826,7 +826,7 @@ namespace GameLibraryV2
                         User = userRail,
                         Rating = 10,
                         Text = "Best",
-                        PublishDate = DateTime.UtcNow,
+                        PublishDate = DateOnly.FromDateTime(DateTime.UtcNow),
                         ReviewRating = 100,
                     },
                     new Review
@@ -835,7 +835,7 @@ namespace GameLibraryV2
                         User = uservalera,
                         Rating = 10,
                         Text = "Best",
-                        PublishDate = DateTime.UtcNow,
+                        PublishDate = DateOnly.FromDateTime(DateTime.UtcNow),
                         ReviewRating = 100,
                     },
                     new Review
@@ -844,14 +844,14 @@ namespace GameLibraryV2
                         User = userThird,
                         Rating = 10,
                         Text = "Best",
-                        PublishDate = DateTime.UtcNow,
+                        PublishDate = DateOnly.FromDateTime(DateTime.UtcNow),
                         ReviewRating = 100,
                     },
                 };
                 var hungryKnight = new Game()
                 {
                     Name = "Hungry Knight",
-                    PicturePath = $"/uploads/gamePicture/Def.jpg",
+                    PicturePath = $"/uploads/gamePicture/1685558340763.jpg",
                     Status = Enums.Status.released.ToString(),
                     ReleaseDate = DateOnly.FromDateTime(new DateTime(2015, 02, 24)),
                     Description = "A challenging action game. It's hard, but you can do it! Be brave.",

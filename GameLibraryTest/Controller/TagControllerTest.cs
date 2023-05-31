@@ -99,7 +99,7 @@ namespace GameLibraryTest.Controller
 
             var controller = TagControllerCreate();
 
-            var result = await controller.GetTagGames(rand.Next(100), filter.Object, pagination.Object);
+            var result = await controller.GetTagGames(rand.Next(100), filter.Object);
 
             result.Should().BeOfType<NotFoundObjectResult>();
         }
@@ -128,7 +128,7 @@ namespace GameLibraryTest.Controller
 
             tagRepositoryMock.Setup(r => r.TagExistsAsync(It.IsAny<int>())).ReturnsAsync(true);
             gameRepositoryMock.Setup(r => r.GetGamesByTagAsync(It.IsAny<int>(),
-                It.IsAny<FilterParameters>(), It.IsAny<Pagination>())).ReturnsAsync(expectedPagedList);
+                It.IsAny<FilterParameters>())).ReturnsAsync(expectedPagedList);
             mapperMock.Setup(r => r.Map<List<GameSmallListDto>>(expectedPagedList)).Returns(expectedMapped);
 
             var controller = TagControllerCreate();
@@ -137,7 +137,7 @@ namespace GameLibraryTest.Controller
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = await controller.GetTagGames(rand.Next(100), filter.Object, pagination.Object);
+            var result = await controller.GetTagGames(rand.Next(100), filter.Object);
 
             var okRes = result as OkObjectResult;
             var verify = (okRes!.Value as List<GameSmallListDto>);

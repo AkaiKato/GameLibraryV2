@@ -65,7 +65,7 @@ namespace GameLibraryV2.Repositories
 
         public async Task<PersonGame> GetPersonGameByUserIdAndGameIdAsync(int userId, int gameId)
         {
-            return await dataContext.PersonGames
+            return await dataContext.PersonGames.Include(g => g.Game)
                 .FirstOrDefaultAsync(u => u.User.Id == userId && u.Game.Id == gameId)!;
         }
 

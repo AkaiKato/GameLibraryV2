@@ -366,8 +366,8 @@ namespace GameLibraryV2.Migrations
                     b.Property<int>("GameId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("PublishDate")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateOnly>("PublishDate")
+                        .HasColumnType("date");
 
                     b.Property<int>("Rating")
                         .HasColumnType("integer");
