@@ -3,10 +3,10 @@
 Реализованно WEB API и тестировка с помощью xUnit<br />
 В качестве шаблона проектированния был использован шаблон Repository<br />
 Используемые технологии:<br />
-<li>ASP.NET Core;<br />
-Entity Framework Core;<br />
-LINQ;<br />
-AutoMapper;</li><br />
+*ASP.NET Core;<br />
+*Entity Framework Core;<br />
+*LINQ;<br />
+*AutoMapper;<br />
 Также данный проект использовал в качестве базы данных PostgreSQL<br />
 Основные возможности проекта:<br />
 CRUD операции с играми, разработчиками, издателями, тегами, платформами, жанрами и пользователями<br />
